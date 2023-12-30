@@ -100,10 +100,11 @@ export default {
               type: "success",
               duration: 3000,
             });
-            // console.log(res.data.data.token);
+            console.log(res.data);
             // 将token储存到localStorage
             const { token } = res.data.data.token;
             localStorage.setItem("token", res.data.data.token);
+            this.$router.push("/Home");
           } else {
             ElNotification({
               title: "Warning",
