@@ -25,12 +25,22 @@
                   /></el-link>
                 </div>
               </div>
+              <!-- 分割线 -->
+              <el-divider />
+
+              <el-input
+                placeholder="用户名"
+                v-model="loginForm.username"
+                style="margin-bottom: 20px"
+                prop="username"
+              ></el-input>
+              <el-input
                 type="password"
                 placeholder="密码"
                 v-model="loginForm.password"
                 show-password
                 style="margin-bottom: 10px"
-
+                prop="password"
               >
               </el-input>
               <div class="remember-row">
@@ -39,7 +49,7 @@
               </div>
               <el-button
                 type="primary"
-
+                @click="onSubmit"
                 class="login-button"
                 :disabled="!canSubmit"
                 >登录</el-button
@@ -62,22 +72,15 @@
   </div>
 </template>
 
-<<<<<<< HEAD
-<script >
-import { login } from "@/api/manager.js";
-import { ElMessage } from "element-plus";
-import { Form, Field } from 'vee-validate'
-=======
 <script>
->>>>>>> origin/dev
+import { login } from "@/api/manager.js";
+import { ElNotification } from "element-plus";
 
 export default {
   name: "LoginPage",
-  
   data() {
     return {
       loginForm: {
-<<<<<<< HEAD
         username: "testadmin",
         password: "Tueu38p5hhraeg95",
       },
@@ -92,7 +95,7 @@ export default {
           // checkToken();
           if (res.data.status == 0) {
             //判断status是否为0
-            ElMessage({
+            ElNotification({
               message: "登录成功",
               type: "success",
               duration: 3000,
@@ -102,7 +105,7 @@ export default {
             const { token } = res.data.data.token;
             localStorage.setItem("token", res.data.data.token);
           } else {
-            ElMessage({
+            ElNotification({
               title: "Warning",
               message: "失败",
               type: "warning",
@@ -111,7 +114,7 @@ export default {
           }
         })
         .catch((err) => {
-          ElMessage({
+          ElNotification({
             title: "Error",
             message: "请求失败",
             type: "error",
@@ -119,8 +122,6 @@ export default {
           });
         });
     },
-=======
->>>>>>> origin/dev
 
     toReg() {
       //跳转去注册
@@ -128,6 +129,8 @@ export default {
     },
   },
 
+  computed: {
+    canSubmit() {
       const { username, password } = this.loginForm;
       return Boolean(username && password);
     },
