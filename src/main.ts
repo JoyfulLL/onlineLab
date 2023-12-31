@@ -10,6 +10,7 @@ import "element-plus/dist/index.css";
 //创建实例
 const app = createApp(App);
 
+
 //element-plus
 app
   .use(VueAxios, axios)

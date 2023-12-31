@@ -21,7 +21,7 @@
                 </div>
                 <div class="right">
                   <el-link type="info" href="#" style="font-size: 11px"
-                    >扫码登录<img src="../assets/loginOrReg/qrCode.png"
+                  >扫码登录<img src="../assets/loginOrReg/qrCode.png"
                   /></el-link>
                 </div>
               </div>
@@ -29,18 +29,18 @@
               <el-divider />
 
               <el-input
-                placeholder="用户名"
-                v-model="loginForm.username"
-                style="margin-bottom: 20px"
-                prop="username"
+                  placeholder="用户名"
+                  v-model="loginForm.username"
+                  style="margin-bottom: 20px"
+                  prop="username"
               ></el-input>
               <el-input
-                type="password"
-                placeholder="密码"
-                v-model="loginForm.password"
-                show-password
-                style="margin-bottom: 10px"
-                prop="password"
+                  type="password"
+                  placeholder="密码"
+                  v-model="loginForm.password"
+                  show-password
+                  style="margin-bottom: 10px"
+                  prop="password"
               >
               </el-input>
               <div class="remember-row">
@@ -48,11 +48,11 @@
                 <a href="#" class="forgot-password">忘记密码</a>
               </div>
               <el-button
-                type="primary"
-                @click="onSubmit"
-                class="login-button"
-                :disabled="!canSubmit"
-                >登录</el-button
+                  type="primary"
+                  @click="onSubmit"
+                  class="login-button"
+                  :disabled="!canSubmit"
+              >登录</el-button
               >
             </el-form>
           </div>
@@ -74,7 +74,7 @@
 
 <script>
 import { login } from "@/api/manager.js";
-import { ElNotification } from "element-plus";
+import { ElMessage  } from "element-plus";
 
 export default {
   name: "LoginPage",
@@ -95,7 +95,7 @@ export default {
           // checkToken();
           if (res.data.status == 0) {
             //判断status是否为0
-            ElNotification({
+            ElMessage ({
               message: "登录成功",
               type: "success",
               duration: 3000,
@@ -106,7 +106,7 @@ export default {
             localStorage.setItem("token", res.data.data.token);
             this.$router.push("/Home");
           } else {
-            ElNotification({
+            ElMessage ({
               title: "Warning",
               message: "失败",
               type: "warning",
@@ -115,7 +115,7 @@ export default {
           }
         })
         .catch((err) => {
-          ElNotification({
+          ElMessage ({
             title: "Error",
             message: "请求失败",
             type: "error",
