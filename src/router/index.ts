@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LoginPage from "@/views/LoginPage.vue";
+import LoginPage from '@/views/LoginPage.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,7 +18,7 @@ const router = createRouter({
       path: "/Home",
       name: "Home",
       meta: { requireAuth: true },
-      component: () => import("../views/Home.vue"),
+      component: () => import("../views/Home/Home.vue"),
     },
   ],
 });
