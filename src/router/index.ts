@@ -5,7 +5,7 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: "/",
+      path: "/1",
       name: "Login",
       component: LoginPage,
     },
@@ -20,6 +20,17 @@ const router = createRouter({
       meta: { requireAuth: true },
       component: () => import("../views/Home/Home.vue"),
     },
+    {
+      path:'/',
+      component:()=>import("../layout/basicLayout.vue"),
+      children:[
+        {
+          path:"/Home",
+          name:"header",
+          component:()=>import('../views/Home/Home.vue')
+        },
+      ]
+    }
   ],
 });
 
