@@ -19,7 +19,9 @@
     "vee-validate": "^4.12.3",
     "vue": "^3.3.4",
     "vue-axios": "^3.5.2",
-    "vue-router": "^4.2.5"
+    "vue-demi": "^0.14.6",
+    "vue-router": "^4.2.5",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@tsconfig/node18": "^18.2.2",
@@ -30,6 +32,8 @@
     "@vue/test-utils": "^2.4.1",
     "@vue/tsconfig": "^0.4.0",
     "jsdom": "^22.1.0",
+    "less": "^4.2.0",
+    "less-loader": "^11.1.4",
     "npm-run-all2": "^6.1.1",
     "typescript": "~5.2.0",
     "unplugin-auto-import": "^0.17.3",

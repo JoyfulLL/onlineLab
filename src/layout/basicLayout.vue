@@ -8,7 +8,6 @@
           <router-view/>
         </el-main>
       </el-container>
-
     </el-container>
   </div>
 </template>
@@ -21,6 +20,28 @@ import ContentContainer from "@/layout/contentContainer.vue";
 
 </script>
 
-<style scoped>
+<style scoped lang="less">
+.r-container{
+  flex-wrap: wrap;
+}
+
+.el-container {
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.common-layout {
+  height: 100%;
+
+  & > .el-container {
+    height: 100%;
+
+    & > .el-aside {
+      height: 100%;
+      background: #545c64;
+    }
+  }
+}
+
 
 </style>

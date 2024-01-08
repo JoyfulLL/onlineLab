@@ -3,11 +3,9 @@
 </script>
 
 <template>
-  <el-main>
-    这是
-  </el-main>
+  这是教师管理
 </template>
 
-<style scoped>
+<style scoped lang="less">
 
 </style>

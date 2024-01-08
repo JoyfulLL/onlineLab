@@ -1,25 +1,24 @@
 import service from "@/services/axios.js";
+import router from '@/router'
+//首先在setup中定义
 
 export function login(username, password) {
-  return service.post("/login", { name: username, password: password });
+    return service.post("/login", {name: username, password: password});
 }
 
 export function checkToken() {
-  //用于检验token的合法性，必须在生命周期函数onMounted中调用
-  const token = localStorage.getItem("token");
-  if (token == "") {
-    this.$router.push("/");
-    return;
-  }
-  service
-      .get("/isvalid", { Authorization: `Bearer ${token}` })
-      .then((res) => {
-        const { status, data } = res.data;
-        if (status != 0) {
-          this.$router.push("/");
-        }
-      })
-      .catch((err) => {});
+    //用于检验token的合法性，必须在生命周期函数onMounted中调用
+    const token = localStorage.getItem("token");
+    service
+        .get("/isvalid", {Authorization: `Bearer ${token}`})
+        .then((res) => {
+            if (res.data.status === 0) {
+                console.log(res.data.status);
+            }
+        })
+        .catch((err) => {
+            window.location.href = "/login"
+        });
 }
 
 export function regStu(
@@ -32,18 +31,18 @@ export function regStu(
     studentClass,
     sex,
 ) {
-  return service.post("/register", {
-    name: name,
-    password: password,
-    email: email,
-    realName: realName,
-    userSchoollD: userSchoollD,
-    schoolCode: schoolCode,
-    class: studentClass,
-    sex: sex,
-  });
+    return service.post("/register", {
+        name: name,
+        password: password,
+        email: email,
+        realName: realName,
+        userSchoollD: userSchoollD,
+        schoolCode: schoolCode,
+        class: studentClass,
+        sex: sex,
+    });
 }
 
 export function getStuInfo() {
-  return service.get("/authrequired/student/{action}");
+    return service.get("/authrequired/student/{action}");
 }

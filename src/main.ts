@@ -4,6 +4,7 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import App from "./App.vue";
 import router from "./router";
+import './assets/less/index.less'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import "element-plus/dist/index.css";
 

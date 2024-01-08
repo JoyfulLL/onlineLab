@@ -93,14 +93,14 @@ export default {
       login(this.loginForm.username, this.loginForm.password)
         .then((res) => {
           // checkToken();
-          if (res.data.status == 0) {
+          if (res.data.status === 0) {
             //判断status是否为0
             ElMessage ({
               message: "登录成功",
               type: "success",
               duration: 3000,
             });
-            console.log(res.data);
+            // console.log(res.data);
             // 将token储存到localStorage
             const { token } = res.data.data.token;
             localStorage.setItem("token", res.data.data.token);

@@ -3,11 +3,9 @@
 </script>
 
 <template>
-  <el-main>
-    这是
-  </el-main>
+  这是管理员账号列表
 </template>
 
-<style scoped>
+<style scoped lang="less">
 
 </style>

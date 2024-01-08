@@ -1,16 +1,13 @@
-<template>
-  <div>
-我是home组件
-  </div>
-</template>
-
 <script setup>
 import {checkToken} from "@/api/manager";
 onMounted(() => {
   checkToken()
 })
-
 </script>
+
+<template>
+ 文件共享
+</template>
 
 <style scoped lang="less">
 
