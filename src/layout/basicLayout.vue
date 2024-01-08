@@ -1,10 +1,10 @@
 <template>
   <div class="common-layout">
-    <el-container>
+    <el-container class="lay-container">
       <common-aside/>
       <el-container>
         <common-header/>
-        <el-main>
+        <el-main class="right-main">
           <router-view/>
         </el-main>
       </el-container>
@@ -31,17 +31,20 @@ import ContentContainer from "@/layout/contentContainer.vue";
 }
 
 .common-layout {
+  .lay-container {
+    flex-wrap: nowrap;
+    .right-main {
+      height: calc(100% - 124px) !important;
+    }
+  }
   height: 100%;
-
   & > .el-container {
     height: 100%;
-
     & > .el-aside {
       height: 100%;
       background: #545c64;
     }
   }
 }
-
 
 </style>

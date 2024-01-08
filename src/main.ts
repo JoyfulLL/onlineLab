@@ -7,7 +7,7 @@ import router from "./router";
 import './assets/less/index.less'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import "element-plus/dist/index.css";
-
+// import api from './services/axios'
 //创建实例
 const app = createApp(App);
 
@@ -15,6 +15,7 @@ for (const [key,component] of Object.entries(ElementPlusIconsVue)){
     app.component(key,component)
 }
 //element-plus
+// app.config.globalProperties.$api= api
 app
   .use(VueAxios, axios)
   .use(router)

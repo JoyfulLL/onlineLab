@@ -13,7 +13,7 @@ export function checkToken() {
         .get("/isvalid", {Authorization: `Bearer ${token}`})
         .then((res) => {
             if (res.data.status === 0) {
-                console.log(res.data.status);
+                console.log("token验证通过");
             }
         })
         .catch((err) => {
@@ -44,5 +44,5 @@ export function regStu(
 }
 
 export function getStuInfo() {
-    return service.get("/authrequired/student/{action}");
+    return service.get("/authrequired/admin/students/{action}")
 }
