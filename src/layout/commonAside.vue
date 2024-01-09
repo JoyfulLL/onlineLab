@@ -1,7 +1,5 @@
-<script setup lang="ts">
+<script setup>
 import {ref} from 'vue'
-import {isTeleport} from "@vue/test-utils/dist/vnodeTransformers/util";
-import {Burger} from "@element-plus/icons-vue";
 import {useSidebarStore} from '@/stores/index'
 import {useRouter} from "vue-router";
 
@@ -38,18 +36,6 @@ const menuItems = ref([
 ]);
 
 
-const collapseList = ref(
-    [
-      {
-        index: '1',
-        icon: 'ArrowLeft',
-      },
-      {
-        index: '2',
-        icon: 'ArrowRight'
-      }
-    ]
-)
 const router =useRouter();
 const clickMenu = (item)=>{
   // console.log("点击了菜单")
@@ -94,9 +80,9 @@ let handleCollapse = () => {
         </el-sub-menu>
       </template>
     </el-menu>
-    <div @click="handleCollapse" :class="{ 'centered': useToCollapse.isCollapse }">
-      <component class="icons" :is="useToCollapse.isCollapse ? 'ArrowRight' : 'ArrowLeft'"></component>
-    </div>
+<!--    <div @click="handleCollapse" :class="{ 'centered': useToCollapse.isCollapse }">-->
+<!--      <component class="icons" :is="useToCollapse.isCollapse ? 'ArrowRight' : 'ArrowLeft'"></component>-->
+<!--    </div>-->
   </el-aside>
 </template>
 

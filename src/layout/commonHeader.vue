@@ -1,11 +1,26 @@
 <template>
   <el-header>
-    这里是头部
+    <div class="l-content">
+      <!-- 图标的展示 -->
+      <div size="small" plain @click="handleCollapse" :class="useToCollapse.isCollapse" style="width: 25px; border-radius: 5px; border: 1px solid black;">
+        <component class="icons" :is="useToCollapse.isCollapse ? 'ArrowRight' : 'ArrowLeft'"></component>
+      </div>
+
+      <el-breadcrumb separator=">" class="bread">
+        <!-- 首页是一定存在的所以直接写死 -->
+        <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
   </el-header>
 </template>
 
 
-<script>
+<script setup>
+import {useSidebarStore} from "@/stores";
+const useToCollapse = useSidebarStore()
+let handleCollapse = () => {
+  useToCollapse.toggleCollapse()
+}
 
 </script>
 
@@ -18,11 +33,9 @@ header {
   background: #a0cfff;
 }
 .r-content {
-  .user {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-  }
 }
 .l-content {
   display: flex;
