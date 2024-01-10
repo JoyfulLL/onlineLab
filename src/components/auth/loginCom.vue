@@ -4,7 +4,7 @@
     <div class="center-container">
       <!-- 左半部分，存放图片 -->
       <div class="left-section">
-        <img src="../assets/loginOrReg/灯泡图案.png" alt="Image" />
+        <img src="../../assets/loginOrReg/灯泡图案.png" alt="Image" />
       </div>
 
       <!-- 右半部分 -->
@@ -21,7 +21,7 @@
                 </div>
                 <div class="right">
                   <el-link type="info" href="#" style="font-size: 11px"
-                  >扫码登录<img src="../assets/loginOrReg/qrCode.png"
+                  >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
                   /></el-link>
                 </div>
               </div>
@@ -62,8 +62,8 @@
           <div class="other-login">
             <el-link type="primary" href="#">其它登录方式</el-link>
             <div class="icon-container">
-              <a href="#"><img src="../assets/loginOrReg/qq.png" /></a>
-              <a href="#"><img src="../assets/loginOrReg/wechat.png" /></a>
+              <a href="#"><img src="../../assets/loginOrReg/qq.png" /></a>
+              <a href="#"><img src="../../assets/loginOrReg/wechat.png" /></a>
             </div>
           </div>
         </div>

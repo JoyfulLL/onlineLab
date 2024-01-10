@@ -1,5 +1,5 @@
 <script>
-import loginCom from "@/components/loginCom.vue";
+import loginCom from "@/components/auth/loginCom.vue";
 
 export default {
   name: "login",

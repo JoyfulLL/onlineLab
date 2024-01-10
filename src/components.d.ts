@@ -38,9 +38,10 @@ declare module 'vue' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
-    LoginCom: typeof import('./components/loginCom.vue')['default']
+    LoginCom: typeof import('./components/auth/loginCom.vue')['default']
     Pagination: typeof import('./components/pagination.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    StudentRegistration: typeof import('./components/auth/studentRegistration.vue')['default']
   }
 }

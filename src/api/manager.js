@@ -1,5 +1,6 @@
 import service from "@/services/axios.js";
 import router from '@/router'
+
 //首先在setup中定义
 
 export function login(username, password) {
@@ -45,4 +46,27 @@ export function regStu(
 
 export function getStuInfo() {
     return service.get("/authrequired/admin/students/{action}")
+}
+
+
+export function editStuInfo(
+    id,
+    name,
+    email,
+    realName,
+    userSchoollD,
+    schoolCode,
+    studentClass,
+    sex,
+) {
+    return service.patch('/authrequired/admin/student', {
+        id:id,
+        name: name,
+        email: email,
+        realName: realName,
+        userSchoollD: userSchoollD,
+        schoolCode: schoolCode,
+        class: studentClass,
+        sex: sex,
+    })
 }
