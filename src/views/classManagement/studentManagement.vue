@@ -12,7 +12,73 @@ onMounted(() => {
   checkToken();
   showStuInfo();
 });
+const stuList = ref([]);
+const tableLabel = reactive([
+  // @用户ID为用户唯一标识符，不需要在表中展示
+  // 虽然不显示，但还是能读取到用户ID
+  // {
+  //   prop: "id",
+  //   label: "ID",
+  //   width: 180,
+  // },
+  {
+    prop: "userSchoollD",
+    label: "学号",
+  },
+  {
+    prop: "realName",
+    label: "姓名",
+    width: "80",
+  },
+  {
+    prop: "class",
+    label: "班级",
+    width: "110",
+  },
+  {
+    prop: "schoolCode",
+    label: "学校",
+    width: "180",
+  },
+  {
+    prop: "name",
+    label: "用户名",
+    width: "auto",
+  },
+  {
+    prop: "email",
+    label: "邮箱",
+    width: "230",
+  },
+  {
+    prop: "sex",
+    label: "性别",
+    width: "60",
+  },
+]);
+// @注册信息的表单
+const userForm = reactive({
+  name: "",
+  password: "",
+  email: "",
+  realName: "",
+  userSchoollD: "",
+  schoolCode: "",
+  class: "",
+  sex: "",
+});
 
+// 用于侦听数据的变化，使用newUserForm存放变化后的数据
+const newUserForm = reactive([]);
+watchEffect(() => {
+  newUserForm.value = {...userForm};
+  console.log(newUserForm)
+  // console.log('真名',newUserForm.value.realName)
+  // console.log('班级',newUserForm.value.class)
+  // console.log('性别',newUserForm.value.sex)
+  // console.log('学校',newUserForm.value.schoolCode)
+  // console.log('邮箱',newUserForm.value.email)
+});
 
 // @调用获取所有学生信息的API接口
 // @用于存放获取的数据并展示
@@ -105,7 +171,7 @@ const editStudent = (row) => {
 // @判断动作的值，为add则调用新增用户接口
 // @否则调用的是修改用户的接口
 const handleSubmit = async () => {
-  if (action.value == "add") {
+  if (action.value === "add") {
     await regStu(
         userForm.name,
         userForm.password,
@@ -117,7 +183,7 @@ const handleSubmit = async () => {
         userForm.sex
     )
         .then((res) => {
-          if (res.data.status == 0) {
+          if (res.data.status === 0) {
             //状态码为0，提交成功，关闭当前对话框
             dialogVisible.value = false;
           } else {
@@ -147,9 +213,11 @@ const handleSubmit = async () => {
     editStuInfo(
         newUserForm.value.id,
         newUserForm.value.name,
+        // newUserForm.value.password,
         newUserForm.value.email,
         newUserForm.value.realName,
         newUserForm.value.userSchoollD,
+        newUserForm.value.schoolCode,
         newUserForm.value.class,
         newUserForm.value.sex
     ).then((res) => {
@@ -163,75 +231,10 @@ const handleSubmit = async () => {
   }
 };
 
-// @注册信息的表单
-const userForm = reactive({
-  name: "",
-  password: "",
-  email: "",
-  realName: "",
-  userSchoollD: "",
-  schoolCode: "",
-  class: "",
-  sex: "",
-});
 
-// 用于侦听数据的变化，使用newUserForm存放变化后的数据
-const newUserForm = reactive([]);
-watchEffect(() => {
-  newUserForm.value = {...userForm};
-  //console.log(typeof(newUserForm))
-  console.log('真名',newUserForm.value.realName)
-  console.log('班级',newUserForm.value.class)
-  console.log('性别',newUserForm.value.sex)
-  console.log('学校',newUserForm.value.schoolCode)
-  console.log('邮箱',newUserForm.value.email)
-});
 
 //用于数据读取与展示
-const stuList = ref([]);
-const tableLabel = reactive([
-  // @用户ID为用户唯一标识符，不需要在表中展示
-  // 虽然不显示，但还是能读取到用户ID
-  // {
-  //   prop: "id",
-  //   label: "ID",
-  //   width: 180,
-  // },
-  {
-    prop: "userSchoollD",
-    label: "学号",
-  },
-  {
-    prop: "realName",
-    label: "姓名",
-    width: "80",
-  },
-  {
-    prop: "class",
-    label: "班级",
-    width: "110",
-  },
-  {
-    prop: "schoolCode",
-    label: "学校",
-    width: "180",
-  },
-  {
-    prop: "name",
-    label: "用户名",
-    width: "auto",
-  },
-  {
-    prop: "email",
-    label: "邮箱",
-    width: "230",
-  },
-  {
-    prop: "sex",
-    label: "性别",
-    width: "60",
-  },
-]);
+
 </script>
 
 <template>
