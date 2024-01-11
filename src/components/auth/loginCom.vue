@@ -1,3 +1,76 @@
+<script>
+
+/**
+ * @页面预存了管理员账号与密码
+ * @之后必须删除！！！
+ */
+
+import { login } from "@/api/manager.js";
+import { ElMessage  } from "element-plus";
+
+export default {
+  name: "LoginPage",
+  data() {
+    return {
+      loginForm: {
+        username: "testadmin",
+        password: "Tueu38p5hhraeg95",
+      },
+      rememberMe: false,
+    };
+  },
+
+  methods: {
+    onSubmit() {
+      login(this.loginForm.username, this.loginForm.password)
+        .then((res) => {
+          // checkToken();
+          if (res.data.status === 0) {
+            //判断status是否为0
+            ElMessage ({
+              message: "登录成功",
+              type: "success",
+              duration: 3000,
+            });
+            // console.log(res.data);
+            // 将token储存到localStorage
+            const { token } = res.data.data.token;
+            localStorage.setItem("token", res.data.data.token);
+            this.$router.push("/Home");
+          } else {
+            ElMessage ({
+              title: "Warning",
+              message: "失败",
+              type: "warning",
+              duration: 3000,
+            });
+          }
+        })
+        .catch((err) => {
+          ElMessage ({
+            title: "Error",
+            message: "请求失败",
+            type: "error",
+            duration: 3000,
+          });
+        });
+    },
+
+    toReg() {
+      //跳转去注册
+      this.$router.push("/Zhuce");
+    },
+  },
+
+  computed: {
+    canSubmit() {
+      const { username, password } = this.loginForm;
+      return Boolean(username && password);
+    },
+  },
+};
+</script>
+
 <template>
   <div class="login-page">
     <!-- 整个登录表单 -->
@@ -71,73 +144,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import { login } from "@/api/manager.js";
-import { ElMessage  } from "element-plus";
-
-export default {
-  name: "LoginPage",
-  data() {
-    return {
-      loginForm: {
-        username: "testadmin",
-        password: "Tueu38p5hhraeg95",
-      },
-      rememberMe: false,
-    };
-  },
-
-  methods: {
-    onSubmit() {
-      login(this.loginForm.username, this.loginForm.password)
-        .then((res) => {
-          // checkToken();
-          if (res.data.status === 0) {
-            //判断status是否为0
-            ElMessage ({
-              message: "登录成功",
-              type: "success",
-              duration: 3000,
-            });
-            // console.log(res.data);
-            // 将token储存到localStorage
-            const { token } = res.data.data.token;
-            localStorage.setItem("token", res.data.data.token);
-            this.$router.push("/Home");
-          } else {
-            ElMessage ({
-              title: "Warning",
-              message: "失败",
-              type: "warning",
-              duration: 3000,
-            });
-          }
-        })
-        .catch((err) => {
-          ElMessage ({
-            title: "Error",
-            message: "请求失败",
-            type: "error",
-            duration: 3000,
-          });
-        });
-    },
-
-    toReg() {
-      //跳转去注册
-      this.$router.push("/Zhuce");
-    },
-  },
-
-  computed: {
-    canSubmit() {
-      const { username, password } = this.loginForm;
-      return Boolean(username && password);
-    },
-  },
-};
-</script>
 
 <style scoped>
 /* 在这里添加样式 */

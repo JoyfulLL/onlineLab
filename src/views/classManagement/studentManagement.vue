@@ -1,17 +1,32 @@
 <script setup>
-/*
-  此页面用于学生管理——展示学生信息，注册新学生，修改学生信息
+/**
+ * @file  studentManagement
+ * @author ljf13
+ * @description 用于学生管理——展示学生信息，注册新学生，修改学生信息
+ * @date 2024/1/8
+  @@@ 代码结构
+  数据段data 建议新增数据都放在新增的方法前面
+  @避免出现无法找到数据的错误
+  方法段method
+  @当前已有功能：获取所有学生信息，新增学生，修改指定学生信息
+  @待做功能：将指定学生移出班级，获取指定班级的学生，查询学生
  */
 import {checkToken, getStuInfo, editStuInfo, regStu} from "@/api/manager";
-import {reactive, ref, getCurrentInstance, onMounted,} from "vue";
+import {reactive, ref, onMounted, inject} from "vue";
 import {ElMessage} from "element-plus";
-import resetFields from "element-plus"
-import studentRegistration from "@/components/auth/studentRegistration.vue";
 
+// @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   checkToken();
   showStuInfo();
 });
+
+// @注入APP.vue提供的刷新方法
+// @用于在新增用户/编辑用户后刷新表格
+const reload = inject('reload')
+
+
+// 数据段
 const stuList = ref([]);
 const tableLabel = reactive([
   // @用户ID为用户唯一标识符，不需要在表中展示
@@ -81,12 +96,6 @@ watchEffect(() => {
 });
 
 // @调用获取所有学生信息的API接口
-// @用于存放获取的数据并展示
-const showStuInfo = async () => {
-  let res = await getStuInfo();
-  stuList.value = res.data.data;
-  config.dataCount = stuList.value.length; //读取学生总数
-};
 
 //用于分页
 const config = reactive({
@@ -94,6 +103,14 @@ const config = reactive({
   pageNum: 1,
   pageSize: 10,
 });
+
+// @用于存放获取的数据并展示
+const showStuInfo = async () => {
+  let res = await getStuInfo();
+  stuList.value = res.data.data;
+  config.dataCount = stuList.value.length; //读取学生总数
+};
+
 const changePage = (pageNum) => {
   // 读取到当前的页号
   config.pageNum = pageNum;
@@ -122,7 +139,7 @@ const action = ref("add");
 const showPassword = ref()
 
 // @用于在编辑模式禁用相关选项的修改
-// @目前除了realName和email外，全都禁用
+// @目前除了realName，email，class外，全都禁用
 const IsDisabled = ref(false)
 
 // @关闭会话框
@@ -150,7 +167,7 @@ const addStudent = async () => {
     delete userForm[key];
   }
   showPassword.value = true;
-  IsDisabled.value=false;
+  IsDisabled.value = false;
 }
 
 
@@ -161,9 +178,11 @@ const editStudent = (row) => {
   action.value = "edit";
   dialogVisible.value = true;
   // console.log(row)
-  Object.assign(userForm, row);
+  nextTick(() => {
+    Object.assign(userForm, row);
+  })
   showPassword.value = false;
-  IsDisabled.value=true;
+  IsDisabled.value = true;
 }
 
 
@@ -186,6 +205,7 @@ const handleSubmit = async () => {
           if (res.data.status === 0) {
             //状态码为0，提交成功，关闭当前对话框
             dialogVisible.value = false;
+            reload();
           } else {
             ElMessage({
               title: "Warning",
@@ -210,7 +230,7 @@ const handleSubmit = async () => {
     // console.log('学校',(newUserForm.value.schoolCode))
     // console.log('班级',(newUserForm.value.class))
     //   console.log('性别',(newUserForm.value.sex))
-    editStuInfo(
+    await editStuInfo(
         newUserForm.value.id,
         newUserForm.value.name,
         // newUserForm.value.password,
@@ -223,14 +243,17 @@ const handleSubmit = async () => {
     ).then((res) => {
       if (res.data.status == 0) {
         dialogVisible.value = false;
-      }
-      else{
+        ElMessage({
+          message: '注册',
+          type: 'success',
+        })
+        reload();
+      } else {
         console.log("出错")
       }
     })
   }
 };
-
 
 
 //用于数据读取与展示
@@ -248,41 +271,46 @@ const handleSubmit = async () => {
         :before-close="handleClose"
     >
       <!--      学生注册组件表单-->
-      <el-form :model="userForm" class="demo-form-inline">
-        <el-form-item label="用户名" prop="name" >
-          <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password" v-if="showPassword">
-          <el-input v-model="userForm.password" type="password" show-password/>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="userForm.email" ></el-input>
-        </el-form-item>
-        <el-form-item label="姓名" prop="realName">
-          <el-input v-model="userForm.realName"></el-input>
-        </el-form-item>
-        <el-form-item label="学生学号" prop="userSchoollD">
-          <el-input v-model="userForm.userSchoollD" :disabled="IsDisabled"></el-input>
-        </el-form-item>
-        <el-form-item label="学校代码" prop="schoolCode">
-          <el-input v-model="userForm.schoolCode" :disabled="IsDisabled"></el-input>
-        </el-form-item>
-        <el-form-item label="学生班级" prop="class">
-          <el-input v-model="userForm.class" ></el-input>
-        </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
-            <el-radio label="男">男</el-radio>
-            <el-radio label="女">女</el-radio>
-          </el-radio-group>
-        </el-form-item>
-        <el-form-item>
-          <div class="button-container">
-            <el-button type="primary" @click="handleSubmit('userForm')">{{ action == 'add' ? '添加' : '确认修改' }}</el-button>
-            <el-button @click="dialogVisible = false">取消</el-button>
-          </div>
-        </el-form-item>
-      </el-form>
+      <div class="form-container">
+        <el-form :model="userForm" class="centered-form" label-width="80px">
+          <el-form-item label="用户名" prop="name">
+            <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password" v-if="showPassword">
+            <el-input v-model="userForm.password" type="password" show-password/>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="userForm.email"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名" prop="realName">
+            <el-input v-model="userForm.realName"></el-input>
+          </el-form-item>
+          <el-form-item label="学生学号" prop="userSchoollD">
+            <el-input v-model="userForm.userSchoollD" :disabled="IsDisabled"></el-input>
+          </el-form-item>
+          <el-form-item label="学校代码" prop="schoolCode">
+            <el-input v-model="userForm.schoolCode" :disabled="IsDisabled"></el-input>
+          </el-form-item>
+          <el-form-item label="学生班级" prop="class">
+            <el-input v-model="userForm.class"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="sex">
+            <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
+              <el-radio label="男">男</el-radio>
+              <el-radio label="女">女</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item>
+            <div class="button-container">
+              <el-button type="primary" @click="handleSubmit('userForm')">{{
+                  action == 'add' ? '添加' : '确认修改'
+                }}
+              </el-button>
+              <el-button @click="dialogVisible = false">取消</el-button>
+            </div>
+          </el-form-item>
+        </el-form>
+      </div>
     </el-dialog>
 
     <!--    搜索框-->
@@ -332,6 +360,25 @@ const handleSubmit = async () => {
 
 
 <style scoped lang="less">
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.centered-form {
+  width: 300px;
+}
+
+.button-container {
+  text-align: center;
+
+  .el-button {
+    margin: 0 10px;
+  }
+}
+
 .table {
   position: relative;
   height: auto;
