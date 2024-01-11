@@ -139,7 +139,11 @@ const handleSubmit = async () => {
         });
   } else {
     //@ 在此处调用修改学生参数的接口
-    //  console.log(typeof (newUserForm.value.name))
+    // console.log('用户名',(newUserForm.value.name))
+    //
+    // console.log('学校',(newUserForm.value.schoolCode))
+    // console.log('班级',(newUserForm.value.class))
+    //   console.log('性别',(newUserForm.value.sex))
     editStuInfo(
         newUserForm.value.id,
         newUserForm.value.name,
@@ -176,6 +180,11 @@ const newUserForm = reactive([]);
 watchEffect(() => {
   newUserForm.value = {...userForm};
   //console.log(typeof(newUserForm))
+  console.log('真名',newUserForm.value.realName)
+  console.log('班级',newUserForm.value.class)
+  console.log('性别',newUserForm.value.sex)
+  console.log('学校',newUserForm.value.schoolCode)
+  console.log('邮箱',newUserForm.value.email)
 });
 
 //用于数据读取与展示
@@ -256,7 +265,7 @@ const tableLabel = reactive([
           <el-input v-model="userForm.schoolCode" :disabled="IsDisabled"></el-input>
         </el-form-item>
         <el-form-item label="学生班级" prop="class">
-          <el-input v-model="userForm.class" :disabled="IsDisabled"></el-input>
+          <el-input v-model="userForm.class" ></el-input>
         </el-form-item>
         <el-form-item label="性别" prop="sex">
           <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
