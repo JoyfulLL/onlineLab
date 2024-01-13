@@ -7,6 +7,10 @@
 
 import { login } from "@/api/manager.js";
 import { ElMessage  } from "element-plus";
+import {useAuthStore} from "@/stores/tokenStore"
+
+
+
 
 export default {
   name: "LoginPage",
@@ -32,10 +36,9 @@ export default {
               type: "success",
               duration: 3000,
             });
-            // console.log(res.data);
             // 将token储存到localStorage
-            const { token } = res.data.data.token;
-            localStorage.setItem("token", res.data.data.token);
+            const authStore = useAuthStore()
+            authStore.setData(res.data.data)
             this.$router.push("/Home");
           } else {
             ElMessage ({
@@ -60,6 +63,7 @@ export default {
       //跳转去注册
       this.$router.push("/Zhuce");
     },
+
   },
 
   computed: {

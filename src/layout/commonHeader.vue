@@ -11,16 +11,40 @@
         <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
       </el-breadcrumb>
     </div>
+    <div class="r-content">
+      <el-dropdown>
+        <span class="el-dropdown-link">
+        </span>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>个人中心</el-dropdown-item>
+            <el-dropdown-item @click="handleLoginOut">退出</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+    <button @click="handleLoginOut">退出登录</button>
   </el-header>
 </template>
 
 
 <script setup>
 import {useSidebarStore} from "@/stores";
+import {useAuthStore} from "@/stores/tokenStore"
+import {useRouter} from "vue-router";
+
 const useToCollapse = useSidebarStore()
 let handleCollapse = () => {
   useToCollapse.toggleCollapse()
 }
+
+const router =useRouter();
+const authStore = useAuthStore();
+//登出函数
+const handleLoginOut = () => {
+  authStore.deleteToken();
+  router.push('/login');
+};
 
 </script>
 

@@ -1,6 +1,12 @@
 import service from "@/services/axios.js";
 import router from '@/router'
 
+/**
+ * @文件封装API
+ * 登录API,token校验API
+ * 学生注册，获取学生信息，修改学生信息API
+ * **/
+
 //首先在setup中定义
 // 登录接口
 export function login(username, password) {

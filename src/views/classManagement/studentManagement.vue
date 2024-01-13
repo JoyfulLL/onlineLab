@@ -8,26 +8,30 @@
   数据段data 建议新增数据都放在新增的方法前面
   @避免出现无法找到数据的错误
   方法段method
-  @当前已有功能：获取所有学生信息，新增学生，修改指定学生信息
-  @待做功能：将指定学生移出班级，获取指定班级的学生，查询学生
+  @当前已有功能：✔获取所有学生信息，✔新增学生，✔修改指定学生信息
+  @待做功能：
+  @ 1、将指定学生移出班级
+  @ 2、依据信息获取对应的学生
+  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
 import {checkToken, getStuInfo, editStuInfo, regStu} from "@/api/manager";
 import {reactive, ref, onMounted, inject} from "vue";
 import {ElMessage} from "element-plus";
+import {usePaginationStore} from '@/stores/userData/storeUserData'
+
+
 
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   checkToken();
-  showStuInfo();
+  fetchData();
 });
 
 // @注入APP.vue提供的刷新方法
 // @用于在新增用户/编辑用户后刷新表格
 const reload = inject('reload')
 
-
-// 数据段
-const stuList = ref([]);
+// 展示数据用的表头
 const tableLabel = reactive([
   // @用户ID为用户唯一标识符，不需要在表中展示
   // 虽然不显示，但还是能读取到用户ID
@@ -43,12 +47,12 @@ const tableLabel = reactive([
   {
     prop: "realName",
     label: "姓名",
-    width: "80",
+    width: "120",
   },
   {
     prop: "class",
     label: "班级",
-    width: "110",
+    width: "150",
   },
   {
     prop: "schoolCode",
@@ -68,7 +72,7 @@ const tableLabel = reactive([
   {
     prop: "sex",
     label: "性别",
-    width: "60",
+    width: "55",
   },
 ]);
 // @注册信息的表单
@@ -89,38 +93,43 @@ watchEffect(() => {
   newUserForm.value = {...userForm};
   console.log(newUserForm)
   // console.log('真名',newUserForm.value.realName)
-  // console.log('班级',newUserForm.value.class)
-  // console.log('性别',newUserForm.value.sex)
-  // console.log('学校',newUserForm.value.schoolCode)
-  // console.log('邮箱',newUserForm.value.email)
 });
 
-// @调用获取所有学生信息的API接口
 
-//用于分页
-const config = reactive({
-  dataCount: 0,
-  pageNum: 1,
-  pageSize: 10,
-});
+const paginationStore = usePaginationStore();
 
-// @用于存放获取的数据并展示
-const showStuInfo = async () => {
-  let res = await getStuInfo();
-  stuList.value = res.data.data;
-  config.dataCount = stuList.value.length; //读取学生总数
+// 数据获取
+const fetchData = async () => {
+  await paginationStore.showStuInfo();
+  // 数据获取完成后，可以执行其他操作或访问Store中的数据
+  // console.log(paginationStore.dataCount)
 };
 
 const changePage = (pageNum) => {
-  // 读取到当前的页号
-  config.pageNum = pageNum;
+  paginationStore.changePage(pageNum);
 };
+
+
+// @以下代码已弃用，已经用pinia存储了数据并且展示
+// ！！！
+// @用于存放获取的数据并展示
+// const showStuInfo1 = async () => {
+//   // @调用获取所有学生信息的API接口
+//   let res = await getStuInfo();
+//   stuList.value = res.data.data;
+//   config.dataCount = stuList.value.length; //读取学生总数
+// };
+
+// const changePage = (pageNum) => {
+//   // 读取到当前的页号
+//   config.pageNum = pageNum;
+// };
 // 计算属性，用于返回当前页应该显示的数据
-const paginatedStuList = computed(() => {
-  const startIndex = (config.pageNum - 1) * config.pageSize;
-  const endIndex = startIndex + config.pageSize;
-  return stuList.value.slice(startIndex, endIndex);
-});
+// const paginatedStuList = computed(() => {
+//   const startIndex = (config.pageNum - 1) * config.pageSize;
+//   const endIndex = startIndex + config.pageSize;
+//   return stuList.value.slice(startIndex, endIndex);
+// });
 
 
 // @以下代码用于 学生管理
@@ -205,7 +214,7 @@ const handleSubmit = async () => {
           if (res.data.status === 0) {
             //状态码为0，提交成功，关闭当前对话框
             dialogVisible.value = false;
-            reload();
+            reload()
           } else {
             ElMessage({
               title: "Warning",
@@ -226,10 +235,6 @@ const handleSubmit = async () => {
   } else {
     //@ 在此处调用修改学生参数的接口
     // console.log('用户名',(newUserForm.value.name))
-    //
-    // console.log('学校',(newUserForm.value.schoolCode))
-    // console.log('班级',(newUserForm.value.class))
-    //   console.log('性别',(newUserForm.value.sex))
     await editStuInfo(
         newUserForm.value.id,
         newUserForm.value.name,
@@ -243,11 +248,11 @@ const handleSubmit = async () => {
     ).then((res) => {
       if (res.data.status == 0) {
         dialogVisible.value = false;
+        reload()
         ElMessage({
           message: '注册',
           type: 'success',
         })
-        reload();
       } else {
         console.log("出错")
       }
@@ -302,10 +307,7 @@ const handleSubmit = async () => {
           </el-form-item>
           <el-form-item>
             <div class="button-container">
-              <el-button type="primary" @click="handleSubmit('userForm')">{{
-                  action == 'add' ? '添加' : '确认修改'
-                }}
-              </el-button>
+              <el-button type="primary" @click="handleSubmit('userForm')">{{action == 'add' ? '添加' : '确认修改' }}</el-button>
               <el-button @click="dialogVisible = false">取消</el-button>
             </div>
           </el-form-item>
@@ -330,7 +332,7 @@ const handleSubmit = async () => {
     </el-form>
   </div>
   <div class="table">
-    <el-table :data="paginatedStuList" style="width: 100%" border>
+    <el-table :data="paginationStore.paginatedStuList" style="width: 100%" border>
       <el-table-column
           v-for="item in tableLabel"
           :key="item.prop"
@@ -349,13 +351,14 @@ const handleSubmit = async () => {
   </div>
   <!-- 分页 -->
   <el-pagination
-      :page-size="config.pageSize"
+      :page-size="paginationStore.pageSize"
       background
       default
       layout="prev, pager, next"
-      :total="config.dataCount"
+      :total="paginationStore.dataCount"
       @current-change="changePage"
   />
+
 </template>
 
 

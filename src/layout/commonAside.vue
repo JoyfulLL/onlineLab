@@ -1,54 +1,98 @@
 <script setup>
-import {ref} from 'vue'
+import {onMounted, ref} from 'vue'
 import {useSidebarStore} from '@/stores/index'
-import {useRouter} from "vue-router";
+import {useRouter,useRoute} from "vue-router";
+import {useAuthStore} from "@/stores/tokenStore";
+
+
+const useScope = useAuthStore();
+// 读取当前用户的scope角色并存储
+const userScope = useScope.getScope() //获取到的scope
+//空菜单数组，用于存放需要遍历的菜单信息
+const menuItems = ref([]);
+
+onMounted(() => {
+  menuItems.value = setMenuItems(userScope, adminMenuTree.value, commonMenuTree.value);
+});
 
 const useToCollapse = useSidebarStore()
 
-const menuItems = ref([
+const router =useRouter();
+
+//一般用户菜单树——学生，老师
+//无用户管理菜单
+const commonMenuTree = ref([
   {
     index: '1',
     icon: 'PieChart',
     title: '总览',
-    name:'Home'
-  },
-  {
-    index: '2',
-    icon: 'user',
-    title: '用户管理',
-    subMenu: [
-      {subIndex: '2-2', subIcon: 'teacher', title: '教师管理',name:'teacherManagement'},
-      {subIndex: '2-3', subIcon: 'admin', title: '管理员',name:'adminSelf'}
-    ]
+    name:'Home',
+    scope: ['admin', 'teacher', 'student'], // 适用于所有权限
   },
   {
     index: '3',
     icon: 'DataBoard',
     title: '班级管理',
     subMenu: [
-      {subIndex: '3-1', subIcon: 'Notebook', title: '作业',name:'homework'},
-      {subIndex: '3-2', subIcon: 'Tools', title: '实验任务',name:'experimentTaskManagement'},
-      {subIndex: '3-3', subIcon: 'UploadFilled', title: '资料共享',name:'fileShare'},
-      {subIndex: '3-4', subIcon: 'UserFilled', title: '学生管理',name:'studentManagement'},
-      {subIndex: '3-5', subIcon: 'EditPen', title: '算法练习题',name:'algorithmExercises'},
-    ]
+      {subIndex: '3-1', subIcon: 'Notebook', title: '作业',name:'homework',subScope: ['admin', 'teacher', 'student']},
+      {subIndex: '3-2', subIcon: 'Tools', title: '实验任务',name:'experimentTaskManagement',subScope: ['admin', 'teacher', 'student']},
+      {subIndex: '3-3', subIcon: 'UploadFilled', title: '资料共享',name:'fileShare',subScope: ['admin', 'teacher', 'student']},
+      {subIndex: '3-4', subIcon: 'UserFilled', title: '学生管理',name:'studentManagement',subScope: ['admin', 'teacher']},
+      {subIndex: '3-5', subIcon: 'EditPen', title: '算法练习题',name:'algorithmExercises',subScope: ['admin', 'teacher', 'student']},
+    ],
+    scope: ['admin', 'teacher', 'student']
   },
 ]);
 
+//管理员独有菜单树
+//拥有所有菜单选项
+const adminMenuTree = ref([
+  {
+    index: '1',
+    icon: 'PieChart',
+    title: '总览',
+    name:'Home',
+    scope: ['admin', 'teacher', 'student'], // 适用于所有权限
+  },
+  {
+    index: '2',
+    icon: 'user',
+    title: '用户管理',
+    subMenu: [
+      {subIndex: '2-2', subIcon: 'teacher', title: '教师管理',name:'teacherManagement',subScope: 'admin'},
+      {subIndex: '2-3', subIcon: 'admin', title: '管理员',name:'adminSelf', subScope: 'admin'}
+    ],
+    scope: ['admin'],
+  },
+  {
+    index: '3',
+    icon: 'DataBoard',
+    title: '班级管理',
+    subMenu: [
+      {subIndex: '3-1', subIcon: 'Notebook', title: '作业',name:'homework',subScope: ['admin', 'teacher', 'student']},
+      {subIndex: '3-2', subIcon: 'Tools', title: '实验任务',name:'experimentTaskManagement',subScope: ['admin', 'teacher', 'student']},
+      {subIndex: '3-3', subIcon: 'UploadFilled', title: '资料共享',name:'fileShare',subScope: ['admin', 'teacher', 'student']},
+      {subIndex: '3-4', subIcon: 'UserFilled', title: '学生管理',name:'studentManagement',subScope: ['admin', 'teacher']},
+      {subIndex: '3-5', subIcon: 'EditPen', title: '算法练习题',name:'algorithmExercises',subScope: ['admin', 'teacher', 'student']},
+    ],
+    scope: ['admin', 'teacher', 'student']
+  },
+]);
 
-const router =useRouter();
+//依据用户角色返回对应菜单，二级菜单在下面判断
+function setMenuItems(userScope, adminMenuTree, commonMenuTree) {
+  if (userScope === 'admin') {
+    return adminMenuTree;
+  } else {
+    return commonMenuTree;
+  }
+}
+
 const clickMenu = (item)=>{
-  // console.log("点击了菜单")
   router.push({
     name:item.name,
   })
 }
-
-let handleCollapse = () => {
-  useToCollapse.toggleCollapse()
-}
-
-
 </script>
 
 <template>
@@ -61,22 +105,38 @@ let handleCollapse = () => {
         active-text-color="#ffd04b"
         :collapse-transition="false"
     >
-      <template v-for="(item, index) in menuItems">
-        <el-menu-item :index="item.index" v-if="!item.subMenu" :key="item.index" @click="clickMenu(item)">
+      <template v-for="(item) in menuItems">
+<!--        如果不存在二级菜单，则运行下面的代码-->
+<!--        当subMenu不存在时，下方的v-if为真，运行-->
+        <el-menu-item :index="item.index"  v-if="!item.subMenu  && item.scope.includes(userScope)" :key="item.index" @click="clickMenu(item)">
           <component class="icons" :is="item.icon"></component>
-          <template #title>{{ item.title }}</template>
+          <template #title >{{ item.title }}</template>
         </el-menu-item>
-        <el-sub-menu :index="item.index" v-else :key="item.index" >
-          <template #title>
-            <!--            第一级菜单-->
+<!--        如果为假，即存在二级菜单-->
+        <el-sub-menu :index="item.index" v-else>
+          <template #title >
+            <!--            二级菜单的 图标与标题-->
             <component class="icons" :is="item.icon"></component>
             <span>{{ item.title }}</span>
           </template>
-          <el-menu-item v-for="(subItem, subIndex) in item.subMenu" :index="subItem.subIndex" :key="subItem.subIndex" @click="clickMenu(subItem)">
-            <!--            二级菜单列表-->
-            <component class="icons" :is="subItem.subIcon"></component>
-            <template #title>{{ subItem.title }}</template>
+          <!--
+          下面为二级菜单展开的列表
+          依据官网的解释，v-if 比 v-for 的优先级更高。
+          这意味着 v-if 的条件将无法访问到 v-for 作用域内定义的变量别名
+          官网给出的解决方法为：在外新包装一层 <template> 再在其上使用 v-for 可以解决这个问题
+          如果不使用下面的方法，浏览器将会报出错误，无法找到subScope这个变量
+          @下面给出我一开始的错误代码
+          <el-menu-item v-if="subItem.subScope && subItem.subScope.includes(userScope)"
+                        v-for="subItem in item.subMenu"
           </el-menu-item>
+          -->
+          <template v-for="subItem in item.subMenu">
+            <el-menu-item v-if="subItem.subScope && subItem.subScope.includes(userScope)" :index="subItem.subIndex" :key="subItem.subIndex" @click="clickMenu(subItem)">
+              <!-- 二级菜单列表 -->
+              <component class="icons" :is="subItem.subIcon"></component>
+              <template #title>{{ subItem.title }}</template>
+            </el-menu-item>
+          </template>
         </el-sub-menu>
       </template>
     </el-menu>

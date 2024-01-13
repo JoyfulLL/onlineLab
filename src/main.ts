@@ -1,8 +1,9 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import App from "./App.vue";
 import axios from "axios";
 import VueAxios from "vue-axios";
-import App from "./App.vue";
 import router from "./router";
 import './assets/less/index.less'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
@@ -10,14 +11,17 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 // import api from './services/axios'
 //创建实例
 const app = createApp(App);
-
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 for (const [key,component] of Object.entries(ElementPlusIconsVue)){
     app.component(key,component)
 }
 //element-plus
 // app.config.globalProperties.$api= api
 app
+  .use(pinia)
   .use(VueAxios, axios)
   .use(router)
-  .use(createPinia())
   .mount("#app");
+
+
