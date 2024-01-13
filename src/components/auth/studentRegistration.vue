@@ -123,23 +123,62 @@ export default {
               });
               //注册成功，跳转至登录界面
               this.$router.push("/");
-            } else {
-              ElMessage ({
-                title: "Warning",
-                message: "错误",
-                type: "warning",
-                duration: 3000,
-              });
             }
           })
-          .catch((err) => {
-            ElMessage ({
-              title: "Error",
-              message: "请求失败",
-              type: "error",
-              duration: 3000,
+          .catch(e => {
+            let errorMessage = '登录失败';
+            switch (e.response.data.status) {
+              case 1:
+                errorMessage = '内部错误';
+                break;
+              case 2:
+                errorMessage = '登录令牌错误';
+                break;
+              case 3:
+                errorMessage = '参数错误';
+                break;
+              case 4:
+                errorMessage = '用户已存在';
+                break;
+              case 5:
+                errorMessage = '用户不存在';
+                break;
+              case 6:
+                errorMessage = '密码错误';
+                break;
+              case 7:
+                errorMessage = '无权限访问';
+                break;
+              case 8:
+                errorMessage = '班级错误';
+                break;
+              case 9:
+                errorMessage = '性别错误';
+                break;
+              case 10:
+                errorMessage = '用户名已存在';
+                break;
+              case 11:
+                errorMessage = '邮箱格式错误';
+                break;
+              case 12:
+                errorMessage = '真实姓名错误';
+                break;
+              case 13:
+                errorMessage = '学校信息错误';
+                break;
+              case 14:
+                errorMessage = '密码强度不够';
+                break;
+              default:
+                errorMessage = '未知错误';
+            }
+            ElMessage({
+              message: errorMessage,
+              type: 'error',
+              duration: 3000
             });
-          });
+          })
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

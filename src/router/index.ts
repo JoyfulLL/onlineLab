@@ -11,8 +11,8 @@ const router = createRouter({
       component: LoginPage,
     },
     {
-      path: "/Zhuce",
-      name: "Zhuce",
+      path: "/signup",
+      name: "Signup",
       component: () => import("../views/zhuce.vue"),
     },
     {
@@ -27,7 +27,7 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
-  if (to.name !== "Login" && !token) next({ name: "Login" });
+  if (to.name !== "Login" && !token && to.name !== "Signup") next({ name: "Login" });
   else next();
 });
 

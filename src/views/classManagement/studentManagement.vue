@@ -215,6 +215,10 @@ const handleSubmit = async () => {
             //状态码为0，提交成功，关闭当前对话框
             dialogVisible.value = false;
             reload()
+            ElMessage({
+              message: '用户添加完毕',
+              type: 'success',
+            })
           } else {
             ElMessage({
               title: "Warning",
@@ -250,7 +254,7 @@ const handleSubmit = async () => {
         dialogVisible.value = false;
         reload()
         ElMessage({
-          message: '注册',
+          message: '编辑成功',
           type: 'success',
         })
       } else {
