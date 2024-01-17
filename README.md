@@ -15,42 +15,45 @@
 yarn
 ```
 
-### Compile and Hot-Reload for Development
+### 运行项目
 
 ```sh
 yarn dev
 ```
 
-### Type-Check, Compile and Minify for Production
-
-```sh
-yarn build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-yarn test:unit
-```
 
       目录结构如下
 ├── README.md
+
 ├── package.json
+
 ├── index.html
+
 ├── src
+
 │   ├── api  # 请求接口
+
 │   ├── assets  # 静态资源
-│          └── reset.less 样式重置
+
+
 │   ├── components  # 通用业务组件
+
 │   ├── config  # 全局配置(包含echarts主题)
-│          └── settings.json  # 配置文件
+
 │   ├── layout  # 布局
+
 │   ├── views  # 页面模板
+
 │   ├── router # 路由配置
+
 │   ├── store  # 状态管理中心
+
 │   └── services  # 工具库
+
 │   └── App.vue  # 视图入口
+
 │   └── main.ts  # 入口文件
+
 └── tsconfig.json
 
 使用 TypeScript 语法，支持JavaScript语法
