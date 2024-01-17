@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router";
-import LoginPage from '@/views/LoginPage.vue';
-import {checkToken} from "@/api/manager";
-import classRoutes  from './classManagement';
+import LoginPage from "@/views/LoginPage.vue";
+import classRoutes from "./classManagement";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -16,19 +15,40 @@ const router = createRouter({
       component: () => import("../views/zhuce.vue"),
     },
     {
-      path:'/',
-      component:()=>import("../layout/basicLayout.vue"),
-      meta: { requireAuth: true},
-      redirect:'/Home',
-      children: [...classRoutes]
+      path: "/test",
+      name: "test",
+      component: () => import("../views/testPass.vue"),
+    },
+    {
+      path: "/",
+      component: () => import("../layout/basicLayout.vue"),
+      meta: { requireAuth: true },
+      redirect: "/Home",
+      children: [...classRoutes],
+    },
+    {
+      path: "/stuForgetPassword",
+      name: "StuForgetPassword",
+      component: () => import("@/components/auth/forgetPassword.vue"),
     },
   ],
 });
 
+//
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
-  if (to.name !== "Login" && !token && to.name !== "Signup") next({ name: "Login" });
-  else next();
+  if (
+    !token &&
+    to.name !== "Login" &&
+    to.name !== "Signup" &&
+    to.name !== "StuForgetPassword"
+  ) {
+    // 重定向到登录页面
+    next({ name: "Login" });
+  } else {
+    // 已登录状态或访问登录/注册页面，允许访问
+    next();
+  }
 });
 
 export default router;

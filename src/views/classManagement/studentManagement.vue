@@ -85,11 +85,67 @@ const userForm = reactive({
   sex: "",
 });
 
+// 注册表单规则
+const rules = {
+  name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  password: [
+    { required: true, message: "请输入密码" },
+    {
+      validator: (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error("请输入密码"));
+        }
+        if (value.length < 8) {
+          return callback(new Error("密码长度必须大于8位"));
+        }
+        if (!/[0-9]/.test(value)) {
+          return callback(new Error("密码必须包含1个数字"));
+        }
+        if (!/[a-z]/.test(value)) {
+          return callback(new Error("密码必须包含1个小写字母"));
+        }
+        if (!/[A-Z]/.test(value)) {
+          return callback(new Error("密码必须包含1个大写字母"));
+        }
+        callback();
+      },
+      trigger: "blur",
+    },
+  ],
+  email: [
+    { required: true, message: "请输入邮箱", trigger: "blur" },
+    {
+      type: "email",
+      message: "请输入正确的邮箱地址",
+      trigger: ["blur", "change"],
+    },
+  ],
+  realName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
+  userSchoollD: [
+    {
+      required: true,
+      validator: (rule, value, callback) => {
+        if (!value) {
+          return callback(new Error("请输入学生学号"));
+        }
+        var pattern = /^[0-9]+$/;
+        if (!pattern.test(value)) {
+          return callback(new Error("学生学号必须全为数字"));
+        }
+        callback();
+      },
+      trigger: "blur",
+    },
+  ],
+  schoolCode: [{ required: true, message: "请输入学校代码", trigger: "blur" }],
+  class: [{ required: true, message: "请输入学生班级", trigger: "blur" }],
+  sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+};
+
 // 用于侦听数据的变化，使用newUserForm存放变化后的数据
 const newUserForm = reactive([]);
 watchEffect(() => {
   newUserForm.value = { ...userForm };
-  console.log(newUserForm);
   // console.log('真名',newUserForm.value.realName)
 });
 
@@ -105,27 +161,6 @@ const fetchData = async () => {
 const changePage = (pageNum) => {
   paginationStore.changePage(pageNum);
 };
-
-// @以下代码已弃用，已经用pinia存储了数据并且展示
-// ！！！
-// @用于存放获取的数据并展示
-// const showStuInfo1 = async () => {
-//   // @调用获取所有学生信息的API接口
-//   let res = await getStuInfo();
-//   stuList.value = res.data.data;
-//   config.dataCount = stuList.value.length; //读取学生总数
-// };
-
-// const changePage = (pageNum) => {
-//   // 读取到当前的页号
-//   config.pageNum = pageNum;
-// };
-// 计算属性，用于返回当前页应该显示的数据
-// const paginatedStuList = computed(() => {
-//   const startIndex = (config.pageNum - 1) * config.pageSize;
-//   const endIndex = startIndex + config.pageSize;
-//   return stuList.value.slice(startIndex, endIndex);
-// });
 
 // @以下代码用于 学生管理
 // @添加学生按钮——仅用于展示会话框
@@ -345,7 +380,12 @@ const handleSubmit = async () => {
     >
       <!--      学生注册组件表单-->
       <div class="form-container">
-        <el-form :model="userForm" class="centered-form" label-width="80px">
+        <el-form
+          :model="userForm"
+          class="centered-form"
+          label-width="80px"
+          :rules="rules"
+        >
           <el-form-item label="用户名" prop="name">
             <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
           </el-form-item>

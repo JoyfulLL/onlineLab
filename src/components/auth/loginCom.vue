@@ -1,16 +1,12 @@
 <script>
-
 /**
  * @页面预存了管理员账号与密码
  * @之后必须删除！！！
  */
 
 import { login } from "@/api/manager.js";
-import { ElMessage  } from "element-plus";
-import {useAuthStore} from "@/stores/tokenStore"
-
-
-
+import { ElMessage } from "element-plus";
+import { useAuthStore } from "@/stores/tokenStore";
 
 export default {
   name: "LoginPage",
@@ -31,75 +27,75 @@ export default {
           // checkToken();
           if (res.data.status === 0) {
             ElMessage({
-              message: '登录成功',
-              type: 'success',
-              duration: 3000
+              message: "登录成功",
+              type: "success",
+              duration: 3000,
             });
-            const authStore = useAuthStore()
-            authStore.setData(res.data.data)
+            const authStore = useAuthStore();
+            authStore.setData(res.data.data);
             this.$router.push("/Home");
           }
-        }).catch(e => {
-        let errorMessage = '登录失败';
-        switch (e.response.data.status) {
-          case 1:
-            errorMessage = '内部错误';
-            break;
-          case 2:
-            errorMessage = '登录令牌错误';
-            break;
-          case 3:
-            errorMessage = '参数错误';
-            break;
-          case 4:
-            errorMessage = '用户已存在';
-            break;
-          case 5:
-            errorMessage = '用户不存在';
-            break;
-          case 6:
-            errorMessage = '密码错误';
-            break;
-          case 7:
-            errorMessage = '无权限访问';
-            break;
-          case 8:
-            errorMessage = '班级错误';
-            break;
-          case 9:
-            errorMessage = '性别错误';
-            break;
-          case 10:
-            errorMessage = '用户名已存在';
-            break;
-          case 11:
-            errorMessage = '邮箱格式错误';
-            break;
-          case 12:
-            errorMessage = '真实姓名错误';
-            break;
-          case 13:
-            errorMessage = '学校信息错误';
-            break;
-          case 14:
-            errorMessage = '密码强度不够';
-            break;
-          default:
-            errorMessage = '未知错误';
-        }
-        ElMessage({
-          message: errorMessage,
-          type: 'error',
-          duration: 3000
+        })
+        .catch((e) => {
+          let errorMessage = "登录失败";
+          switch (e.response.data.status) {
+            case 1:
+              errorMessage = "内部错误";
+              break;
+            case 2:
+              errorMessage = "登录令牌错误";
+              break;
+            case 3:
+              errorMessage = "参数错误";
+              break;
+            case 4:
+              errorMessage = "用户已存在";
+              break;
+            case 5:
+              errorMessage = "用户不存在";
+              break;
+            case 6:
+              errorMessage = "密码错误";
+              break;
+            case 7:
+              errorMessage = "无权限访问";
+              break;
+            case 8:
+              errorMessage = "班级错误";
+              break;
+            case 9:
+              errorMessage = "性别错误";
+              break;
+            case 10:
+              errorMessage = "用户名已存在";
+              break;
+            case 11:
+              errorMessage = "邮箱格式错误";
+              break;
+            case 12:
+              errorMessage = "真实姓名错误";
+              break;
+            case 13:
+              errorMessage = "学校信息错误";
+              break;
+            case 14:
+              errorMessage = "密码强度不够";
+              break;
+            default:
+              errorMessage = "未知错误";
+          }
+          ElMessage({
+            message: errorMessage,
+            type: "error",
+            duration: 3000,
+          });
         });
-      })
     },
 
     toReg() {
       //跳转去注册
       this.$router.push("/Zhuce");
     },
-
   },
 
   computed: {
@@ -134,7 +130,7 @@ export default {
                 </div>
                 <div class="right">
                   <el-link type="info" href="#" style="font-size: 11px"
-                  >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
+                    >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
                   /></el-link>
                 </div>
               </div>
@@ -142,30 +138,32 @@ export default {
               <el-divider />
 
               <el-input
-                  placeholder="用户名"
-                  v-model="loginForm.username"
-                  style="margin-bottom: 20px"
-                  prop="username"
+                placeholder="用户名"
+                v-model="loginForm.username"
+                style="margin-bottom: 20px"
+                prop="username"
               ></el-input>
               <el-input
-                  type="password"
-                  placeholder="密码"
-                  v-model="loginForm.password"
-                  show-password
-                  style="margin-bottom: 10px"
-                  prop="password"
+                type="password"
+                placeholder="密码"
+                v-model="loginForm.password"
+                show-password
+                style="margin-bottom: 10px"
+                prop="password"
               >
               </el-input>
               <div class="remember-row">
                 <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
-                <a href="#" class="forgot-password">忘记密码</a>
+                <router-link to="/stuForgetPassword" class="forgot-password"
+                  >忘记密码</router-link
+                >
               </div>
               <el-button
-                  type="primary"
-                  @click="onSubmit"
-                  class="login-button"
-                  :disabled="!canSubmit"
-              >登录</el-button
+                type="primary"
+                @click="onSubmit"
+                class="login-button"
+                :disabled="!canSubmit"
+                >登录</el-button
               >
             </el-form>
           </div>
