@@ -1,6 +1,9 @@
-#需要安装nodejs ，版本为版本20.10.0
-#需要安装yarn
-安装方法自行百度
+## 需要安装nodejs ，版本为版本20.10.0
+
+
+## 还需要安装yarn安装方法自行百度
+
+
 另外推荐安装cnpm
 
 
@@ -31,10 +34,26 @@ yarn test:unit
 ```
 
       目录结构如下
+├── README.md
+├── package.json
+├── index.html
+├── src
+│   ├── api  # 请求接口
+│   ├── assets  # 静态资源
+│          └── reset.less 样式重置
+│   ├── components  # 通用业务组件
+│   ├── config  # 全局配置(包含echarts主题)
+│          └── settings.json  # 配置文件
+│   ├── layout  # 布局
+│   ├── views  # 页面模板
+│   ├── router # 路由配置
+│   ├── store  # 状态管理中心
+│   └── services  # 工具库
+│   └── App.vue  # 视图入口
+│   └── main.ts  # 入口文件
+└── tsconfig.json
 
-![image](https://github.com/GDEIDevelopers/k8s-ex/assets/49276046/4983e0e7-4a0d-49f8-a7e2-8b5f40880599)
-
-使用 TypeScript 语法
+使用 TypeScript 语法，支持JavaScript语法
 
 启用 JSX 支持
 
@@ -42,7 +61,9 @@ yarn test:unit
 
 引入 Pinia 用于状态管理
 
-引入 Vitest 用于单元测试
+使用 element-plus UI
+
+使用 axios
 
 node 版本为 v20.9.0
 npm 版本为 v10.1.0
