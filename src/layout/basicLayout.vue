@@ -1,11 +1,11 @@
 <template>
   <div class="common-layout">
     <el-container class="lay-container">
-      <common-aside/>
+      <common-aside />
       <el-container>
-        <common-header/>
+        <common-header />
         <el-main class="right-main">
-          <router-view/>
+          <router-view />
         </el-main>
       </el-container>
     </el-container>
@@ -16,12 +16,10 @@
 import CommonHeader from "@/layout/commonHeader.vue";
 import CommonAside from "@/layout/commonAside.vue";
 import ContentContainer from "@/layout/contentContainer.vue";
-
-
 </script>
 
 <style scoped lang="less">
-.r-container{
+.r-container {
   flex-wrap: wrap;
 }
 
@@ -42,9 +40,8 @@ import ContentContainer from "@/layout/contentContainer.vue";
     height: 100%;
     & > .el-aside {
       height: 100%;
-      background: #545c64;
+      background-color: #ffffff;
     }
   }
 }
-
 </style>

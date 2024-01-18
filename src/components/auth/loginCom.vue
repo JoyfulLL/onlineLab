@@ -88,6 +88,7 @@ export default {
             message: errorMessage,
             type: "error",
             duration: 3000,
+            offset: 245,
           });
         });
     },
