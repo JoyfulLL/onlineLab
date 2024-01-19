@@ -1,20 +1,18 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useSidebarStore } from "@/stores/index";
 import { useRouter, useRoute } from "vue-router";
 import { useAuthStore } from "@/stores/tokenStore";
 import { useMenuStore } from "@/stores/menu";
-import { ElCollapseTransition } from "element-plus";
 
 const useScope = useAuthStore();
 // 读取当前用户的scope角色并存储
 const userScope = useScope.getScope(); //获取到的scope
-//空菜单数组，用于存放需要遍历的菜单信息
-const menuItems = ref([]);
 
 onMounted(() => {});
-
+// 侧边栏折叠
 const useToCollapse = useSidebarStore();
+// 菜单
 const menuStore = useMenuStore();
 
 const router = useRouter();
@@ -90,14 +88,14 @@ const adminMenuTree = ref([
     title: "用户管理",
     subMenu: [
       {
-        subIndex: "2-2",
+        subIndex: "2-1",
         subIcon: "teacher",
         title: "教师管理",
         name: "teacherManagement",
         subScope: "admin",
       },
       {
-        subIndex: "2-3",
+        subIndex: "2-2",
         subIcon: "admin",
         title: "管理员",
         name: "adminSelf",
@@ -109,7 +107,7 @@ const adminMenuTree = ref([
   {
     index: "3",
     icon: "DataBoard",
-    title: "班级管理",
+    title: "学习空间",
     subMenu: [
       {
         subIndex: "3-1",
@@ -151,20 +149,30 @@ const adminMenuTree = ref([
   },
 ]);
 
+//依据当前用户身份，获取到对应的menuTree
 menuStore.getMenuTreeByUserRole(userScope, adminMenuTree, commonMenuTree);
 
+// 用于路由跳转
 const clickMenu = (item) => {
   router.push({
     name: item.name,
   });
 };
+
+// 用于页面刷新后保持侧边菜单对应项展开
+const activePath = ref("");
+activePath.value = router.currentRoute._value.meta.index;
 </script>
 
 <template>
   <el-aside :width="useToCollapse.isCollapse ? '65px' : '180px'">
     <div class="menu-item" :class="{ collapsed: useToCollapse.isCollapse }">
       <div v-if="!useToCollapse.isCollapse">
-        <img style="width: 180px" src="@/assets/logo.png" alt="Expanded Logo" />
+        <img
+          style="max-width: 180px; max-height: 50px"
+          src="@/assets/logo.png"
+          alt="Expanded Logo"
+        />
       </div>
       <div v-else>
         <img
@@ -178,6 +186,7 @@ const clickMenu = (item) => {
       class="el-menu-vertical-demo"
       :collapse="useToCollapse.isCollapse"
       :collapse-transition="false"
+      :default-active="activePath"
     >
       <template v-for="item in menuStore.menuTree">
         <!--        如果不存在二级菜单，则运行下面的代码-->
@@ -231,6 +240,7 @@ const clickMenu = (item) => {
 .icons {
   width: 16px;
   height: 16px;
+  margin-right: 5px;
 }
 
 .centered {
@@ -239,21 +249,11 @@ const clickMenu = (item) => {
 
 .el-menu {
   border-right: none;
-
-  h3 {
-    line-height: 48px;
-    color: #fff;
-    text-align: center;
-  }
 }
 .menu-item {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  img {
-    background-color: #467724;
-  }
 
   &.collapsed img {
     background-color: transparent;
@@ -262,5 +262,20 @@ const clickMenu = (item) => {
   &.no-padding {
     padding: 0;
   }
+}
+
+.el-sub-menu.is-active {
+  color: #409eff !important;
+  border-radius: 5px;
+  span {
+    color: #409eff !important;
+  }
+}
+
+.el-menu-item.is-active {
+  background-color: #d9ecff !important; /* 使用淡蓝色 */
+  color: #409eff; /* 字体颜色蓝色 */
+
+  border-radius: 8px; /* 添加圆角 */
 }
 </style>

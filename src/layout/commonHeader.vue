@@ -32,10 +32,12 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
-              <el-icon class="icon">
-                <Setting />
-              </el-icon>
-              <span>个人中心</span>
+              <router-link to="/Home/userInfo">
+                <el-icon class="icon">
+                  <Setting />
+                </el-icon>
+                <span>个人中心</span>
+              </router-link>
             </el-dropdown-item>
             <el-dropdown-item @click="handleLoginOut">
               <el-icon class="icon" style="color: red">
@@ -75,7 +77,8 @@ const handleLoginOut = () => {
   authStore.deleteToken();
   router.push("/login");
 };
-console.log(router.currentRoute.value.matched);
+// console.log(router.currentRoute.value.matched);
+// 用于面包屑
 const routers = computed(() => {
   // 过滤掉没有meta的
   return router.currentRoute.value.matched.filter((item) => item.meta.title);
@@ -88,7 +91,7 @@ header {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background: #d4d7de;
+  background: #fdf6ec;
 }
 
 .r-content {

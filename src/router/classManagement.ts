@@ -10,63 +10,15 @@
  */
 
 const classRoutes = [
-  {
-    index: 1,
-    icon: "PieChart",
-    title: "总览",
-    path: "/Home",
-    name: "Home",
-    component: () => import("../views/Home/Home.vue"),
-    meta: {
-      requireAuth: true,
-      visiable: true,
-      role: ["admin", "teacher", "student"],
-    },
-  },
-  // 用户管理
-  {
-    path: "/userManagement",
-    name: "userManagement",
-    meta: {
-      requireAuth: true,
-      visiable: true,
-      role: ["admin"],
-      title: "用户管理",
-    },
-    children: [
-      {
-        path: "teacherManagement",
-        name: "teacherManagement",
-        component: () =>
-          import("../views/admin/userManagement/teacherManagement.vue"),
-        meta: {
-          requireAuth: true,
-          visiable: true,
-          role: ["admin"],
-          title: "教师管理",
-        },
-      },
-      {
-        path: "adminSelf",
-        name: "adminSelf",
-        component: () => import("../views/admin/userManagement/adminSelf.vue"),
-        meta: {
-          requireAuth: true,
-          visiable: true,
-          role: ["admin"],
-          title: "管理员",
-        },
-      },
-    ],
-  },
+  //班级管理
   {
     path: "/classManagement",
     name: "classManagement",
     meta: {
       requireAuth: true,
-      visiable: true,
       role: ["admin", "teacher", "student"],
       title: "学习空间",
+      index: "3",
     },
     children: [
       {
@@ -75,9 +27,9 @@ const classRoutes = [
         component: () => import("../views/classManagement/homework.vue"),
         meta: {
           requireAuth: true,
-          visiable: true,
           role: ["admin", "teacher", "student"],
           title: "作业",
+          index: "3-1",
         },
       },
       {
@@ -90,6 +42,7 @@ const classRoutes = [
           visiable: true,
           role: ["admin", "teacher", "student"],
           title: "实验任务",
+          index: "3-2",
         },
       },
       {
@@ -98,9 +51,9 @@ const classRoutes = [
         component: () => import("../views/classManagement/fileShare.vue"),
         meta: {
           requireAuth: true,
-          visiable: true,
           role: ["admin", "teacher", "student"],
-          title: "文件共享",
+          title: "资料共享",
+          index: "3-3",
         },
       },
       {
@@ -110,9 +63,9 @@ const classRoutes = [
           import("../views/classManagement/studentManagement.vue"),
         meta: {
           requireAuth: true,
-          visiable: true,
           role: ["admin", "teacher"],
           title: "学生管理",
+          index: "3-4",
         },
       },
       {
@@ -122,9 +75,9 @@ const classRoutes = [
           import("../views/classManagement/algorithmExercises.vue"),
         meta: {
           requireAuth: true,
-          visiable: true,
           role: ["admin", "teacher", "student"],
           title: "算法练习",
+          index: "3-5",
         },
       },
     ],

@@ -1,4 +1,5 @@
-<script setup>/**
+<script setup>
+/**
  * @file  pagination
  * @author ljf13
  * @date 2024/1/9
@@ -17,9 +18,8 @@
  *  然后通过dataList.value.slice(startIndex, endIndex)来获取当前页应该显示的数据
  *  table数据表中，应该遍历paginatedDataList，而非一开始获取的dataList
  */
-import {getStuInfo} from "@/api/manager";
-import {reactive, ref} from "vue";
-
+import { getStuInfo } from "@/api";
+import { reactive, ref } from "vue";
 
 const showTable = async () => {
   // 此后端接口的方法为GET
@@ -32,7 +32,7 @@ const showTable = async () => {
 const config = reactive({
   dataCount: 0,
   pageNum: 1,
-  pageSize: 30
+  pageSize: 30,
 });
 const changePage = (pageNum) => {
   // 读取到当前的页号
@@ -50,7 +50,6 @@ const paginatedDataList = computed(() => {
 //用于数据读取与展示
 const dataList = ref([]);
 
-
 const tableLabel = reactive([
   {
     prop: "id",
@@ -61,30 +60,29 @@ const tableLabel = reactive([
     prop: "name",
     label: "用户名",
     width: "auto",
-  }]
-)
-
+  },
+]);
 </script>
 
 <template>
   <div>
     <el-table :data="paginatedDataList" style="width: 100%" border>
       <el-table-column
-          v-for="item in tableLabel"
-          :key="item.prop"
-          :label="item.label"
-          :prop="item.prop"
-          :width="item.width ? item.width : 125"
-          table-layout="fix"
+        v-for="item in tableLabel"
+        :key="item.prop"
+        :label="item.label"
+        :prop="item.prop"
+        :width="item.width ? item.width : 125"
+        table-layout="fix"
       />
     </el-table>
     <el-pagination
-        :page-size="config.pageSize"
-        background
-        small
-        layout="prev, pager, next"
-        :total="config.dataCount"
-        @current-change="changePage"
+      :page-size="config.pageSize"
+      background
+      small
+      layout="prev, pager, next"
+      :total="config.dataCount"
+      @current-change="changePage"
     />
   </div>
 </template>
@@ -103,13 +101,13 @@ const tableLabel = reactive([
     margin-right: 10px;
 
     &:hover {
-      color: #27BA9B;
+      color: #27ba9b;
     }
 
     &.active {
-      background: #27BA9B;
+      background: #27ba9b;
       color: #fff;
-      border-color: #27BA9B;
+      border-color: #27ba9b;
     }
 
     &.disabled {

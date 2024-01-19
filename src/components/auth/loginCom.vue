@@ -4,7 +4,7 @@
  * @之后必须删除！！！
  */
 
-import { login } from "@/api/manager.js";
+import { login } from "@/api";
 import { ElMessage } from "element-plus";
 import { useAuthStore } from "@/stores/tokenStore";
 

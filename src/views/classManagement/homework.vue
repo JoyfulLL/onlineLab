@@ -1,14 +1,10 @@
 <script setup>
-import {checkToken} from "@/api/manager";
+import { checkToken } from "@/api";
 onMounted(() => {
-  checkToken()
-})
+  checkToken();
+});
 </script>
 
-<template>
-作业
-</template>
+<template>作业</template>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

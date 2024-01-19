@@ -5,6 +5,7 @@ export const useMenuStore = defineStore({
   state: () => ({
     menuTree: [], // 初始为空，将在后续设置中更新
   }),
+
   actions: {
     setMenuTree(menuTree) {
       this.menuTree = menuTree;
@@ -18,4 +19,10 @@ export const useMenuStore = defineStore({
       }
     },
   },
+});
+
+export const useElMenuActiveStore = defineStore("elMenuActive", () => {
+  const elMenuActive = ref("");
+
+  return { elMenuActive };
 });

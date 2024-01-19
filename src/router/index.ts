@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
 import LoginPage from "@/views/LoginPage.vue";
 import classRoutes from "./classManagement";
+import userManagementRouters from "@/router/userManagement";
+import homeRouter from "@/router/home";
+import { useElMenuActiveStore } from "@/stores/menu.js";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,12 +28,17 @@ const router = createRouter({
       meta: { requireAuth: true },
       name: "Home",
       redirect: "/Home",
-      children: [...classRoutes],
+      children: [...classRoutes, ...homeRouter, ...userManagementRouters],
     },
     {
       path: "/stuForgetPassword",
       name: "StuForgetPassword",
       component: () => import("@/components/auth/forgetPassword.vue"),
+    },
+    {
+      path: "/teacherReg",
+      name: "teacherReg",
+      component: () => import("@/views/teacherReg.vue"),
     },
   ],
 });
@@ -38,6 +46,7 @@ const router = createRouter({
 //
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
+  useElMenuActiveStore().elMenuActive = to.path;
   if (
     !token &&
     to.name !== "Login" &&

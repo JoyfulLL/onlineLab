@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import forgetPassword from "@/components/auth/forgetPassword.vue";
-import { EditPassword } from "@/api/manager";
+import { EditPassword } from "@/api/index.js";
 
 const editStunPasswd = EditPassword("/authrequired/admin/student/password");
 </script>

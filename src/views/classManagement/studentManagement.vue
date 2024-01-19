@@ -14,10 +14,12 @@
  @ 2、依据信息获取对应的学生
  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
-import { checkToken, getStuInfo, editStuInfo, regStu } from "@/api/manager";
+import { checkToken } from "@/api";
+import { regStu } from "@/api/userManagement/registerUser";
 import { reactive, ref, onMounted, inject } from "vue";
 import { ElMessage } from "element-plus";
-import { usePaginationStore } from "@/stores/userData/storeUserData";
+import { useTableDataStore } from "@/stores/userData/storeUserData";
+import { editStuInfo } from "@/api/userManagement/editUserInfo";
 
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
@@ -29,50 +31,6 @@ onMounted(() => {
 // @用于在新增用户/编辑用户后刷新表格
 const reload = inject("reload");
 
-// 展示数据用的表头
-const tableLabel = reactive([
-  // @用户ID为用户唯一标识符，不需要在表中展示
-  // 虽然不显示，但还是能读取到用户ID
-  // {
-  //   prop: "id",
-  //   label: "ID",
-  //   width: 180,
-  // },
-  {
-    prop: "userSchoollD",
-    label: "学号",
-  },
-  {
-    prop: "realName",
-    label: "姓名",
-    width: "120",
-  },
-  {
-    prop: "class",
-    label: "班级",
-    width: "150",
-  },
-  {
-    prop: "schoolCode",
-    label: "学校",
-    width: "180",
-  },
-  {
-    prop: "name",
-    label: "用户名",
-    width: "auto",
-  },
-  {
-    prop: "email",
-    label: "邮箱",
-    width: "230",
-  },
-  {
-    prop: "sex",
-    label: "性别",
-    width: "55",
-  },
-]);
 // @注册信息的表单
 const userForm = reactive({
   name: "",
@@ -85,7 +43,7 @@ const userForm = reactive({
   sex: "",
 });
 
-// 注册表单规则
+// @注册表单输入规则
 const rules = {
   name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [
@@ -149,17 +107,13 @@ watchEffect(() => {
   // console.log('真名',newUserForm.value.realName)
 });
 
-const paginationStore = usePaginationStore();
+const studentDataTable = useTableDataStore();
 
 // 数据获取
-const fetchData = async () => {
-  await paginationStore.showStuInfo();
+const fetchData = () => {
+  studentDataTable.showStuInfo();
   // 数据获取完成后，可以执行其他操作或访问Store中的数据
-  // console.log(paginationStore.dataCount)
-};
-
-const changePage = (pageNum) => {
-  paginationStore.changePage(pageNum);
+  // console.log(studentDataTable.studentsDataCount)
 };
 
 // @以下代码用于 学生管理
@@ -210,7 +164,6 @@ const addStudent = async () => {
 
 //@用于”编辑按钮“，函数实际用途为查看用户信息
 //@将用户信息显示在表单中
-
 const editStudent = (row) => {
   action.value = "edit";
   dialogVisible.value = true;
@@ -221,6 +174,27 @@ const editStudent = (row) => {
   showPassword.value = false;
   IsDisabled.value = true;
 };
+
+// @以下代码用于分页
+// 页面显示数据量 默认为10条
+const pageSize = ref(10);
+// 当前页面，默认为1
+const currentPage = ref(1);
+// 用于数据划分，表格遍历划分后的数据
+const currentPageData = computed(() => {
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return studentDataTable.stuList.slice(startIndex, endIndex);
+});
+// 用于更换页面
+function changePage(page) {
+  currentPage.value = page;
+}
+// 用于更换页大小
+function handleSizeChange(val) {
+  pageSize.value = val; // 更新每页显示个数
+  currentPage.value = 1; // 切换每页显示个数时，回到第一页
+}
 
 // @此函数用于提交表单
 // @判断动作的值，为add则调用新增用户接口
@@ -364,8 +338,6 @@ const handleSubmit = async () => {
       });
   }
 };
-
-//用于数据读取与展示
 </script>
 
 <template>
@@ -453,18 +425,18 @@ const handleSubmit = async () => {
   </div>
   <div class="table">
     <el-table
-      :data="paginationStore.paginatedStuList"
+      :data="currentPageData"
       style="width: 100%"
       border
+      max-height="600"
     >
-      <el-table-column
-        v-for="item in tableLabel"
-        :key="item.prop"
-        :label="item.label"
-        :prop="item.prop"
-        :width="item.width ? item.width : 125"
-        table-layout="fix"
-      />
+      <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
+      <el-table-column prop="realName" label="姓名" width="120" />
+      <el-table-column prop="class" label="班级" width="150" />
+      <el-table-column prop="schoolCode" label="学校" width="180" />
+      <el-table-column prop="name" label="用户名" width="auto" />
+      <el-table-column prop="email" label="邮箱" width="auto" />
+      <el-table-column prop="sex" label="性别" width="55" />
       <el-table-column fixed="right" label="操作" min-width="100">
         <template #default="scope">
           <el-button size="default" @click="editStudent(scope.row)"
@@ -477,12 +449,14 @@ const handleSubmit = async () => {
   </div>
   <!-- 分页 -->
   <el-pagination
-    :page-size="paginationStore.pageSize"
+    :page-size="pageSize"
+    :page-sizes="[10, 20, 30]"
     background
     default
-    layout="prev, pager, next"
-    :total="paginationStore.dataCount"
+    layout="total,prev, pager, next, sizes"
+    :total="studentDataTable.studentsDataCount"
     @current-change="changePage"
+    @size-change="handleSizeChange"
   />
 </template>
 

@@ -1,6 +1,5 @@
 import axios from "axios";
-import {checkToken} from "@/api/manager";
-
+import { checkToken } from "@/api";
 
 const service = axios.create({
   baseURL: "http://8.219.238.232/api/",
@@ -19,7 +18,7 @@ service.interceptors.request.use(
   (error) => {
     // 对请求错误做些什么
     return Promise.reject(error);
-  }
+  },
 );
 
 // 响应拦截器
