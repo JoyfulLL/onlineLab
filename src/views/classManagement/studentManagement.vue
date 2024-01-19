@@ -19,7 +19,11 @@ import { regStu } from "@/api/userManagement/registerUser";
 import { reactive, ref, onMounted, inject } from "vue";
 import { ElMessage } from "element-plus";
 import { useTableDataStore } from "@/stores/userData/storeUserData";
-import { editStuInfo } from "@/api/userManagement/editUserInfo";
+import {
+  editStuInfo,
+  editTeacherInfo,
+} from "@/api/userManagement/editUserInfo";
+import service from "@/utils/axios";
 
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
@@ -33,6 +37,7 @@ const reload = inject("reload");
 
 // @注册信息的表单
 const userForm = reactive({
+  id: "",
   name: "",
   password: "",
   email: "",
@@ -104,7 +109,9 @@ const rules = {
 const newUserForm = reactive([]);
 watchEffect(() => {
   newUserForm.value = { ...userForm };
-  // console.log('真名',newUserForm.value.realName)
+  //console.log("邮箱", newUserForm.value.email);
+  // 通过ID精准修改
+  // console.log(newUserForm.value.id);
 });
 
 const studentDataTable = useTableDataStore();
@@ -180,12 +187,6 @@ const editStudent = (row) => {
 const pageSize = ref(10);
 // 当前页面，默认为1
 const currentPage = ref(1);
-// 用于数据划分，表格遍历划分后的数据
-const currentPageData = computed(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  return studentDataTable.stuList.slice(startIndex, endIndex);
-});
 // 用于更换页面
 function changePage(page) {
   currentPage.value = page;
@@ -195,6 +196,31 @@ function handleSizeChange(val) {
   pageSize.value = val; // 更新每页显示个数
   currentPage.value = 1; // 切换每页显示个数时，回到第一页
 }
+
+// 用于搜索功能
+const queryInfo = ref("");
+
+const toSearch = () => {};
+
+// 表单遍历的数据为划分后且能够检索的数据
+const filteredData = computed(() => {
+  const query = queryInfo.value.toLowerCase().trim();
+  let filtered = studentDataTable.stuList;
+
+  if (query) {
+    filtered = filtered.filter((item) => {
+      return (
+        item.name.toLowerCase().includes(query) ||
+        item.realName.toLowerCase().includes(query) ||
+        item.class.toLowerCase().includes(query)
+      );
+    });
+  }
+  //将分页逻辑整合到 filteredData 计算属性中，以确保分页功能和搜索功能可以同时生效
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return filtered.slice(startIndex, endIndex);
+});
 
 // @此函数用于提交表单
 // @判断动作的值，为add则调用新增用户接口
@@ -237,20 +263,11 @@ const handleSubmit = async () => {
           case 5:
             errorMessage = "用户不存在";
             break;
-          case 7:
-            errorMessage = "无权限访问";
-            break;
-          case 9:
-            errorMessage = "性别错误";
-            break;
           case 10:
             errorMessage = "用户名已存在";
             break;
           case 11:
             errorMessage = "邮箱格式错误";
-            break;
-          case 12:
-            errorMessage = "真实姓名错误";
             break;
           case 13:
             errorMessage = "学校信息错误";
@@ -290,6 +307,7 @@ const handleSubmit = async () => {
             type: "success",
           });
         }
+        //console.log(newUserForm.value.id);
       })
       .catch((e) => {
         let errorMessage = "登录失败";
@@ -303,26 +321,11 @@ const handleSubmit = async () => {
           case 5:
             errorMessage = "用户不存在";
             break;
-          case 7:
-            errorMessage = "无权限访问";
-            break;
-          case 8:
-            errorMessage = "班级错误";
-            break;
-          case 9:
-            errorMessage = "性别错误";
-            break;
           case 10:
             errorMessage = "用户名已存在";
             break;
           case 11:
             errorMessage = "邮箱格式错误";
-            break;
-          case 12:
-            errorMessage = "真实姓名错误";
-            break;
-          case 13:
-            errorMessage = "学校信息错误";
             break;
           case 14:
             errorMessage = "密码强度不够";
@@ -410,7 +413,12 @@ const handleSubmit = async () => {
     <!--    搜索框-->
     <el-form :inline="true">
       <el-form-item>
-        <el-input class="w-50 m-2" placeholder="输入姓名">
+        <el-input
+          class="w-50 m-2"
+          placeholder="输入姓名/用户名/班级"
+          v-model="queryInfo"
+          clearable
+        >
           <template #prefix>
             <el-icon class="el-input__icon">
               <search />
@@ -419,17 +427,12 @@ const handleSubmit = async () => {
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary">搜索</el-button>
+        <el-button type="primary" @click="toSearch">搜索</el-button>
       </el-form-item>
     </el-form>
   </div>
   <div class="table">
-    <el-table
-      :data="currentPageData"
-      style="width: 100%"
-      border
-      max-height="600"
-    >
+    <el-table :data="filteredData" style="width: 100%" border max-height="600">
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
       <el-table-column prop="realName" label="姓名" width="120" />
       <el-table-column prop="class" label="班级" width="150" />

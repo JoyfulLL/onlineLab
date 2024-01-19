@@ -16,8 +16,26 @@ export function EditPassword(url) {
   };
 }
 
-export function editTeacherInfo() {
-  return service.patch("/authrequired/teacher");
+export function editTeacherInfo(
+  id,
+  name,
+  email,
+  realName,
+  userSchoollD,
+  schoolCode,
+  studentClass,
+  sex,
+) {
+  return service.patch("/authrequired/admin/teacher", {
+    id: id,
+    name: name,
+    email: email,
+    realName: realName,
+    userSchoollD: userSchoollD,
+    schoolCode: schoolCode,
+    class: studentClass,
+    sex: sex,
+  });
 }
 
 // @修改指定学生信息

@@ -23,11 +23,12 @@ const teacherDataTable = useTableDataStore();
 // 数据获取
 const fetchData = () => {
   teacherDataTable.showTeachersInfo();
-  console.log(teacherDataTable.teachersList);
+  // console.log(teacherDataTable.teachersList);
 };
 
 // @注册信息的表单
 const userForm = reactive({
+  id: "",
   name: "",
   password: "",
   email: "",
@@ -153,6 +154,7 @@ const reload = inject("reload");
 const newUserForm = reactive([]);
 watchEffect(() => {
   newUserForm.value = { ...userForm };
+  console.log(newUserForm.value);
 });
 
 // @此函数用于提交表单
@@ -162,7 +164,6 @@ const handleSubmit = async () => {
   if (action.value === "add") {
     await regTeacher(
       userForm.name,
-      userForm.userSchoollD,
       userForm.email,
       userForm.realName,
       userForm.password,
@@ -194,6 +195,64 @@ const handleSubmit = async () => {
           case 10:
             errorMessage = "用户名已存在";
             break;
+          case 11:
+            errorMessage = "邮箱格式错误";
+            break;
+          case 14:
+            errorMessage = "密码强度不够";
+            break;
+          default:
+            errorMessage = "未知错误";
+        }
+        ElMessage({
+          message: errorMessage,
+          type: "error",
+          duration: 3000,
+        });
+      });
+  } else {
+    //@ 在此处调用修改学生参数的接口
+    // console.log('用户名',(newUserForm.value.name))
+    await editTeacherInfo(
+      newUserForm.value.id,
+      newUserForm.value.name,
+      // newUserForm.value.password,
+      newUserForm.value.email,
+      newUserForm.value.realName,
+      newUserForm.value.userSchoollD,
+      newUserForm.value.schoolCode,
+      newUserForm.value.class,
+      newUserForm.value.sex,
+    )
+      .then((res) => {
+        if (res.data.status == 0) {
+          dialogVisible.value = false;
+          reload();
+          ElMessage({
+            message: "编辑成功",
+            type: "success",
+          });
+        }
+        //console.log(newUserForm.value.id);
+      })
+      .catch((e) => {
+        let errorMessage = "登录失败";
+        switch (e.response.data.status) {
+          case 1:
+            errorMessage = "内部错误";
+            break;
+          case 3:
+            errorMessage = "参数错误";
+            break;
+          case 5:
+            errorMessage = "用户不存在";
+            break;
+          case 10:
+            errorMessage = "用户名已存在";
+            break;
+          case 11:
+            errorMessage = "邮箱格式错误";
+            break;
           case 14:
             errorMessage = "密码强度不够";
             break;
@@ -214,12 +273,7 @@ const handleSubmit = async () => {
 const pageSize = ref(10);
 // 当前页面，默认为1
 const currentPage = ref(1);
-// 用于数据划分，表格遍历划分后的数据
-const currentPageData = computed(() => {
-  const startIndex = (currentPage.value - 1) * pageSize.value;
-  const endIndex = startIndex + pageSize.value;
-  return teacherDataTable.teachersList.slice(startIndex, endIndex);
-});
+
 // 用于更换页面
 function changePage(page) {
   currentPage.value = page;
@@ -230,6 +284,31 @@ function handleSizeChange(val) {
   pageSize.value = val; // 更新每页显示个数
   currentPage.value = 1; // 切换每页显示个数时，回到第一页
 }
+
+// 用于搜索功能
+const queryInfo = ref("");
+
+const toSearch = () => {};
+
+// 表单遍历的数据为划分后且能够检索的数据
+const filteredData = computed(() => {
+  const query: string = queryInfo.value.toLowerCase().trim();
+  let filtered = teacherDataTable.teachersList;
+
+  if (query) {
+    filtered = filtered.filter((item) => {
+      return (
+        (item.name && item.name.toLowerCase().includes(query)) ||
+        (item.realName && item.realName.toLowerCase().includes(query)) ||
+        (item.class && item.class.toLowerCase().includes(query))
+      );
+    });
+  }
+  //将分页逻辑整合到 filteredData 计算属性中，以确保分页功能和搜索功能可以同时生效
+  const startIndex = (currentPage.value - 1) * pageSize.value;
+  const endIndex = startIndex + pageSize.value;
+  return filtered.slice(startIndex, endIndex);
+});
 </script>
 
 <template>
@@ -250,6 +329,9 @@ function handleSizeChange(val) {
           label-width="80px"
           :rules="rules"
         >
+          <el-form-item label="ID号" prop="id" v-if="!showPassword">
+            <el-input v-model="userForm.id" :disabled="IsDisabled"></el-input>
+          </el-form-item>
           <el-form-item label="用户名" prop="name">
             <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
           </el-form-item>
@@ -259,12 +341,6 @@ function handleSizeChange(val) {
               type="password"
               show-password
             />
-          </el-form-item>
-          <el-form-item label="教工号" prop="userSchoollD">
-            <el-input
-              v-model="userForm.userSchoollD"
-              :disabled="IsDisabled"
-            ></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="userForm.email"></el-input>
@@ -293,7 +369,12 @@ function handleSizeChange(val) {
     <!--    搜索框-->
     <el-form :inline="true">
       <el-form-item>
-        <el-input class="w-50 m-2" placeholder="输入姓名">
+        <el-input
+          class="w-50 m-2"
+          placeholder="输入姓名"
+          v-model="queryInfo"
+          clearable
+        >
           <template #prefix>
             <el-icon class="el-input__icon">
               <search />
@@ -307,16 +388,11 @@ function handleSizeChange(val) {
     </el-form>
   </div>
   <div class="table">
-    <el-table
-      :data="currentPageData"
-      style="width: 100%"
-      border
-      max-height="600"
-    >
-      <el-table-column fixed prop="userSchoollD" label="教工号" width="180" />
+    <el-table :data="filteredData" style="width: 100%" border max-height="600">
+      <el-table-column fixed prop="id" label="ID号" width="180" />
       <el-table-column prop="realName" label="姓名" width="120" />
-      <el-table-column prop="class" label="班级" width="150" />
-      <el-table-column prop="schoolCode" label="学校" width="180" />
+      <!--      <el-table-column prop="class" label="班级" width="150" />-->
+      <!--      <el-table-column prop="schoolCode" label="学校" width="180" />-->
       <el-table-column prop="name" label="用户名" width="auto" />
       <el-table-column prop="email" label="邮箱" width="auto" />
       <el-table-column prop="sex" label="性别" width="55" />

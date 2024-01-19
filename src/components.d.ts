@@ -41,6 +41,7 @@ declare module 'vue' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElUpload: typeof import('element-plus/es')['ElUpload']
     ForgetPassword: typeof import('./components/auth/forgetPassword.vue')['default']
     LoginCom: typeof import('./components/auth/loginCom.vue')['default']
     Pagination: typeof import('./components/pagination.vue')['default']

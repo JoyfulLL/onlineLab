@@ -28,10 +28,9 @@ export function regStu(
   });
 }
 
-export function regTeacher(name, userSchoollD, email, realName, password, sex) {
+export function regTeacher(name, email, realName, password, sex) {
   return service.post("/authrequired/admin/teacher/new", {
     name: name,
-    userSchoollD: userSchoollD,
     email: email,
     realName: realName,
     password: password,
