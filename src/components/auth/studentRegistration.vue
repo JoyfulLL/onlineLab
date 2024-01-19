@@ -5,7 +5,7 @@
  * @description 用于注册学生
  * @date 2024/1/10
  */
-import { regStu } from "@/api";
+import { regStu } from "@/api/userManagement/registerUser.js";
 import { ElMessage } from "element-plus";
 
 export default {

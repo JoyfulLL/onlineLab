@@ -5,7 +5,7 @@
  * @description 用于管理员注册教师
  * @date 2024/1/18
  */
-import { regTeacher } from "@/api/manager";
+import { regTeacher } from "@/api/userManagement/registerUser.js";
 
 interface Teacher {
   name: string;
