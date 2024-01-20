@@ -25,7 +25,7 @@ const router = createRouter({
     {
       path: "/",
       component: () => import("../layout/basicLayout.vue"),
-      meta: { requireAuth: true },
+      meta: { requireAuth: false },
       name: "Home",
       redirect: "/Home",
       children: [...classRoutes, ...homeRouter, ...userManagementRouters],

@@ -11,6 +11,7 @@ import {
   getStuInfo,
   getTeachersInfo,
 } from "@/api/userManagement/getUserData.js";
+import { useAuthStore } from "@/stores/tokenStore";
 // 定义学生存储库
 // 数据字段说明
 // studentsDataCount:数据总量
@@ -35,7 +36,10 @@ export const useTableDataStore = defineStore("TableData", {
   },
   actions: {
     async showStuInfo() {
-      let res = await getStuInfo();
+      const useScope = useAuthStore();
+      // 读取当前用户的scope角色并存储
+      const userScope = useScope.getScope(); //获取到的scope
+      let res = await getStuInfo(userScope);
       this.stuList = res.data.data;
       this.studentsDataCount = this.stuList.length;
     },

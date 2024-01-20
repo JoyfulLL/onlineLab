@@ -165,19 +165,25 @@ activePath.value = router.currentRoute._value.meta.index;
 </script>
 
 <template>
-  <el-aside :width="useToCollapse.isCollapse ? '65px' : '180px'">
-    <div class="menu-item" :class="{ collapsed: useToCollapse.isCollapse }">
+  <el-aside :width="useToCollapse.isCollapse ? '63px' : '180px'">
+    <div
+      class="menu-item"
+      :class="{
+        collapsed: useToCollapse.isCollapse,
+        expanded: !useToCollapse.isCollapse,
+      }"
+    >
       <div v-if="!useToCollapse.isCollapse">
         <img
-          style="max-width: 180px; max-height: 50px"
+          style="max-width: 180px; max-height: 55px"
           src="@/assets/logo.png"
           alt="Expanded Logo"
         />
       </div>
       <div v-else>
         <img
-          style="width: 35px; max-height: 36px"
-          src="@/assets/favicon.ico"
+          style="width: 35px; max-height: 35px"
+          src="@/assets/fav.png"
           alt="Collapsed Logo"
         />
       </div>
@@ -185,7 +191,7 @@ activePath.value = router.currentRoute._value.meta.index;
     <el-menu
       class="el-menu-vertical-demo"
       :collapse="useToCollapse.isCollapse"
-      :collapse-transition="false"
+      :collapse-transition="true"
       :default-active="activePath"
     >
       <template v-for="item in menuStore.menuTree">
@@ -207,17 +213,6 @@ activePath.value = router.currentRoute._value.meta.index;
             <component class="icons" :is="item.icon"></component>
             <span>{{ item.title }}</span>
           </template>
-          <!--
-          下面为二级菜单展开的列表
-          依据官网的解释，v-if 比 v-for 的优先级更高。
-          这意味着 v-if 的条件将无法访问到 v-for 作用域内定义的变量别名
-          官网给出的解决方法为：在外新包装一层 <template> 再在其上使用 v-for 可以解决这个问题
-          如果不使用下面的方法，浏览器将会报出错误，无法找到subScope这个变量
-          @下面给出我一开始的错误代码
-          <el-menu-item v-if="subItem.subScope && subItem.subScope.includes(userScope)"
-                        v-for="subItem in item.subMenu"
-          </el-menu-item>
-          -->
           <template v-for="subItem in item.subMenu">
             <el-menu-item
               v-if="subItem.subScope && subItem.subScope.includes(userScope)"
@@ -240,42 +235,73 @@ activePath.value = router.currentRoute._value.meta.index;
 .icons {
   width: 16px;
   height: 16px;
-  margin-right: 5px;
 }
 
 .centered {
   text-align: center;
 }
 
-.el-menu {
-  border-right: none;
+/* 加过渡给侧边导航 */
+.el-aside {
+  transition: width 0.25s;
+  -webkit-transition: width 0.25s;
+  -moz-transition: width 0.25s;
+  -o-transition: width 0.25s;
 }
+
+/* 加快侧边栏文字消失的速度 */
+.el-menu {
+  transition: all 0.01s; // 将10ms改为0.01s
+  border-right: 0; // 去除右侧烦人的竖线
+}
+
 .menu-item {
   display: flex;
   justify-content: center;
   align-items: center;
-
-  &.collapsed img {
-    background-color: transparent;
+  &.collapsed {
+    margin-top: 22px;
   }
-
-  &.no-padding {
-    padding: 0;
+  &.expanded {
+    margin-top: 24px;
   }
 }
 
 .el-sub-menu.is-active {
-  color: #409eff !important;
-  border-radius: 5px;
+  background-color: #d9ecff !important; /* 背景使用淡蓝色 */
+  border-radius: 8px;
   span {
-    color: #409eff !important;
+    color: #409eff;
   }
 }
 
-.el-menu-item.is-active {
-  background-color: #d9ecff !important; /* 使用淡蓝色 */
-  color: #409eff; /* 字体颜色蓝色 */
+// logo距离顶部的边距
+.el-menu-vertical-demo {
+  margin-top: 22px;
+}
 
+.el-menu-item.is-active {
+  position: relative; /* 设置相对定位 */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0; /* 将竖线位置设置在右边 */
+    width: 3px; /* 设置竖线宽度 */
+    height: 100%; /* 设置竖线高度 */
+    background-color: #409eff; /* 设置竖线颜色为蓝色 */
+    border-radius: 2px; /* 设置竖线的圆角 */
+  }
+  background-color: #f5f7fa !important;
+  color: #409eff; /* 字体颜色蓝色 */
   border-radius: 8px; /* 添加圆角 */
+  overflow: hidden;
+}
+
+.el-menu-item {
+  &:hover {
+    background-color: #eeeeee; /* 鼠标悬停时的背景颜色为浅灰色 */
+    border-radius: 8px; /* 添加圆角 */
+  }
 }
 </style>

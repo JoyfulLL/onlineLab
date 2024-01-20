@@ -6,11 +6,17 @@
  */
 import service from "@/utils/axios";
 
-// @获取所有学生信息
-// action：查询过滤器，如果没有默认查询所以信息
-export function getStuInfo() {
-  return service.get("/authrequired/admin/students/{action}");
+// 根据用户权限选择API
+// 教师只能获取自己班级的学生条目——待开发
+// 管理员可以获取所有学生条目
+export function getStuInfo(scope) {
+  if (scope === "admin") {
+    return service.get("/authrequired/admin/students/{action}");
+  } else {
+    return service.get("/authrequired/teacher/class/students/45678765");
+  }
 }
+
 // @获取所有教师信息
 export function getTeachersInfo() {
   return service.get("/authrequired/admin/teachers/{action}");

@@ -433,6 +433,7 @@ const handleSubmit = async () => {
   </div>
   <div class="table">
     <el-table :data="filteredData" style="width: 100%" border max-height="600">
+      <el-table-column fixed prop="id" label="ID" width="180" />
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
       <el-table-column prop="realName" label="姓名" width="120" />
       <el-table-column prop="class" label="班级" width="150" />
