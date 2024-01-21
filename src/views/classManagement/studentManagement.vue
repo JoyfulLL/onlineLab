@@ -17,12 +17,13 @@
 import { checkToken } from "@/api";
 import { regStu } from "@/api/userManagement/registerUser";
 import { reactive, ref, onMounted, inject } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 import { useTableDataStore } from "@/stores/userData/storeUserData";
 import {
   editStuInfo,
   editTeacherInfo,
 } from "@/api/userManagement/editUserInfo";
+import { basicClassesStore } from "@/stores";
 import service from "@/utils/axios";
 import { removeStudentFromClass } from "@/api/userManagement/removeUser";
 
@@ -107,6 +108,32 @@ const rules = {
 };
 
 const studentDataTable = useTableDataStore();
+const useClassList = basicClassesStore();
+
+// 处理班级数据
+function processClassData(classData) {
+  return Object.keys(classData).map((classid) => ({
+    classid: classData[classid].classid,
+    classname: classData[classid].classname,
+    teacherid: classData[classid].teacherid,
+  }));
+}
+
+// 创建ref
+const filtersClassData = ref(processClassData(useClassList.classList));
+
+// 创建computed
+const classFilters = computed(() => {
+  return filtersClassData.value.map((item) => ({
+    text: item.classname,
+    value: item.classname,
+  }));
+});
+
+// 根据班级筛选出学生
+const filterClasses = (value, row) => {
+  return row.class === value;
+};
 
 // 数据获取
 const fetchData = () => {
@@ -174,38 +201,62 @@ const editStudent = (row) => {
   IsDisabled.value = true;
 };
 
+// 移出班级的按钮方法
 const removeFromClass = async (row) => {
-  console.log(row);
   const { id } = row;
-  console.log(id);
+  // console.log(id);
   await removeStudentFromClass(id)
-    .then((res) => {
-      console.log(res);
+    .then(() => {
+      reload();
+      ElMessage({
+        message: "移出成功",
+        type: "success",
+      });
     })
-    .catch((error) => {
-      console.error(error);
+    .catch((e) => {
+      let errorMessage = "登录失败";
+      switch (e.response.data.status) {
+        case 1:
+          errorMessage = "内部错误";
+          break;
+        case 7:
+          errorMessage = "无权限";
+          break;
+        case 15:
+          errorMessage = "班级不存在";
+          break;
+        default:
+          errorMessage = "未知错误";
+      }
+      ElNotification({
+        title: "错误",
+        message: errorMessage,
+        type: "error",
+        duration: 3000,
+      });
     });
 };
 
 // @以下代码用于分页
-// 页面显示数据量 默认为10条
-const pageSize = ref(10);
+// 页面显示数据量 默认为20条
+const pageSize = ref(20);
 // 当前页面，默认为1
 const currentPage = ref(1);
+
 // 用于更换页面
 function changePage(page) {
   currentPage.value = page;
 }
+
 // 用于更换页大小
 function handleSizeChange(val) {
   pageSize.value = val; // 更新每页显示个数
   currentPage.value = 1; // 切换每页显示个数时，回到第一页
 }
 
+const toSearch = () => {};
 // 用于搜索功能
 const queryInfo = ref("");
-
-const toSearch = () => {};
 
 // 表单遍历的数据为划分后且能够检索的数据
 const filteredData = computed(() => {
@@ -215,9 +266,15 @@ const filteredData = computed(() => {
   if (query) {
     filtered = filtered.filter((item) => {
       return (
-        item.name.toLowerCase().includes(query) ||
-        item.realName.toLowerCase().includes(query) ||
-        item.class.toLowerCase().includes(query)
+        (item.name &&
+          typeof item.name === "string" &&
+          item.name.toLowerCase().includes(query)) ||
+        (item.realName &&
+          typeof item.realName === "string" &&
+          item.realName.toLowerCase().includes(query)) ||
+        (item.class &&
+          typeof item.class === "string" &&
+          item.class.toLowerCase().includes(query))
       );
     });
   }
@@ -240,7 +297,7 @@ const handleSubmit = async () => {
       userForm.userSchoollD,
       userForm.schoolCode,
       userForm.class,
-      userForm.sex,
+      userForm.sex
     )
       .then((res) => {
         if (res.data.status === 0) {
@@ -277,13 +334,11 @@ const handleSubmit = async () => {
           case 13:
             errorMessage = "学校信息错误";
             break;
-          case 14:
-            errorMessage = "密码强度不够";
-            break;
           default:
             errorMessage = "未知错误";
         }
-        ElMessage({
+        ElNotification({
+          title: "错误",
           message: errorMessage,
           type: "error",
           duration: 3000,
@@ -299,7 +354,7 @@ const handleSubmit = async () => {
       userForm.userSchoollD,
       userForm.schoolCode,
       userForm.class,
-      userForm.sex,
+      userForm.sex
     )
       .then((res) => {
         if (res.data.status == 0) {
@@ -321,22 +376,17 @@ const handleSubmit = async () => {
           case 3:
             errorMessage = "参数错误";
             break;
-          case 5:
-            errorMessage = "用户不存在";
-            break;
-          case 10:
-            errorMessage = "用户名已存在";
+          case 7:
+            errorMessage = "无权限";
             break;
           case 11:
             errorMessage = "邮箱格式错误";
             break;
-          case 14:
-            errorMessage = "密码强度不够";
-            break;
           default:
             errorMessage = "未知错误";
         }
-        ElMessage({
+        ElNotification({
+          title: "错误",
           message: errorMessage,
           type: "error",
           duration: 3000,
@@ -396,7 +446,14 @@ const handleSubmit = async () => {
             ></el-input>
           </el-form-item>
           <el-form-item label="学生班级" prop="class">
-            <el-input v-model="userForm.class"></el-input>
+            <el-select v-model="userForm.class" placeholder="请选择班级">
+              <el-option
+                v-for="item in useClassList.classList"
+                :key="item.classid"
+                :label="item.classname"
+                :value="item.classname"
+              ></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="性别" prop="sex">
             <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
@@ -439,9 +496,21 @@ const handleSubmit = async () => {
   </div>
   <div class="table">
     <el-table :data="filteredData" style="width: 100%" border max-height="600">
+      <el-table-column prop="id" label="ID" width="180" />
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
-      <el-table-column prop="realName" label="姓名" width="120" />
-      <el-table-column prop="class" label="班级" width="150" />
+      <el-table-column prop="realName" label="姓名" width="150" />
+      <el-table-column
+        prop="class"
+        label="班级"
+        width="150"
+        :filters="classFilters"
+        :filter-method="filterClasses"
+        filter-placement="bottom-end"
+      >
+        <template #default="scope">
+          {{ scope.row.class }}
+        </template>
+      </el-table-column>
       <el-table-column prop="schoolCode" label="学校" width="180" />
       <el-table-column prop="name" label="用户名" width="auto" />
       <el-table-column prop="email" label="邮箱" width="auto" />
@@ -455,8 +524,8 @@ const handleSubmit = async () => {
             type="danger"
             size="default"
             @click="removeFromClass(scope.row)"
-            >移出班级</el-button
-          >
+            >移出班级
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -464,7 +533,7 @@ const handleSubmit = async () => {
   <!-- 分页 -->
   <el-pagination
     :page-size="pageSize"
-    :page-sizes="[10, 20, 30]"
+    :page-sizes="[10, 20, 30, 50]"
     background
     default
     layout="total,prev, pager, next, sizes"

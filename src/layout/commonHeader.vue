@@ -120,6 +120,7 @@ header {
   align-items: center; // 垂直居中对齐
 
   .icons {
+    cursor: pointer;
     margin-right: 10px; // 设置右边距
     width: 30px;
     height: 30px;

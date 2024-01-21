@@ -13,7 +13,7 @@
 import { ref, onMounted } from "vue";
 import * as echarts from "echarts";
 import { checkToken } from "@/api";
-
+import { basicClassesStore } from "@/stores";
 const chart = ref(null);
 const gaugeChart = ref(null);
 onMounted(() => {
@@ -66,7 +66,12 @@ onMounted(() => {
     ],
   });
   checkToken();
+  fetchClassList();
 });
+const classesStore = basicClassesStore();
+const fetchClassList = () => {
+  classesStore.storeClassesList();
+};
 </script>
 
 <style scoped lang="less">
