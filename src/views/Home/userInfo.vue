@@ -1,107 +1,93 @@
 <script setup lang="ts">
-import { showUserInfo } from "@/api/index.js";
+import { checkToken, showUserInfo } from "@/api/index.js";
 import { useAuthStore } from "@/stores/tokenStore.js";
+import { computed, ref } from "vue";
 import { onMounted } from "vue";
 
 onMounted(() => {
-  getTeacherData();
+  checkToken();
+  getUserInfoData();
 });
 
-const useScope = useAuthStore();
-const getTeacherData = () => {
-  showUserInfo(useScope).then((res) => {
-    console.log(res.data);
-  });
+const useAuth = useAuthStore();
+const userInfo = ref({ id: "", name: "", email: "", sex: "" });
+
+const getUserInfoData = () => {
+  userInfo.value = useAuth.userInfoArray;
+  //console.log(userInfo.value);
 };
-
-import { computed, ref } from "vue";
-import {
-  Iphone,
-  Location,
-  OfficeBuilding,
-  Tickets,
-  User,
-} from "@element-plus/icons-vue";
-
-const size = ref("");
-const iconStyle = computed(() => {
-  const marginMap = {
-    large: "8px",
-    default: "6px",
-    small: "4px",
-  };
-  return {
-    marginRight: marginMap[size.value] || marginMap.default,
-  };
-});
-const blockMargin = computed(() => {
-  const marginMap = {
-    large: "32px",
-    default: "28px",
-    small: "24px",
-  };
-  return {
-    marginTop: marginMap[size.value] || marginMap.default,
-  };
-});
 </script>
 
 <template>
-  <el-descriptions
-    class="margin-top"
-    title="个人中心"
-    :column="3"
-    :size="size"
-    border
-  >
-    <template #extra>
-      <el-button type="primary">Operation</el-button>
+  <el-card class="box-card">
+    <template #header>
+      <div class="card-header">
+        <span>个人中心</span>
+        <el-button class="button" text>编辑</el-button>
+      </div>
     </template>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          <el-icon :style="iconStyle">
-            <user />
-          </el-icon>
-          用户名
-        </div>
-      </template>
-      那你
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          <el-icon :style="iconStyle">
-            <iphone />
-          </el-icon>
-          Telephone
-        </div>
-      </template>
-      18100000000
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <div class="cell-item">
-          <el-icon :style="iconStyle">
-            <tickets />
-          </el-icon>
-          Remarks
-        </div>
-      </template>
-      <el-tag size="small">School</el-tag>
-    </el-descriptions-item>
-  </el-descriptions>
+    <el-descriptions :column="2" border>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <unicon name="adjust-circle" fill="royalblue"></unicon>
+            用户ID
+          </div>
+        </template>
+        {{ userInfo.id }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <unicon name="user" fill="royalblue"></unicon>
+            用户名
+          </div>
+        </template>
+        {{ userInfo.name }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <unicon name="envelope" fill="royalblue"></unicon>
+            邮箱
+          </div>
+        </template>
+        {{ userInfo.email }}
+      </el-descriptions-item>
+      <el-descriptions-item>
+        <template #label>
+          <div class="cell-item">
+            <unicon name="mars" fill="royalblue"></unicon>
+            性别
+          </div>
+        </template>
+        {{ userInfo.sex }}
+      </el-descriptions-item>
+    </el-descriptions>
+  </el-card>
 </template>
 
 <style scoped>
-.el-descriptions {
-  margin-top: 20px;
-}
 .cell-item {
   display: flex;
   align-items: center;
 }
-.margin-top {
-  margin-top: 20px;
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.text {
+  font-size: 14px;
+}
+
+.item {
+  margin-bottom: 18px;
+}
+
+.box-card {
+  width: 500px;
 }
 </style>

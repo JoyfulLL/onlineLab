@@ -24,6 +24,7 @@ import {
   editTeacherInfo,
 } from "@/api/userManagement/editUserInfo";
 import service from "@/utils/axios";
+import { removeStudentFromClass } from "@/api/userManagement/removeUser";
 
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
@@ -36,7 +37,7 @@ onMounted(() => {
 const reload = inject("reload");
 
 // @注册信息的表单
-const userForm = reactive({
+let userForm = reactive({
   id: "",
   name: "",
   password: "",
@@ -105,22 +106,13 @@ const rules = {
   sex: [{ required: true, message: "请选择性别", trigger: "change" }],
 };
 
-// 用于侦听数据的变化，使用newUserForm存放变化后的数据
-const newUserForm = reactive([]);
-watchEffect(() => {
-  newUserForm.value = { ...userForm };
-  //console.log("邮箱", newUserForm.value.email);
-  // 通过ID精准修改
-  // console.log(newUserForm.value.id);
-});
-
 const studentDataTable = useTableDataStore();
 
 // 数据获取
 const fetchData = () => {
   studentDataTable.showStuInfo();
   // 数据获取完成后，可以执行其他操作或访问Store中的数据
-  // console.log(studentDataTable.studentsDataCount)
+  //console.log(studentDataTable.stuList.id);
 };
 
 // @以下代码用于 学生管理
@@ -180,6 +172,19 @@ const editStudent = (row) => {
   });
   showPassword.value = false;
   IsDisabled.value = true;
+};
+
+const removeFromClass = async (row) => {
+  console.log(row);
+  const { id } = row;
+  console.log(id);
+  await removeStudentFromClass(id)
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 };
 
 // @以下代码用于分页
@@ -286,17 +291,15 @@ const handleSubmit = async () => {
       });
   } else {
     //@ 在此处调用修改学生参数的接口
-    // console.log('用户名',(newUserForm.value.name))
     await editStuInfo(
-      newUserForm.value.id,
-      newUserForm.value.name,
-      // newUserForm.value.password,
-      newUserForm.value.email,
-      newUserForm.value.realName,
-      newUserForm.value.userSchoollD,
-      newUserForm.value.schoolCode,
-      newUserForm.value.class,
-      newUserForm.value.sex,
+      userForm.id,
+      userForm.name,
+      userForm.email,
+      userForm.realName,
+      userForm.userSchoollD,
+      userForm.schoolCode,
+      userForm.class,
+      userForm.sex,
     )
       .then((res) => {
         if (res.data.status == 0) {
@@ -353,7 +356,7 @@ const handleSubmit = async () => {
       width="30%"
       :before-close="handleClose"
     >
-      <!--      学生注册组件表单-->
+      <!--      学生注册/编辑组件表单-->
       <div class="form-container">
         <el-form
           :model="userForm"
@@ -361,6 +364,9 @@ const handleSubmit = async () => {
           label-width="80px"
           :rules="rules"
         >
+          <el-form-item label="ID" prop="id" v-if="!showPassword">
+            <el-input v-model="userForm.id" :disabled="IsDisabled"></el-input>
+          </el-form-item>
           <el-form-item label="用户名" prop="name">
             <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
           </el-form-item>
@@ -433,7 +439,6 @@ const handleSubmit = async () => {
   </div>
   <div class="table">
     <el-table :data="filteredData" style="width: 100%" border max-height="600">
-      <el-table-column fixed prop="id" label="ID" width="180" />
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
       <el-table-column prop="realName" label="姓名" width="120" />
       <el-table-column prop="class" label="班级" width="150" />
@@ -446,7 +451,12 @@ const handleSubmit = async () => {
           <el-button size="default" @click="editStudent(scope.row)"
             >编辑
           </el-button>
-          <el-button type="danger" size="default">移出班级</el-button>
+          <el-button
+            type="danger"
+            size="default"
+            @click="removeFromClass(scope.row)"
+            >移出班级</el-button
+          >
         </template>
       </el-table-column>
     </el-table>

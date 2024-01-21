@@ -151,11 +151,6 @@ const editTeacher = (row) => {
 };
 
 const reload = inject("reload");
-const newUserForm = reactive([]);
-watchEffect(() => {
-  newUserForm.value = { ...userForm };
-  console.log(newUserForm.value);
-});
 
 // @此函数用于提交表单
 // @判断动作的值，为add则调用新增用户接口
@@ -214,15 +209,14 @@ const handleSubmit = async () => {
     //@ 在此处调用修改学生参数的接口
     // console.log('用户名',(newUserForm.value.name))
     await editTeacherInfo(
-      newUserForm.value.id,
-      newUserForm.value.name,
-      // newUserForm.value.password,
-      newUserForm.value.email,
-      newUserForm.value.realName,
-      newUserForm.value.userSchoollD,
-      newUserForm.value.schoolCode,
-      newUserForm.value.class,
-      newUserForm.value.sex,
+      userForm.id,
+      userForm.name,
+      userForm.email,
+      userForm.realName,
+      userForm.userSchoollD,
+      userForm.schoolCode,
+      userForm.class,
+      userForm.sex,
     )
       .then((res) => {
         if (res.data.status == 0) {

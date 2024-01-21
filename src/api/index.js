@@ -1,5 +1,5 @@
 import service from "@/utils/axios.js";
-import { useAuthStore } from "@/stores/tokenStore";
+import { useAuthStore } from "@/stores/tokenStore.js";
 import router from "@/router";
 
 /**
@@ -16,17 +16,15 @@ export function login(username, password) {
 // token校验
 export function checkToken() {
   //用于检验token的合法性，必须在生命周期函数onMounted中调用
-  const token = localStorage.getItem("token");
   const useAuth = useAuthStore();
+  const token = useAuth.data.token;
+
   service
     .get("/isvalid", { Authorization: `Bearer ${token}` })
     .then((res) => {
       if (res.data.status === 0) {
-        console.log("token验证通过");
-        useAuth.storeCheckTokenData(res.data.data);
-        // for (const id in useAuth.userInfoArray) {
-        //   console.log(useAuth.userInfoArray[id]);
-        // }
+        console.log("token验证通过,存储获得的数据");
+        useAuth.setCheckTokenData(res.data.data);
       }
     })
     .catch((e) => {

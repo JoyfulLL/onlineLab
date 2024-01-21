@@ -165,7 +165,7 @@ activePath.value = router.currentRoute._value.meta.index;
 </script>
 
 <template>
-  <el-aside :width="useToCollapse.isCollapse ? '63px' : '180px'">
+  <el-aside :width="useToCollapse.isCollapse ? '64px' : '180px'">
     <div
       class="menu-item"
       :class="{

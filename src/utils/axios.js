@@ -1,5 +1,6 @@
 import axios from "axios";
 import { checkToken } from "@/api";
+import { useAuthStore } from "@/stores/tokenStore";
 
 const service = axios.create({
   baseURL: "http://8.219.238.232/api/",
@@ -10,14 +11,14 @@ const service = axios.create({
 // 添加请求拦截器
 service.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const useAuth = useAuthStore();
+    const token = useAuth.data.token;
     if (token) config.headers.Authorization = `Bearer ${token}`;
     //   checkToken();
     return config;
   },
   (error) => {
     // 对请求错误做些什么
-    return Promise.reject(error);
   },
 );
 

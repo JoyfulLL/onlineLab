@@ -6,3 +6,9 @@
  */
 
 import service from "@/utils/axios";
+
+export function removeStudentFromClass(studentid) {
+  return service.delete("/authrequired/admin/student/class", {
+    studentid: studentid,
+  });
+}

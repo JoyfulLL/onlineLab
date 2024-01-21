@@ -4,6 +4,7 @@ import classRoutes from "./classManagement";
 import userManagementRouters from "@/router/userManagement";
 import homeRouter from "@/router/home";
 import { useElMenuActiveStore } from "@/stores/menu.js";
+import { useAuthStore } from "@/stores/tokenStore.js";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -45,7 +46,8 @@ const router = createRouter({
 
 //
 router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("token");
+  const useAuth = useAuthStore();
+  const token = useAuth.data.token;
   useElMenuActiveStore().elMenuActive = to.path;
   if (
     !token &&

@@ -26,14 +26,7 @@ export const useTableDataStore = defineStore("TableData", {
     teachersDataCount: 0,
     teachersList: [],
   }),
-  getters: {
-    //分页后的数据
-    // paginatedStuList() {
-    //   const startIndex = (this.pageNum - 1) * this.pageSize;
-    //   const endIndex = startIndex + this.pageSize;
-    //   return this.stuList.slice(startIndex, endIndex);
-    // },
-  },
+  getters: {},
   actions: {
     async showStuInfo() {
       const useScope = useAuthStore();

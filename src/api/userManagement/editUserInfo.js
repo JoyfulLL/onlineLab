@@ -38,7 +38,7 @@ export function editTeacherInfo(
   });
 }
 
-// @修改指定学生信息
+// @管理员修改指定学生信息
 export function editStuInfo(
   id,
   name,
