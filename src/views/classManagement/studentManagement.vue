@@ -29,10 +29,13 @@ import { errorMessages } from "@/utils/errorMessagesCode";
 import { rules } from "@/utils/formRules";
 import classesList from "@/components/charts/classesListTable.vue";
 import { Search } from "@element-plus/icons-vue";
+import {teacherJoinedClassStore} from "@/stores/classData";
+
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   checkToken();
   fetchData();
+  fetchClassList()
 });
 
 // @注入APP.vue提供的刷新方法
@@ -53,8 +56,13 @@ let userForm = reactive({
 });
 
 const studentDataTable = useTableDataStore();
-const useClassList = basicClassesStore();
+const useAllClassInfoList = basicClassesStore();
 
+const useClassList=teacherJoinedClassStore();
+const fetchClassList = ()=>{
+  useClassList.storeTeacherList()
+  // console.log(useClassList.teacherClassList)
+}
 // 处理班级数据
 function processClassData(classData) {
   return Object.keys(classData).map((classid) => ({
@@ -65,7 +73,7 @@ function processClassData(classData) {
 }
 
 // 创建ref
-const filtersClassData = ref(processClassData(useClassList.classList));
+const filtersClassData = ref(processClassData(useAllClassInfoList.classList));
 
 // 创建computed
 const classFilters = computed(() => {
@@ -171,7 +179,7 @@ const queryInfo = ref("");
 const filteredData = computed(() => {
   const query = queryInfo.value.toLowerCase().trim();
   let filtered = studentDataTable.stuList;
-
+  //console.log(filtered)
   if (query) {
     filtered = filtered.filter((item) => {
       return (
@@ -314,7 +322,7 @@ const removeSelectedStudents = async () => {
       title: "错误",
       message: errorMessage,
       type: "error",
-      duration: 3000,
+      duration: 3500,
     });
   }
 };
@@ -464,7 +472,7 @@ const searchKeyword=ref('')
           <el-form-item label="学生班级" prop="class">
             <el-select v-model="userForm.class" placeholder="请选择班级">
               <el-option
-                v-for="item in useClassList.classList"
+                v-for="item in useAllClassInfoList.classList"
                 :key="item.classid"
                 :label="item.classname"
                 :value="item.classname"
@@ -564,7 +572,7 @@ const searchKeyword=ref('')
     @current-change="changePage"
     @size-change="handleSizeChange"
   />
-  <classes-list :keyword="searchKeyword"/>
+  <classes-list :keyword="searchKeyword" :classesList="useAllClassInfoList.classList"/>
 </template>
 
 <style scoped lang="less">

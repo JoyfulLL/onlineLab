@@ -5,27 +5,30 @@
  * @description 班级列表组件
  * @可以传递keyword来检索对应的班级
  * @date 2024/1/22
+ * classesList用于父组件传递Object列表
  */
-import { basicClassesStore } from "@/stores/index.ts";
 import { defineComponent, ref, defineProps } from "vue";
-
-const useClassList = basicClassesStore();
-
+import { teacherJoinedClassStore } from "@/stores/classData.js";
+const useClassList=teacherJoinedClassStore();
 const props = defineProps({
   keyword: {
     type: String,
   },
+  classesList: {
+    type: Object,
+    default: () => ({}),
+  }
 });
 
-
+// props.classesList
 const filteredData = computed(() => {
-  if (props.keyword) {
-    const keywordWithoutSpaces = props.keyword.trim(); // 去除输入内容中的空格
-    return useClassList.classList.filter(classItem => {
-      return classItem.classname.toLowerCase().includes(keywordWithoutSpaces.toLowerCase());
+  if (props.keyword && Array.isArray(props.classesList)) {
+    const keywordWithoutSpaces = props.keyword.trim();
+    return props.classesList.filter(classItem => {
+      return classItem && classItem.classname && classItem.classname.toLowerCase().includes(keywordWithoutSpaces.toLowerCase());
     });
   } else {
-    return useClassList.classList;
+    return props.classesList;
   }
 });
 
@@ -33,7 +36,6 @@ const filteredData = computed(() => {
 
 <template>
   <div class="class-table">
-    <div class="table-title">班级列表</div>
     <el-table
       :data="filteredData"
       style="width: auto"
@@ -43,7 +45,7 @@ const filteredData = computed(() => {
       <el-table-column prop="classid" label="班级ID" width="180" />
       <el-table-column prop="classname" label="班级名称" width="300" />
       <el-table-column prop="teacherid" label="教师ID" width="auto" />
-      <el-table-column>
+      <el-table-column label="操作">
         <template #default="scope">
           <el-button type="primary" size="default">加入班级 </el-button>
         </template>

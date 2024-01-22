@@ -1,21 +1,31 @@
-<script setup lang="ts">
-import { checkToken} from "@/api/index.js";
+<script setup>
+import { checkToken } from "@/api/index.js";
 import { useAuthStore } from "@/stores/tokenStore.js";
 import { computed, ref } from "vue";
 import { onMounted } from "vue";
-import classesList from "@/components/charts/classesListTable.vue"
+import classesList from "@/components/charts/classesListTable.vue";
+import { teacherJoinedClassStore } from "@/stores/classData.js";
 onMounted(() => {
   checkToken();
   getUserInfoData();
+  fetchClassList();
 });
 
 const useAuth = useAuthStore();
 const userInfo = ref({ id: "", name: "", email: "", sex: "" });
-
+const useClassList=teacherJoinedClassStore();
 const getUserInfoData = () => {
   userInfo.value = useAuth.userInfoArray;
   //console.log(userInfo.value);
 };
+
+const fetchClassList = ()=>{
+  useClassList.storeTeacherList()
+  // console.log(useClassList.teacherClassList)
+}
+
+
+
 </script>
 
 <template>
@@ -73,10 +83,9 @@ const getUserInfoData = () => {
           <el-button class="button" text>编辑</el-button>
         </div>
       </template>
-      <classes-list/>
+      <classes-list :classesList="useClassList.teacherClassList" />
     </el-card>
   </div>
-
 </template>
 
 <style scoped>
@@ -98,7 +107,6 @@ const getUserInfoData = () => {
 .item {
   margin-bottom: 18px;
 }
-
 
 .card-container {
   display: flex;

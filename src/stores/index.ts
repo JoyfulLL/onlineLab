@@ -21,7 +21,7 @@ interface Class {
   teacherid: string;
 }
 
-//获取所有班级
+//获取所有的班级，用于存储所有的班级信息
 export const basicClassesStore = defineStore({
   id: "classesList",
   state: () => ({
@@ -40,3 +40,4 @@ export const basicClassesStore = defineStore({
   },
   persist: true,
 });
+

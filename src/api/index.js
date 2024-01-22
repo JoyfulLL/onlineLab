@@ -41,7 +41,7 @@ export function checkToken() {
             title: "错误",
             message: errorMessage,
             type: "error",
-            duration: 3000,
+            duration: 5000,
         });
       //window.location.href = "/login";
     });

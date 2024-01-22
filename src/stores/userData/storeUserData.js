@@ -33,8 +33,16 @@ export const useTableDataStore = defineStore("TableData", {
       // 读取当前用户的scope角色并存储
       const userScope = useScope.getScope(); //获取到的scope
       let res = await getStuInfo(userScope);
-      this.stuList = res.data.data;
-      this.studentsDataCount = this.stuList.length;
+      //console.log(userScope)
+      if(userScope==="teacher"){
+        //console.log(res.data.data.classes[0].students)
+        //this.stuList = res.data.data.classes[0].students;
+        this.stuList = [].concat(...res.data.data.classes.map(classItem => classItem.students));
+        this.studentsDataCount = this.stuList.length;
+      }else {
+        this.stuList = res.data.data;
+        this.studentsDataCount = this.stuList.length;
+      }
     },
     async showTeachersInfo() {
       let res = await getTeachersInfo();

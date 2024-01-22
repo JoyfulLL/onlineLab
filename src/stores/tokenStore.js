@@ -18,6 +18,7 @@ export const useAuthStore = defineStore("auth", {
     setCheckTokenData(userInfo) {
       //校验成功后，可以获取到用户的基础信息
       this.userInfoArray = userInfo;
+      //console.log(this.userInfoArray)
     },
     getData() {
       return this.data;
