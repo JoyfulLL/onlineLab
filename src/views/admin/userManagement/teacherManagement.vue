@@ -8,10 +8,12 @@
 
 import { checkToken } from "@/api/index.js";
 import { reactive, ref, onMounted, inject } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 import { useTableDataStore } from "@/stores/userData/storeUserData";
 import { regTeacher } from "@/api/userManagement/registerUser.js";
 import { editTeacherInfo } from "@/api/userManagement/editUserInfo.js";
+import { rules } from "@/utils/formRules.js";
+import { errorMessages } from "@/utils/errorMessagesCode.js";
 
 onMounted(() => {
   checkToken();
@@ -38,63 +40,6 @@ const userForm = reactive({
   class: "",
   sex: "",
 });
-
-// @注册表单输入规则
-const rules = {
-  name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [
-    { required: true, message: "请输入密码" },
-    {
-      validator: (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error("请输入密码"));
-        }
-        if (value.length < 8) {
-          return callback(new Error("密码长度必须大于8位"));
-        }
-        if (!/[0-9]/.test(value)) {
-          return callback(new Error("密码必须包含1个数字"));
-        }
-        if (!/[a-z]/.test(value)) {
-          return callback(new Error("密码必须包含1个小写字母"));
-        }
-        if (!/[A-Z]/.test(value)) {
-          return callback(new Error("密码必须包含1个大写字母"));
-        }
-        callback();
-      },
-      trigger: "blur",
-    },
-  ],
-  email: [
-    { required: true, message: "请输入邮箱", trigger: "blur" },
-    {
-      type: "email",
-      message: "请输入正确的邮箱地址",
-      trigger: ["blur", "change"],
-    },
-  ],
-  realName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
-  userSchoollD: [
-    {
-      required: true,
-      validator: (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error("请输入学生学号"));
-        }
-        var pattern = /^[0-9]+$/;
-        if (!pattern.test(value)) {
-          return callback(new Error("学生学号必须全为数字"));
-        }
-        callback();
-      },
-      trigger: "blur",
-    },
-  ],
-  schoolCode: [{ required: true, message: "请输入学校代码", trigger: "blur" }],
-  class: [{ required: true, message: "请输入学生班级", trigger: "blur" }],
-  sex: [{ required: true, message: "请选择性别", trigger: "change" }],
-};
 
 // 用于控制会话框显示
 const dialogVisible = ref(false);
@@ -162,7 +107,7 @@ const handleSubmit = async () => {
       userForm.email,
       userForm.realName,
       userForm.password,
-      userForm.sex,
+      userForm.sex
     )
       .then((res) => {
         if (res.data.status === 0) {
@@ -176,30 +121,14 @@ const handleSubmit = async () => {
         }
       })
       .catch((e) => {
-        let errorMessage = "登录失败";
-        switch (e.response.data.status) {
-          case 1:
-            errorMessage = "内部错误";
-            break;
-          case 3:
-            errorMessage = "参数错误";
-            break;
-          case 4:
-            errorMessage = "用户已存在";
-            break;
-          case 10:
-            errorMessage = "用户名已存在";
-            break;
-          case 11:
-            errorMessage = "邮箱格式错误";
-            break;
-          case 14:
-            errorMessage = "密码强度不够";
-            break;
-          default:
-            errorMessage = "未知错误";
+        let errorMessage = "失败";
+        if (e.response.data.status) {
+          errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        } else {
+          errorMessage = "未知错误";
         }
-        ElMessage({
+        ElNotification({
+          title: "错误",
           message: errorMessage,
           type: "error",
           duration: 3000,
@@ -216,7 +145,7 @@ const handleSubmit = async () => {
       userForm.userSchoollD,
       userForm.schoolCode,
       userForm.class,
-      userForm.sex,
+      userForm.sex
     )
       .then((res) => {
         if (res.data.status == 0) {
@@ -230,30 +159,14 @@ const handleSubmit = async () => {
         //console.log(newUserForm.value.id);
       })
       .catch((e) => {
-        let errorMessage = "登录失败";
-        switch (e.response.data.status) {
-          case 1:
-            errorMessage = "内部错误";
-            break;
-          case 3:
-            errorMessage = "参数错误";
-            break;
-          case 5:
-            errorMessage = "用户不存在";
-            break;
-          case 10:
-            errorMessage = "用户名已存在";
-            break;
-          case 11:
-            errorMessage = "邮箱格式错误";
-            break;
-          case 14:
-            errorMessage = "密码强度不够";
-            break;
-          default:
-            errorMessage = "未知错误";
+        let errorMessage = "失败";
+        if (e.response.data.status) {
+          errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        } else {
+          errorMessage = "未知错误";
         }
-        ElMessage({
+        ElNotification({
+          title: "错误",
           message: errorMessage,
           type: "error",
           duration: 3000,
@@ -273,6 +186,7 @@ function changePage(page) {
   currentPage.value = page;
   // console.log(currentPage.value);
 }
+
 // 用于更换页大小
 function handleSizeChange(val) {
   pageSize.value = val; // 更新每页显示个数

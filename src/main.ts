@@ -10,6 +10,7 @@ import ElementPlus from "element-plus";
 import "./assets/less/index.less";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import "element-plus/dist/index.css";
+import Pagination from "@/components/Pagination.vue";
 import Unicon from "vue-unicons";
 import {
   uniUser,
@@ -38,4 +39,5 @@ app
   .use(router)
   .use(ElementPlus)
   .use(Unicon)
+  .component('Pagination',Pagination)
   .mount("#app");

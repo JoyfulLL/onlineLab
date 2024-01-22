@@ -13,7 +13,7 @@ export function getStuInfo(scope) {
   if (scope === "admin") {
     return service.get("/authrequired/admin/students/{action}");
   } else {
-    return service.get("/authrequired/teacher/class/students/45678765");
+    return service.get("/authrequired/teacher/class/students/");
   }
 }
 

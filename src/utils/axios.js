@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/tokenStore";
 
 const service = axios.create({
   baseURL: "http://8.219.238.232/api/",
-  timeout: 5000,
+  timeout: 10000,
   headers: { "Content-Type": "application/json" },
 });
 

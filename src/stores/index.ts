@@ -13,15 +13,24 @@ export const useSidebarStore = defineStore({
   },
 });
 
+
+
+interface Class {
+  classid: string;
+  classname: string;
+  teacherid: string;
+}
+
 //获取所有班级
 export const basicClassesStore = defineStore({
   id: "classesList",
   state: () => ({
-    classList: [],
+    classList: [] as Class[],
   }),
   actions: {
-    async storeClassesList() {
+    async storeClassesList(scope) {
       try {
+        console.log(scope)
         const response = await service.get("/authrequired/classes");
         this.classList = response.data.data; // 将获取的班级列表存储在 classList 中
       } catch (error) {
@@ -29,7 +38,5 @@ export const basicClassesStore = defineStore({
       }
     },
   },
-  persist: {
-    enable: true,
-  },
+  persist: true,
 });

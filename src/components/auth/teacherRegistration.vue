@@ -6,6 +6,7 @@
  * @date 2024/1/18
  */
 import { regTeacher } from "@/api/userManagement/registerUser.js";
+import {errorMessages} from "@/utils/errorMessagesCode";
 
 interface Teacher {
   name: string;
@@ -46,6 +47,19 @@ const submitForm = () => {
         teacher.value.sex,
       ).then((res) => {
         console.log(res);
+      }).catch((e) => {
+        let errorMessage = "失败";
+        if (e.response.data.status){
+          errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        }else {
+          errorMessage = "未知错误"
+        }
+        ElNotification({
+          title: "错误",
+          message: errorMessage,
+          type: "error",
+          duration: 3000,
+        });
       });
     } else {
       return false;

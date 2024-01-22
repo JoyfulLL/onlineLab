@@ -1,5 +1,6 @@
 <script setup>
 /**
+ * @此页面数据表的增删查改功能已完成
  * @file  studentManagement
  * @author ljf13
  * @description 用于学生管理——展示学生信息，注册新学生，修改学生信息
@@ -8,9 +9,10 @@
  数据段data 建议新增数据都放在新增的方法前面
  @避免出现无法找到数据的错误
  方法段method
- @当前已有功能：✔获取所有学生信息，✔新增学生，✔修改指定学生信息
+
+ @当前已有功能：✔获取所有学生信息，✔新增学生，✔修改指定学生信息，
  @待做功能：
- @ 1、将指定学生移出班级
+ @ 1、✔将指定学生移出班级
  @ 2、依据信息获取对应的学生
  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
@@ -19,14 +21,14 @@ import { regStu } from "@/api/userManagement/registerUser";
 import { reactive, ref, onMounted, inject } from "vue";
 import { ElMessage, ElNotification } from "element-plus";
 import { useTableDataStore } from "@/stores/userData/storeUserData";
-import {
-  editStuInfo,
-  editTeacherInfo,
-} from "@/api/userManagement/editUserInfo";
+import { editStuInfo } from "@/api/userManagement/editUserInfo";
 import { basicClassesStore } from "@/stores";
-import service from "@/utils/axios";
 import { removeStudentFromClass } from "@/api/userManagement/removeUser";
-
+import pagination from "@/components/Pagination.vue";
+import { errorMessages } from "@/utils/errorMessagesCode";
+import { rules } from "@/utils/formRules";
+import classesList from "@/components/charts/classesListTable.vue";
+import { Search } from "@element-plus/icons-vue";
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   checkToken();
@@ -49,63 +51,6 @@ let userForm = reactive({
   class: "",
   sex: "",
 });
-
-// @注册表单输入规则
-const rules = {
-  name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-  password: [
-    { required: true, message: "请输入密码" },
-    {
-      validator: (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error("请输入密码"));
-        }
-        if (value.length < 8) {
-          return callback(new Error("密码长度必须大于8位"));
-        }
-        if (!/[0-9]/.test(value)) {
-          return callback(new Error("密码必须包含1个数字"));
-        }
-        if (!/[a-z]/.test(value)) {
-          return callback(new Error("密码必须包含1个小写字母"));
-        }
-        if (!/[A-Z]/.test(value)) {
-          return callback(new Error("密码必须包含1个大写字母"));
-        }
-        callback();
-      },
-      trigger: "blur",
-    },
-  ],
-  email: [
-    { required: true, message: "请输入邮箱", trigger: "blur" },
-    {
-      type: "email",
-      message: "请输入正确的邮箱地址",
-      trigger: ["blur", "change"],
-    },
-  ],
-  realName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
-  userSchoollD: [
-    {
-      required: true,
-      validator: (rule, value, callback) => {
-        if (!value) {
-          return callback(new Error("请输入学生学号"));
-        }
-        var pattern = /^[0-9]+$/;
-        if (!pattern.test(value)) {
-          return callback(new Error("学生学号必须全为数字"));
-        }
-        callback();
-      },
-      trigger: "blur",
-    },
-  ],
-  schoolCode: [{ required: true, message: "请输入学校代码", trigger: "blur" }],
-  class: [{ required: true, message: "请输入学生班级", trigger: "blur" }],
-  sex: [{ required: true, message: "请选择性别", trigger: "change" }],
-};
 
 const studentDataTable = useTableDataStore();
 const useClassList = basicClassesStore();
@@ -136,8 +81,8 @@ const filterClasses = (value, row) => {
 };
 
 // 数据获取
-const fetchData = () => {
-  studentDataTable.showStuInfo();
+const fetchData = async () => {
+  await studentDataTable.showStuInfo();
   // 数据获取完成后，可以执行其他操作或访问Store中的数据
   //console.log(studentDataTable.stuList.id);
 };
@@ -199,42 +144,6 @@ const editStudent = (row) => {
   });
   showPassword.value = false;
   IsDisabled.value = true;
-};
-
-// 移出班级的按钮方法
-const removeFromClass = async (row) => {
-  const { id } = row;
-  // console.log(id);
-  await removeStudentFromClass(id)
-    .then(() => {
-      reload();
-      ElMessage({
-        message: "移出成功",
-        type: "success",
-      });
-    })
-    .catch((e) => {
-      let errorMessage = "登录失败";
-      switch (e.response.data.status) {
-        case 1:
-          errorMessage = "内部错误";
-          break;
-        case 7:
-          errorMessage = "无权限";
-          break;
-        case 15:
-          errorMessage = "班级不存在";
-          break;
-        default:
-          errorMessage = "未知错误";
-      }
-      ElNotification({
-        title: "错误",
-        message: errorMessage,
-        type: "error",
-        duration: 3000,
-      });
-    });
 };
 
 // @以下代码用于分页
@@ -311,31 +220,11 @@ const handleSubmit = async () => {
         }
       })
       .catch((e) => {
-        let errorMessage = "登录失败";
-        switch (e.response.data.status) {
-          case 1:
-            errorMessage = "内部错误";
-            break;
-          case 3:
-            errorMessage = "参数错误";
-            break;
-          case 4:
-            errorMessage = "用户已存在";
-            break;
-          case 5:
-            errorMessage = "用户不存在";
-            break;
-          case 10:
-            errorMessage = "用户名已存在";
-            break;
-          case 11:
-            errorMessage = "邮箱格式错误";
-            break;
-          case 13:
-            errorMessage = "学校信息错误";
-            break;
-          default:
-            errorMessage = "未知错误";
+        let errorMessage = "失败";
+        if (e.response.data.status) {
+          errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        } else {
+          errorMessage = "未知错误";
         }
         ElNotification({
           title: "错误",
@@ -368,22 +257,11 @@ const handleSubmit = async () => {
         //console.log(newUserForm.value.id);
       })
       .catch((e) => {
-        let errorMessage = "登录失败";
-        switch (e.response.data.status) {
-          case 1:
-            errorMessage = "内部错误";
-            break;
-          case 3:
-            errorMessage = "参数错误";
-            break;
-          case 7:
-            errorMessage = "无权限";
-            break;
-          case 11:
-            errorMessage = "邮箱格式错误";
-            break;
-          default:
-            errorMessage = "未知错误";
+        let errorMessage = "失败";
+        if (e.response.data.status) {
+          errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        } else {
+          errorMessage = "未知错误";
         }
         ElNotification({
           title: "错误",
@@ -394,15 +272,153 @@ const handleSubmit = async () => {
       });
   }
 };
+
+// 多选
+const multipleSelection = ref([]);
+const isAnyStudentSelected = ref(false);
+const selectStudents = ref([]);
+
+// 多选框
+const handleSelectionChange = (val) => {
+  multipleSelection.value = val;
+  selectStudents.value = multipleSelection.value;
+  isAnyStudentSelected.value = selectStudents.value.length > 0;
+};
+
+// 一键移出班级
+const removeSelectedStudents = async () => {
+  if (selectStudents.value.length === 0) {
+    return; // 如果没有选中的学生，直接返回
+  }
+  const student = selectStudents.value.pop(); // 从选中的学生数组中取出最后一个学生
+  try {
+    await removeStudentFromClass(student.id); // 删除这个学生
+    if (selectStudents.value.length > 0) {
+      // 如果还有选中的学生，继续递归删除下一个学生
+      await removeSelectedStudents();
+    } else {
+      reload(); // 如果所有学生都被删除了，进行页面刷新
+      ElMessage({
+        message: "批量移出成功",
+        type: "success",
+      });
+    }
+  } catch (e) {
+    let errorMessage = "失败";
+    if (e.response && e.response.data && e.response.data.status) {
+      errorMessage = errorMessages[e.response.data.status] || "未知错误";
+    } else {
+      errorMessage = "未知错误";
+    }
+    ElNotification({
+      title: "错误",
+      message: errorMessage,
+      type: "error",
+      duration: 3000,
+    });
+  }
+};
+
+// 提交移出的方法
+const handleRemoveClick = async () => {
+  const confirmResult = await ElMessageBox.confirm(
+    "确定要移出所选学生的班级？",
+    "提示",
+    { type: "warning" }
+  );
+  if (confirmResult === "confirm") {
+    await removeSelectedStudents();
+  } else {
+  }
+};
+
+// 将一个学生移出班级的按钮方法
+const removeFromClass = async (row) => {
+  const { id } = row;
+  const confirmResult = await ElMessageBox.confirm(
+    "确定要移出所选学生吗？",
+    "提示",
+    {
+      type: "warning",
+    }
+  );
+  if (confirmResult === "confirm") {
+    // 用户点击了确认按钮,执行移出班级的操作
+    await removeStudentFromClass(id)
+      .then(() => {
+        reload();
+        ElMessage({
+          message: "移出成功",
+          type: "success",
+        });
+      })
+      .catch((e) => {
+        let errorMessage = "失败";
+        if (e.response.data.status) {
+          errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        } else {
+          errorMessage = "未知错误";
+        }
+        ElNotification({
+          title: "错误",
+          message: errorMessage,
+          type: "error",
+          duration: 3000,
+        });
+      });
+  } else {
+    // 用户点击了取消按钮
+    // 可以不做任何操作
+  }
+};
+
+// 搜索班级的关键字
+const searchKeyword=ref('')
 </script>
 
 <template>
   <div class="user-header">
-    <!--    新增用户-->
-    <el-button type="primary" @click="addStudent()">+新增</el-button>
+    <el-form :inline="true">
+      <el-form-item>
+        <!--      移出班级的 按钮-->
+        <el-button
+          type="danger"
+          size="default"
+          @click="handleRemoveClick"
+          :disabled="!isAnyStudentSelected"
+        >
+          批量移出班级
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-button
+          type="primary"
+          size="default"
+          @click="handleRemoveClick"
+          :disabled="!isAnyStudentSelected"
+        >
+          批量移入班级
+        </el-button>
+      </el-form-item>
+      <el-form-item>
+        <el-input
+          class="w-50 m-2"
+          placeholder="搜索班级列表"
+          clearable
+          v-model="searchKeyword"
+        >
+          <template #prefix>
+            <el-icon class="el-input__icon">
+              <search />
+            </el-icon>
+          </template>
+        </el-input>
+      </el-form-item>
+    </el-form>
+
     <el-dialog
       v-model="dialogVisible"
-      :title="action == 'add' ? '添加学生' : '编辑学生'"
+      :title="action === 'add' ? '添加学生' : '编辑学生'"
       width="30%"
       :before-close="handleClose"
     >
@@ -464,7 +480,7 @@ const handleSubmit = async () => {
           <el-form-item>
             <div class="button-container">
               <el-button type="primary" @click="handleSubmit('userForm')"
-                >{{ action == "add" ? "添加" : "确认修改" }}
+                >{{ action === "add" ? "添加" : "确认修改" }}
               </el-button>
               <el-button @click="dialogVisible = false">取消</el-button>
             </div>
@@ -478,7 +494,7 @@ const handleSubmit = async () => {
       <el-form-item>
         <el-input
           class="w-50 m-2"
-          placeholder="输入姓名/用户名/班级"
+          placeholder="搜索姓名/用户名/班级"
           v-model="queryInfo"
           clearable
         >
@@ -490,13 +506,20 @@ const handleSubmit = async () => {
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="toSearch">搜索</el-button>
+        <el-button type="primary" @click="addStudent()">+注册学生</el-button>
       </el-form-item>
     </el-form>
   </div>
   <div class="table">
-    <el-table :data="filteredData" style="width: 100%" border max-height="600">
-      <el-table-column prop="id" label="ID" width="180" />
+    <el-table
+      :data="filteredData"
+      style="width: 100%"
+      border
+      stripe
+      max-height="600"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column fixed type="selection" width="50" />
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
       <el-table-column prop="realName" label="姓名" width="150" />
       <el-table-column
@@ -541,6 +564,7 @@ const handleSubmit = async () => {
     @current-change="changePage"
     @size-change="handleSizeChange"
   />
+  <classes-list :keyword="searchKeyword"/>
 </template>
 
 <style scoped lang="less">
@@ -579,6 +603,10 @@ const handleSubmit = async () => {
 .user-header {
   display: flex;
   justify-content: space-between;
+
+  .el-button {
+    margin-right: 5px; // 调整右侧间距为5px
+  }
 }
 
 .el-pagination {

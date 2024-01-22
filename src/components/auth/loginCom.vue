@@ -7,6 +7,7 @@
 import { login } from "@/api";
 import { ElMessage } from "element-plus";
 import { useAuthStore } from "@/stores/tokenStore";
+import { errorMessages } from "@/utils/errorMessagesCode";
 
 export default {
   name: "LoginPage",
@@ -37,58 +38,17 @@ export default {
           }
         })
         .catch((e) => {
-          let errorMessage = "登录失败";
-          switch (e.response.data.status) {
-            case 1:
-              errorMessage = "内部错误";
-              break;
-            case 2:
-              errorMessage = "登录令牌错误";
-              break;
-            case 3:
-              errorMessage = "参数错误";
-              break;
-            case 4:
-              errorMessage = "用户已存在";
-              break;
-            case 5:
-              errorMessage = "用户不存在";
-              break;
-            case 6:
-              errorMessage = "密码错误";
-              break;
-            case 7:
-              errorMessage = "无权限访问";
-              break;
-            case 8:
-              errorMessage = "班级错误";
-              break;
-            case 9:
-              errorMessage = "性别错误";
-              break;
-            case 10:
-              errorMessage = "用户名已存在";
-              break;
-            case 11:
-              errorMessage = "邮箱格式错误";
-              break;
-            case 12:
-              errorMessage = "真实姓名错误";
-              break;
-            case 13:
-              errorMessage = "学校信息错误";
-              break;
-            case 14:
-              errorMessage = "密码强度不够";
-              break;
-            default:
-              errorMessage = "未知错误";
+          let errorMessage = "失败";
+          if (e.response.data.status) {
+            errorMessage = errorMessages[e.response.data.status] || "未知错误";
+          } else {
+            errorMessage = "未知错误";
           }
-          ElMessage({
+          ElNotification({
+            title: "错误",
             message: errorMessage,
             type: "error",
             duration: 3000,
-            offset: 245,
           });
         });
     },
@@ -156,16 +116,16 @@ export default {
               <div class="remember-row">
                 <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
                 <router-link to="/stuForgetPassword" class="forgot-password"
-                  >忘记密码</router-link
-                >
+                  >忘记密码
+                </router-link>
               </div>
               <el-button
                 type="primary"
                 @click="onSubmit"
                 class="login-button"
                 :disabled="!canSubmit"
-                >登录</el-button
-              >
+                >登录
+              </el-button>
             </el-form>
           </div>
         </div>
