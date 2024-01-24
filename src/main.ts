@@ -11,6 +11,7 @@ import "./assets/less/index.less";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 import "element-plus/dist/index.css";
 import Pagination from "@/components/Pagination.vue";
+
 import Unicon from "vue-unicons";
 import {
   uniUser,
@@ -18,9 +19,14 @@ import {
   uniMars,
   uniVenus,
   uniAdjustCircle,
+  uniUserSquare,
+  uniMedal,
+  uniSearch,
+  uniChatInfo,
+  uniUserCircle,
 } from "vue-unicons/dist/icons.js";
 
-Unicon.add([uniUser, uniEnvelope, uniMars, uniVenus, uniAdjustCircle]);
+Unicon.add([uniUser, uniEnvelope, uniMars, uniVenus, uniAdjustCircle,uniUserSquare,uniMedal,uniSearch ,uniChatInfo,uniUserCircle]);
 
 //创建实例
 const app = createApp(App);
@@ -31,7 +37,6 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 //element-plus
 // app.config.globalProperties.$api= api
-
 app.config.globalProperties.$echarts = echarts;
 app
   .use(pinia)

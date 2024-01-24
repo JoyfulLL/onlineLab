@@ -29,13 +29,14 @@ import { errorMessages } from "@/utils/errorMessagesCode";
 import { rules } from "@/utils/formRules";
 import classesList from "@/components/charts/classesListTable.vue";
 import { Search } from "@element-plus/icons-vue";
-import {teacherJoinedClassStore} from "@/stores/classData";
-
+import { teacherJoinedClassStore } from "@/stores/classData";
+import { useAuthStore } from "@/stores/tokenStore";
+import addStudentsFromClass from "@/components/addStudentsFromClass.vue";
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   checkToken();
   fetchData();
-  fetchClassList()
+  fetchClassList();
 });
 
 // @注入APP.vue提供的刷新方法
@@ -54,15 +55,19 @@ let userForm = reactive({
   class: "",
   sex: "",
 });
+const useScope = useAuthStore();
+// 读取当前用户的scope角色并存储
+const userScope = useScope.getScope(); //获取到的scope
 
 const studentDataTable = useTableDataStore();
 const useAllClassInfoList = basicClassesStore();
 
-const useClassList=teacherJoinedClassStore();
-const fetchClassList = ()=>{
-  useClassList.storeTeacherList()
+const useClassList = teacherJoinedClassStore();
+const fetchClassList = () => {
+  useClassList.storeTeacherList();
   // console.log(useClassList.teacherClassList)
-}
+};
+
 // 处理班级数据
 function processClassData(classData) {
   return Object.keys(classData).map((classid) => ({
@@ -102,6 +107,7 @@ const fetchData = async () => {
 
 // 用于控制会话框显示
 const dialogVisible = ref(false);
+const dialogVisibleSearchStu=ref(false)
 
 // @用于判断当前动作
 // @区分当前是添加还是编辑
@@ -129,16 +135,7 @@ const handleClose = (done) => {
 //提交表单的函数为handleSubmit
 const addStudent = async () => {
   action.value = "add";
-  dialogVisible.value = true;
-  // 清空表单信息
-  // @因为先点击编辑按钮，查看的信息会遗留在当前的表单
-  // @因为不懂更新DOM的方法（nextTick），所以只能先强制删除表单的信息
-  // @删除的仅仅是显示的信息，不波及数据库
-  for (let key in userForm) {
-    delete userForm[key];
-  }
-  showPassword.value = true;
-  IsDisabled.value = false;
+  dialogVisibleSearchStu.value = true;
 };
 
 //@用于”编辑按钮“，函数实际用途为查看用户信息
@@ -293,14 +290,14 @@ const handleSelectionChange = (val) => {
   isAnyStudentSelected.value = selectStudents.value.length > 0;
 };
 
-// 一键移出班级
+// 一键移出班级 即批量
 const removeSelectedStudents = async () => {
   if (selectStudents.value.length === 0) {
     return; // 如果没有选中的学生，直接返回
   }
   const student = selectStudents.value.pop(); // 从选中的学生数组中取出最后一个学生
   try {
-    await removeStudentFromClass(student.id); // 删除这个学生
+    await removeStudentFromClass(student.id, userScope); // 删除这个学生
     if (selectStudents.value.length > 0) {
       // 如果还有选中的学生，继续递归删除下一个学生
       await removeSelectedStudents();
@@ -352,7 +349,7 @@ const removeFromClass = async (row) => {
   );
   if (confirmResult === "confirm") {
     // 用户点击了确认按钮,执行移出班级的操作
-    await removeStudentFromClass(id)
+    await removeStudentFromClass(id, userScope)
       .then(() => {
         reload();
         ElMessage({
@@ -380,8 +377,6 @@ const removeFromClass = async (row) => {
   }
 };
 
-// 搜索班级的关键字
-const searchKeyword=ref('')
 </script>
 
 <template>
@@ -398,31 +393,12 @@ const searchKeyword=ref('')
           批量移出班级
         </el-button>
       </el-form-item>
-      <el-form-item>
-        <el-button
-          type="primary"
-          size="default"
-          @click="handleRemoveClick"
-          :disabled="!isAnyStudentSelected"
-        >
-          批量移入班级
-        </el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-input
-          class="w-50 m-2"
-          placeholder="搜索班级列表"
-          clearable
-          v-model="searchKeyword"
-        >
-          <template #prefix>
-            <el-icon class="el-input__icon">
-              <search />
-            </el-icon>
-          </template>
-        </el-input>
-      </el-form-item>
     </el-form>
+
+<!--    用于搜索学生-->
+    <el-dialog v-model="dialogVisibleSearchStu" :before-close="handleClose">
+      <add-students-from-class/>
+    </el-dialog>
 
     <el-dialog
       v-model="dialogVisible"
@@ -430,7 +406,7 @@ const searchKeyword=ref('')
       width="30%"
       :before-close="handleClose"
     >
-      <!--      学生注册/编辑组件表单-->
+      <!-- 编辑组件表单-->
       <div class="form-container">
         <el-form
           :model="userForm"
@@ -502,19 +478,19 @@ const searchKeyword=ref('')
       <el-form-item>
         <el-input
           class="w-50 m-2"
-          placeholder="搜索姓名/用户名/班级"
+          placeholder="搜索学生姓名/班级"
           v-model="queryInfo"
           clearable
         >
           <template #prefix>
             <el-icon class="el-input__icon">
-              <search />
+              <unicon name="search" fill="royalblue"></unicon>
             </el-icon>
           </template>
         </el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="addStudent()">+注册学生</el-button>
+        <el-button type="primary" @click="addStudent()">+添加学生</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -539,7 +515,8 @@ const searchKeyword=ref('')
         filter-placement="bottom-end"
       >
         <template #default="scope">
-          {{ scope.row.class }}
+<!--          {{ scope.row.class }}-->
+          {{ scope.row && scope.row.class ? scope.row.class : '' }}
         </template>
       </el-table-column>
       <el-table-column prop="schoolCode" label="学校" width="180" />
@@ -572,7 +549,6 @@ const searchKeyword=ref('')
     @current-change="changePage"
     @size-change="handleSizeChange"
   />
-  <classes-list :keyword="searchKeyword" :classesList="useAllClassInfoList.classList"/>
 </template>
 
 <style scoped lang="less">

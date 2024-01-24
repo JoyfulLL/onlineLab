@@ -285,7 +285,7 @@ const filteredData = computed(() => {
         >
           <template #prefix>
             <el-icon class="el-input__icon">
-              <search />
+              <unicon name="search" fill="royalblue"></unicon>
             </el-icon>
           </template>
         </el-input>

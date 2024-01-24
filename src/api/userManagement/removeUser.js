@@ -7,8 +7,16 @@
 
 import service from "@/utils/axios";
 
-export function removeStudentFromClass(studentid) {
-  return service.delete("/authrequired/admin/student/class", {
-    data: { studentid: studentid },
-  });
+
+// 教师拥有将学生批量移出班级的功能，管理员没有
+export function removeStudentFromClass(studentid,scope) {
+  if(scope==="admin"){
+    return service.delete("/authrequired/admin/student/class", {
+      data: { studentid: studentid },
+    });
+  }else{
+    return service.delete("/authrequired/teacher/class/students/leave", {
+      data: { studentid: [studentid] },
+    });
+  }
 }

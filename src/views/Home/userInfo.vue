@@ -59,6 +59,24 @@ const fetchClassList = ()=>{
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
+              <unicon name="user-square" fill="royalblue"></unicon>
+              姓名
+            </div>
+          </template>
+          {{ userInfo.realName }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <unicon name="medal" fill="royalblue"></unicon>
+              班级
+            </div>
+          </template>
+          {{ userInfo.class }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
               <unicon name="envelope" fill="royalblue"></unicon>
               邮箱
             </div>

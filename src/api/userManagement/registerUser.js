@@ -37,3 +37,16 @@ export function regTeacher(name, email, realName, password, sex) {
     sex: sex,
   });
 }
+
+
+// 教师添加学生到指定班级
+export function addStudentsToClass(studentId , className){
+  return service.post("/authrequired/teacher/class/students/join", {
+    studentid : studentId ,
+    classname: className
+  })
+}
+
+export function teacherJoinClass(className){
+  return service.post("/authrequired/teacher/class/join",{classname: className})
+}

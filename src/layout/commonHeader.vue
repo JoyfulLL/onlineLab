@@ -25,10 +25,19 @@
     </div>
     <div class="r-content">
       <el-badge :value="1" class="item">
-        <el-icon class="icon"><Bell /></el-icon>
+        <el-icon class="icon">
+          <Bell />
+        </el-icon>
       </el-badge>
       <el-dropdown>
-        <el-avatar :icon="UserFilled" />
+        <div>
+          <unicon
+              name="user-circle"
+              fill="royalblue"
+              width="33"
+              height="33"
+          ></unicon>
+        </div>
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
@@ -91,7 +100,7 @@ header {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  background: #fdf6ec;
+  background: rgba(235, 234, 234, 0.99);
 }
 
 .r-content {
@@ -109,8 +118,11 @@ header {
     font-size: 24px; // 设置图标的大小
   }
 
-  .el-avatar {
+  div {
     outline: none; // 用于去除黑边框
+    .large-icon {
+      font-size: 50px;
+    }
   }
 }
 

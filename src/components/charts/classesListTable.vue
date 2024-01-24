@@ -7,9 +7,17 @@
  * @date 2024/1/22
  * classesList用于父组件传递Object列表
  */
-import { defineComponent, ref, defineProps } from "vue";
+import { defineComponent, ref, defineProps, inject } from "vue";
 import { teacherJoinedClassStore } from "@/stores/classData.js";
-const useClassList=teacherJoinedClassStore();
+import { ElMessage, ElNotification, ElTableColumn } from "element-plus";
+import {
+  addStudentsToClass,
+  teacherJoinClass,
+} from "@/api/userManagement/registerUser";
+import { errorMessages } from "@/utils/errorMessagesCode";
+
+const useClassList = teacherJoinedClassStore();
+const reload = inject("reload");
 const props = defineProps({
   keyword: {
     type: String,
@@ -17,37 +25,155 @@ const props = defineProps({
   classesList: {
     type: Object,
     default: () => ({}),
-  }
+  },
+  customStyle: {
+    type: Object,
+    default: () => ({}),
+  },
+  useMultipleSelection: {
+    type: Boolean,
+    default: false,
+  },
+  showOperation: {
+    type: Boolean,
+    default: false,
+  },
+  studensId: {
+    type: Array,
+    default: [],
+  },
 });
+
+// 多选
+const multipleSelection = ref([]);
+const isAnyStudentSelected = ref(false);
+const selectStudents = ref([]);
+const classname = ref();
+// 多选框
+const handleSelectionChange = (val) => {
+  multipleSelection.value = val;
+  selectStudents.value = multipleSelection.value;
+  classname.value = selectStudents.value
+    .map((student) => student.classname)
+    .join(", ");
+  console.log(classname.value);
+  isAnyStudentSelected.value = selectStudents.value.length > 0;
+};
 
 // props.classesList
 const filteredData = computed(() => {
   if (props.keyword && Array.isArray(props.classesList)) {
     const keywordWithoutSpaces = props.keyword.trim();
-    return props.classesList.filter(classItem => {
-      return classItem && classItem.classname && classItem.classname.toLowerCase().includes(keywordWithoutSpaces.toLowerCase());
+    return props.classesList.filter((classItem) => {
+      return (
+        classItem &&
+        classItem.classname &&
+        classItem.classname
+          .toLowerCase()
+          .includes(keywordWithoutSpaces.toLowerCase())
+      );
     });
   } else {
     return props.classesList;
   }
 });
 
+const onSubMitTeacherJoinClass = async () => {
+  console.log("教师加入班级按钮点击")
+  await teacherJoinClass(classname.value)
+    .then((res) => {
+      if (res.data.status === 0) {
+        //状态码为0，提交成功，关闭当前对话框
+        reload();
+        ElMessage({
+          message: "加入班级成功",
+          type: "success",
+        });
+      }
+    })
+    .catch((e) => {
+      let errorMessage = "失败";
+      if (e.response.data.status) {
+        errorMessage = errorMessages[e.response.data.status] || "未知错误";
+      } else {
+        errorMessage = "未知错误";
+      }
+      ElNotification({
+        title: "错误",
+        message: errorMessage,
+        type: "error",
+        duration: 3000,
+      });
+    });
+};
+
+const onSubmitStuToClass = async () => {
+  console.log("加入学生进班级按钮点击")
+  await addStudentsToClass(props.studensId, classname.value)
+    .then((res) => {
+      if (res.data.status === 0) {
+        //状态码为0，提交成功，关闭当前对话框
+        reload();
+        ElMessage({
+          message: "操作成功",
+          type: "success",
+        });
+      }
+    })
+    .catch((e) => {
+      let errorMessage = "失败";
+      if (e.response.data.status) {
+        errorMessage = errorMessages[e.response.data.status] || "未知错误";
+      } else {
+        errorMessage = "未知错误";
+      }
+      ElNotification({
+        title: "错误",
+        message: errorMessage,
+        type: "error",
+        duration: 3000,
+      });
+    });
+};
 </script>
 
 <template>
-  <div class="class-table">
+  <div class="class-table" :style="customStyle">
     <el-table
       :data="filteredData"
       style="width: auto"
       border
-      max-height="380"
+      max-height="280px"
+      :margin-top="props.marginTop"
+      @selection-change="handleSelectionChange"
     >
-      <el-table-column prop="classid" label="班级ID" width="180" />
+      <el-table-column
+        fixed
+        type="selection"
+        width="50"
+        v-if="props.useMultipleSelection"
+      />
+      <el-table-column prop="classid" label="班级ID" width="80" />
       <el-table-column prop="classname" label="班级名称" width="300" />
-      <el-table-column prop="teacherid" label="教师ID" width="auto" />
-      <el-table-column label="操作">
+      <el-table-column prop="teacherid" label="教师ID" width="180" />
+      <el-table-column label="操作" v-if="props.showOperation">
         <template #default="scope">
-          <el-button type="primary" size="default">加入班级 </el-button>
+          <el-button
+            type="primary"
+            size="default"
+            :disabled="!isAnyStudentSelected"
+            @click="onSubMitTeacherJoinClass"
+          >
+            教师加入班级
+          </el-button>
+          <el-button
+            type="primary"
+            size="default"
+            @click="onSubmitStuToClass"
+            :disabled="!isAnyStudentSelected"
+          >
+            将学生移入班级
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -56,6 +182,7 @@ const filteredData = computed(() => {
 
 <style scoped lang="less">
 .class-table {
+  //margin-top: 30px;
   position: relative;
   height: auto;
   border-radius: 10px; // 添加圆角
