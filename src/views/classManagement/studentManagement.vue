@@ -17,18 +17,13 @@
  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
 import { checkToken } from "@/api";
-import { regStu } from "@/api/userManagement/registerUser";
+import studentRegistration from "@/components/auth/studentRegistration.vue";
 import { reactive, ref, onMounted, inject } from "vue";
 import { ElMessage, ElNotification } from "element-plus";
 import { useTableDataStore } from "@/stores/userData/storeUserData";
-import { editStuInfo } from "@/api/userManagement/editUserInfo";
 import { basicClassesStore } from "@/stores";
 import { removeStudentFromClass } from "@/api/userManagement/removeUser";
-import pagination from "@/components/Pagination.vue";
 import { errorMessages } from "@/utils/errorMessagesCode";
-import { rules } from "@/utils/formRules";
-import classesList from "@/components/charts/classesListTable.vue";
-import { Search } from "@element-plus/icons-vue";
 import { teacherJoinedClassStore } from "@/stores/classData";
 import { useAuthStore } from "@/stores/tokenStore";
 import addStudentsFromClass from "@/components/addStudentsFromClass.vue";
@@ -47,7 +42,6 @@ const reload = inject("reload");
 let userForm = reactive({
   id: "",
   name: "",
-  password: "",
   email: "",
   realName: "",
   userSchoollD: "",
@@ -105,17 +99,16 @@ const fetchData = async () => {
 // @编辑学生按钮——展示会话框以及获取到的表单数据
 // @表单信息的提交动作（注册学生，修改学生）都在handleSubmit
 
-// 用于控制会话框显示
-const dialogVisible = ref(false);
-const dialogVisibleSearchStu=ref(false)
-
-// @用于判断当前动作
-// @区分当前是添加还是编辑
-const action = ref("add");
+// 用于编辑学生
+const dialogVisibleEditStudent = ref(false);
+// 用于右上角添加学生
+const dialogVisibleSearchStu = ref(false);
+//用于查看学生
+const dialogVisibleViewStu = ref(false);
 
 // @显示密码框与否 编辑模式没有密码框
 const showPassword = ref();
-
+const MyEditAction = ref("edit");
 // @用于在编辑模式禁用相关选项的修改
 // @目前除了realName，email，class外，全都禁用
 const IsDisabled = ref(false);
@@ -133,22 +126,40 @@ const handleClose = (done) => {
 
 //此函数仅用于调出会话框，并不是用于提交表单
 //提交表单的函数为handleSubmit
+//用于调出添加学生的界面
 const addStudent = async () => {
-  action.value = "add";
   dialogVisibleSearchStu.value = true;
 };
 
 //@用于”编辑按钮“，函数实际用途为查看用户信息
 //@将用户信息显示在表单中
+//老师只能查看，不能编辑，管理员可以编辑
 const editStudent = (row) => {
-  action.value = "edit";
-  dialogVisible.value = true;
-  // console.log(row)
-  nextTick(() => {
-    Object.assign(userForm, row);
-  });
+  dialogVisibleEditStudent.value = true;
+  userForm = { ...row };
+  showPassword.value = false;
+  IsDisabled.value = false;
+};
+
+const viewStudent = (row) => {
+  dialogVisibleViewStu.value = true;
+  userForm = { ...row };
   showPassword.value = false;
   IsDisabled.value = true;
+};
+
+const handleButtonClick = (row) => {
+  if (userScope === "admin") {
+    editStudent(row);
+  } else {
+    viewStudent(row);
+  }
+};
+
+// 用于编辑成功后，关闭会话框并且刷新界面
+const closeEditDialog = (value) => {
+  dialogVisibleEditStudent.value = value;
+  reload();
 };
 
 // @以下代码用于分页
@@ -168,15 +179,13 @@ function handleSizeChange(val) {
   currentPage.value = 1; // 切换每页显示个数时，回到第一页
 }
 
-const toSearch = () => {};
 // 用于搜索功能
 const queryInfo = ref("");
 
 // 表单遍历的数据为划分后且能够检索的数据
-const filteredData = computed(() => {
+const filteredData = ref(computed(() => {
   const query = queryInfo.value.toLowerCase().trim();
   let filtered = studentDataTable.stuList;
-  //console.log(filtered)
   if (query) {
     filtered = filtered.filter((item) => {
       return (
@@ -196,87 +205,7 @@ const filteredData = computed(() => {
   const startIndex = (currentPage.value - 1) * pageSize.value;
   const endIndex = startIndex + pageSize.value;
   return filtered.slice(startIndex, endIndex);
-});
-
-// @此函数用于提交表单
-// @判断动作的值，为add则调用新增用户接口
-// @否则调用的是修改用户的接口
-const handleSubmit = async () => {
-  if (action.value === "add") {
-    await regStu(
-      userForm.name,
-      userForm.password,
-      userForm.email,
-      userForm.realName,
-      userForm.userSchoollD,
-      userForm.schoolCode,
-      userForm.class,
-      userForm.sex
-    )
-      .then((res) => {
-        if (res.data.status === 0) {
-          //状态码为0，提交成功，关闭当前对话框
-          dialogVisible.value = false;
-          reload();
-          ElMessage({
-            message: "用户添加完毕",
-            type: "success",
-          });
-        }
-      })
-      .catch((e) => {
-        let errorMessage = "失败";
-        if (e.response.data.status) {
-          errorMessage = errorMessages[e.response.data.status] || "未知错误";
-        } else {
-          errorMessage = "未知错误";
-        }
-        ElNotification({
-          title: "错误",
-          message: errorMessage,
-          type: "error",
-          duration: 3000,
-        });
-      });
-  } else {
-    //@ 在此处调用修改学生参数的接口
-    await editStuInfo(
-      userForm.id,
-      userForm.name,
-      userForm.email,
-      userForm.realName,
-      userForm.userSchoollD,
-      userForm.schoolCode,
-      userForm.class,
-      userForm.sex
-    )
-      .then((res) => {
-        if (res.data.status == 0) {
-          dialogVisible.value = false;
-          reload();
-          ElMessage({
-            message: "编辑成功",
-            type: "success",
-          });
-        }
-        //console.log(newUserForm.value.id);
-      })
-      .catch((e) => {
-        let errorMessage = "失败";
-        if (e.response.data.status) {
-          errorMessage = errorMessages[e.response.data.status] || "未知错误";
-        } else {
-          errorMessage = "未知错误";
-        }
-        ElNotification({
-          title: "错误",
-          message: errorMessage,
-          type: "error",
-          duration: 3000,
-        });
-      });
-  }
-};
+}));
 
 // 多选
 const multipleSelection = ref([]);
@@ -351,7 +280,6 @@ const removeFromClass = async (row) => {
     // 用户点击了确认按钮,执行移出班级的操作
     await removeStudentFromClass(id, userScope)
       .then(() => {
-        reload();
         ElMessage({
           message: "移出成功",
           type: "success",
@@ -371,12 +299,12 @@ const removeFromClass = async (row) => {
           duration: 3000,
         });
       });
+    reload();
   } else {
     // 用户点击了取消按钮
     // 可以不做任何操作
   }
 };
-
 </script>
 
 <template>
@@ -395,81 +323,43 @@ const removeFromClass = async (row) => {
       </el-form-item>
     </el-form>
 
-<!--    用于搜索学生-->
+    <!--    老师：用于搜索学生 并且将学生拉入班级-->
     <el-dialog v-model="dialogVisibleSearchStu" :before-close="handleClose">
-      <add-students-from-class/>
-    </el-dialog>
+      <add-students-from-class />
 
+    </el-dialog>
+<!--    用于老师查看学生的信息 教师无权限编辑-->
     <el-dialog
-      v-model="dialogVisible"
-      :title="action === 'add' ? '添加学生' : '编辑学生'"
+      v-model="dialogVisibleViewStu"
+      title="查看学生"
       width="30%"
       :before-close="handleClose"
     >
-      <!-- 编辑组件表单-->
+      <!-- 查看学生信息用-->
       <div class="form-container">
-        <el-form
-          :model="userForm"
-          class="centered-form"
-          label-width="80px"
-          :rules="rules"
-        >
-          <el-form-item label="ID" prop="id" v-if="!showPassword">
-            <el-input v-model="userForm.id" :disabled="IsDisabled"></el-input>
-          </el-form-item>
-          <el-form-item label="用户名" prop="name">
-            <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password" v-if="showPassword">
-            <el-input
-              v-model="userForm.password"
-              type="password"
-              show-password
-            />
-          </el-form-item>
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model="userForm.email"></el-input>
-          </el-form-item>
-          <el-form-item label="姓名" prop="realName">
-            <el-input v-model="userForm.realName"></el-input>
-          </el-form-item>
-          <el-form-item label="学生学号" prop="userSchoollD">
-            <el-input
-              v-model="userForm.userSchoollD"
-              :disabled="IsDisabled"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="学校代码" prop="schoolCode">
-            <el-input
-              v-model="userForm.schoolCode"
-              :disabled="IsDisabled"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="学生班级" prop="class">
-            <el-select v-model="userForm.class" placeholder="请选择班级">
-              <el-option
-                v-for="item in useAllClassInfoList.classList"
-                :key="item.classid"
-                :label="item.classname"
-                :value="item.classname"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="性别" prop="sex">
-            <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
-              <el-radio label="男">男</el-radio>
-              <el-radio label="女">女</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item>
-            <div class="button-container">
-              <el-button type="primary" @click="handleSubmit('userForm')"
-                >{{ action === "add" ? "添加" : "确认修改" }}
-              </el-button>
-              <el-button @click="dialogVisible = false">取消</el-button>
-            </div>
-          </el-form-item>
-        </el-form>
+        <student-registration
+          :showPassword="false"
+          :IsDisabled="true"
+          :userData="userForm"
+        />
+      </div>
+    </el-dialog>
+
+<!--    用于管理员编辑学生信息-->
+    <el-dialog
+      v-model="dialogVisibleEditStudent"
+      title="编辑学生"
+      width="30%"
+      :before-close="handleClose"
+    >
+      <div class="form-container">
+        <student-registration
+          :showPassword="false"
+          :IsDisabled="IsDisabled.value"
+          :userData="userForm"
+          :action="MyEditAction"
+          @edit-success="closeEditDialog"
+        />
       </div>
     </el-dialog>
 
@@ -515,8 +405,8 @@ const removeFromClass = async (row) => {
         filter-placement="bottom-end"
       >
         <template #default="scope">
-<!--          {{ scope.row.class }}-->
-          {{ scope.row && scope.row.class ? scope.row.class : '' }}
+          <!--          {{ scope.row.class }}-->
+          {{ scope.row && scope.row.class ? scope.row.class : "" }}
         </template>
       </el-table-column>
       <el-table-column prop="schoolCode" label="学校" width="180" />
@@ -525,8 +415,8 @@ const removeFromClass = async (row) => {
       <el-table-column prop="sex" label="性别" width="55" />
       <el-table-column fixed="right" label="操作" min-width="100">
         <template #default="scope">
-          <el-button size="default" @click="editStudent(scope.row)"
-            >编辑
+          <el-button size="default" @click="handleButtonClick(scope.row)"
+            > {{ userScope === 'admin' ? '编辑' : '查看' }}
           </el-button>
           <el-button
             type="danger"

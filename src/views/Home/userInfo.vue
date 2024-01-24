@@ -101,7 +101,7 @@ const fetchClassList = ()=>{
           <el-button class="button" text>编辑</el-button>
         </div>
       </template>
-      <classes-list :classesList="useClassList.teacherClassList" />
+      <classes-list :classesList="useClassList.teacherClassList" :showLeaveButton="true"/>
     </el-card>
   </div>
 </template>

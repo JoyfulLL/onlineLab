@@ -7,13 +7,14 @@
  * @date 2024/1/22
  * classesList用于父组件传递Object列表
  */
-import { defineComponent, ref, defineProps, inject } from "vue";
+import { ref, defineProps, inject } from "vue";
 import { teacherJoinedClassStore } from "@/stores/classData.js";
 import { ElMessage, ElNotification, ElTableColumn } from "element-plus";
 import {
   addStudentsToClass,
   teacherJoinClass,
-} from "@/api/userManagement/registerUser";
+  teacherLeaveClass,
+} from "@/api/classManagement/teacher/index.js";
 import { errorMessages } from "@/utils/errorMessagesCode";
 
 const useClassList = teacherJoinedClassStore();
@@ -35,6 +36,10 @@ const props = defineProps({
     default: false,
   },
   showOperation: {
+    type: Boolean,
+    default: false,
+  },
+  showLeaveButton: {
     type: Boolean,
     default: false,
   },
@@ -78,8 +83,9 @@ const filteredData = computed(() => {
   }
 });
 
+// 教师自己加入班级
 const onSubMitTeacherJoinClass = async () => {
-  console.log("教师加入班级按钮点击")
+  console.log("教师加入班级按钮点击");
   await teacherJoinClass(classname.value)
     .then((res) => {
       if (res.data.status === 0) {
@@ -107,8 +113,9 @@ const onSubMitTeacherJoinClass = async () => {
     });
 };
 
+// 教师将学生加入班级
 const onSubmitStuToClass = async () => {
-  console.log("加入学生进班级按钮点击")
+  console.log("加入学生进班级按钮点击");
   await addStudentsToClass(props.studensId, classname.value)
     .then((res) => {
       if (res.data.status === 0) {
@@ -116,6 +123,35 @@ const onSubmitStuToClass = async () => {
         reload();
         ElMessage({
           message: "操作成功",
+          type: "success",
+        });
+      }
+    })
+    .catch((e) => {
+      let errorMessage = "失败";
+      if (e.response.data.status) {
+        errorMessage = errorMessages[e.response.data.status] || "未知错误";
+      } else {
+        errorMessage = "未知错误";
+      }
+      ElNotification({
+        title: "错误",
+        message: errorMessage,
+        type: "error",
+        duration: 3000,
+      });
+    });
+};
+
+//教师退出班级
+const onSubmitTeacherLeaveClass = async () => {
+  await teacherLeaveClass(classname.value)
+    .then((res) => {
+      if (res.data.status === 0) {
+        //状态码为0，提交成功，关闭当前对话框
+        reload();
+        ElMessage({
+          message: "成功退出班级",
           type: "success",
         });
       }
@@ -156,6 +192,17 @@ const onSubmitStuToClass = async () => {
       <el-table-column prop="classid" label="班级ID" width="80" />
       <el-table-column prop="classname" label="班级名称" width="300" />
       <el-table-column prop="teacherid" label="教师ID" width="180" />
+      <el-table-column label="操作" v-if="props.showLeaveButton">
+        <template #default="scope">
+          <el-button
+            type="danger"
+            size="default"
+            @click="onSubmitTeacherLeaveClass"
+          >
+            退出此班级
+          </el-button>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" v-if="props.showOperation">
         <template #default="scope">
           <el-button

@@ -9,7 +9,7 @@ import { rules } from "@/utils/formRules.js";
 import { ElMessage, ElNotification, ElMessageBox } from "element-plus";
 import { defineComponent, ref } from "vue";
 import { ElInput, ElButton, ElTable, ElTableColumn } from "element-plus";
-import { teacherGetStudentInfo } from "@/api/userManagement/getUserData.js";
+import { teacherGetStudentInfo } from "@/api/classManagement/teacher/index.js";
 import { checkToken } from "@/api/index.js";
 import classesList from "@/components/charts/classesListTable.vue";
 import { basicClassesStore } from "@/stores";
@@ -43,7 +43,7 @@ const isAnyStudentSelected = ref(false);
 const selectStudents = ref([]);
 const toUseMultipleSelection = ref(true)
 // 多选框
-const ids=ref([])
+const ids=ref<number[]>([])
 const handleSelectionChange = (val) => {
   multipleSelection.value = val;
   selectStudents.value = multipleSelection.value;

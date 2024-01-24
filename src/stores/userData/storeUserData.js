@@ -2,6 +2,11 @@
  * @file  storeUserData
  * @author ljf13
  * @description
+ * @重要说明
+ * @如果教师加入了一个空的班级，后端返回的学生数据中
+ * @students数组为null且排在最前面，即classes[0]的位置
+ * @则每刷新一次界面，学生的数量就会翻一倍。
+ * @如果空数组在其他位置则无影响
  * @date 2024/1/11
  */
 
@@ -12,12 +17,6 @@ import {
   getTeachersInfo,
 } from "@/api/userManagement/getUserData.js";
 import { useAuthStore } from "@/stores/tokenStore";
-// 定义学生存储库
-// 数据字段说明
-// studentsDataCount:数据总量
-// pageNum:当前页面
-// pageSize:每页最多显示多少条数据
-// stuList：存放学生信息的数组
 
 export const useTableDataStore = defineStore("TableData", {
   state: () => ({
@@ -29,25 +28,19 @@ export const useTableDataStore = defineStore("TableData", {
   getters: {},
   actions: {
     async showStuInfo() {
-      this.stuList = [];
+      //this.stuList = [];
       const useScope = useAuthStore();
       // 读取当前用户的scope角色并存储
       const userScope = useScope.getScope(); //获取到的scope
       let res = await getStuInfo(userScope);
-      //console.log(userScope)
       if (userScope === "teacher") {
-        // res.data.data.classes.forEach(classItem => {
-        //   if (classItem.students === null) {
-        //     this.stuList.push({ class: classItem.classname });
-        //   } else {
+        // res.data.data.classes.forEach((classItem) => {
+        //   if (classItem.students !== null) {
         //     this.stuList = this.stuList.concat(classItem.students);
         //   }
         // });
-        res.data.data.classes.forEach((classItem) => {
-          if (classItem.students !== null) {
-            this.stuList = this.stuList.concat(classItem.students);
-          }
-        });
+        // this.studentsDataCount = this.stuList.length;
+        this.stuList = [].concat(...res.data.data.classes.map(classItem => classItem.students));
         this.studentsDataCount = this.stuList.length;
       } else {
         this.stuList = res.data.data;

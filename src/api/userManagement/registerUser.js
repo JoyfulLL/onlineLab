@@ -28,6 +28,7 @@ export function regStu(
   });
 }
 
+// 管理员注册教师
 export function regTeacher(name, email, realName, password, sex) {
   return service.post("/authrequired/admin/teacher/new", {
     name: name,
@@ -39,14 +40,6 @@ export function regTeacher(name, email, realName, password, sex) {
 }
 
 
-// 教师添加学生到指定班级
-export function addStudentsToClass(studentId , className){
-  return service.post("/authrequired/teacher/class/students/join", {
-    studentid : studentId ,
-    classname: className
-  })
-}
 
-export function teacherJoinClass(className){
-  return service.post("/authrequired/teacher/class/join",{classname: className})
-}
+
+

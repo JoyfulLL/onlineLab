@@ -28,7 +28,7 @@ export const basicClassesStore = defineStore({
     classList: [] as Class[],
   }),
   actions: {
-    async storeClassesList(scope) {
+    async storeClassesList(scope: string) {
       try {
         console.log(scope)
         const response = await service.get("/authrequired/classes");

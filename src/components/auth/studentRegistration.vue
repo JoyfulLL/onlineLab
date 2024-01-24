@@ -6,149 +6,139 @@
  * @date 2024/1/10
  */
 import { regStu } from "@/api/userManagement/registerUser.js";
-import { ElMessage } from "element-plus";
+import { ElMessage, ElNotification } from "element-plus";
 import { errorMessages } from "@/utils/errorMessagesCode";
+import { rules } from "@/utils/formRules.js";
+import { editStuInfo } from "@/api/userManagement/editUserInfo";
+import { basicClassesStore } from "@/stores";
+import { mapState } from "pinia";
 
 export default {
+  computed: {
+    rules() {
+      return rules;
+    },
+    ...mapState(basicClassesStore, ["classList"]),
+  },
   props: {
     userData: {
       type: Object,
+      default: () => ({}),
     },
     showPassword: {
       type: Boolean,
       default: true,
     },
+    IsDisabled: {
+      type: Boolean,
+      default: false,
+    },
+    action: {
+      type: String,
+      default: "edit",
+    },
   },
   data() {
     return {
-      userForm: {
-        name: this.name,
-        password: this.password,
-        email: this.email,
-        realName: this.realName,
-        userSchoollD: this.userSchoollD,
-        schoolCode: this.schoolCode,
-        class: this.class,
-        sex: this.sex,
-      },
-      rules: {
-        name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-        password: [
-          { required: true, message: "请输入密码" },
-          {
-            validator: function (rule, value, callback) {
-              if (!value) {
-                return callback(new Error("请输入密码"));
-              }
-              if (value.length < 8) {
-                return callback(new Error("密码长度必须大于8位"));
-              }
-              if (!/[0-9]/.test(value)) {
-                return callback(new Error("密码必须包含1个数字"));
-              }
-              if (!/[a-z]/.test(value)) {
-                return callback(new Error("密码必须包含1个小写字母"));
-              }
-              if (!/[A-Z]/.test(value)) {
-                return callback(new Error("密码必须包含1个大写字母"));
-              }
-              callback();
-            },
-            trigger: "blur",
-          },
-        ],
-        email: [
-          { required: true, message: "请输入邮箱", trigger: "blur" },
-          {
-            type: "email",
-            message: "请输入正确的邮箱地址",
-            trigger: ["blur", "change"],
-          },
-        ],
-        realName: [
-          { required: true, message: "请输入真实姓名", trigger: "blur" },
-        ],
-        userSchoollD: [
-          {
-            required: true,
-            validator: function (rule, value, callback) {
-              // 检查是否为空
-              if (!value) {
-                return callback(new Error("请输入学生学号"));
-              }
-              // 检查是否全为数字
-              var pattern = /^[0-9]+$/;
-              if (!pattern.test(value)) {
-                return callback(new Error("学生学号必须全为数字"));
-              }
-              callback(); // 验证通过
-            },
-            trigger: "blur",
-          },
-        ],
-        schoolCode: [
-          { required: true, message: "请输入学校代码", trigger: "blur" },
-        ],
-        class: [{ required: true, message: "请输入学生班级", trigger: "blur" }],
-        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
-      },
+      userForm: {},
+      regAction: "reg",
+      editAction: "edit",
     };
   },
   //用于侦听 编辑 按钮的数据变化
   watch: {
     userData: {
-      immediate: true,
-      handler: function (newVal) {
-        this.$nextTick;
-        this.userForm = newVal;
+      handler(newVal) {
+        this.userForm = { ...newVal }; // 使用对象的深拷贝来更新userForm
       },
-      deep: true,
+      immediate: true, // 立即执行一次
     },
   },
   methods: {
     handleSubmit() {
-      regStu(
-        this.userForm.name,
-        this.userForm.password,
-        this.userForm.email,
-        this.userForm.realName,
-        this.userForm.userSchoollD,
-        this.userForm.schoolCode,
-        this.userForm.class,
-        this.userForm.sex
-      )
-        .then((res) => {
-          if (res.data.status == 0) {
-            //判断status是否为0
-            ElMessage({
-              message: "注册成功",
-              type: "success",
+      console.log(this.userForm.class);
+      if (this.regAction === this.action) {
+        regStu(
+          this.userForm.name,
+          this.userForm.password,
+          this.userForm.email,
+          this.userForm.realName,
+          this.userForm.userSchoollD,
+          this.userForm.schoolCode,
+          this.userForm.class,
+          this.userForm.sex
+        )
+          .then((res) => {
+            if (res.data.status == 0) {
+              //判断status是否为0
+              ElMessage({
+                message: "注册成功",
+                type: "success",
+                duration: 3000,
+              });
+              //注册成功，跳转至登录界面
+              this.$router.push("/");
+            }
+          })
+          .catch((e) => {
+            let errorMessage = "失败";
+            if (e.response.data.status) {
+              errorMessage =
+                errorMessages[e.response.data.status] || "未知错误";
+            } else {
+              errorMessage = "未知错误";
+            }
+            ElNotification({
+              title: "错误",
+              message: errorMessage,
+              type: "error",
               duration: 3000,
             });
-            //注册成功，跳转至登录界面
-            this.$router.push("/");
-          }
-        })
-        .catch((e) => {
-          let errorMessage = "失败";
-          if (e.response.data.status) {
-            errorMessage = errorMessages[e.response.data.status] || "未知错误";
-          } else {
-            errorMessage = "未知错误";
-          }
-          ElNotification({
-            title: "错误",
-            message: errorMessage,
-            type: "error",
-            duration: 3000,
           });
-        });
+      } else if (this.editAction === this.action) {
+        editStuInfo(
+          this.userForm.id,
+          this.userForm.name,
+          this.userForm.email,
+          this.userForm.realName,
+          this.userForm.userSchoollD,
+          this.userForm.schoolCode,
+          this.userForm.class,
+          this.userForm.sex
+        )
+          .then((res) => {
+            if (res.data.status === 0) {
+              this.$emit("edit-success", false);
+              ElMessage({
+                message: "编辑成功",
+                type: "success",
+              });
+            }
+          })
+          .catch((e) => {
+            let errorMessage = "失败";
+            if (e.response.data.status) {
+              errorMessage =
+                errorMessages[e.response.data.status] || "未知错误";
+            } else {
+              errorMessage = "未知错误";
+            }
+            ElNotification({
+              title: "错误",
+              message: errorMessage,
+              type: "error",
+              duration: 3000,
+            });
+          });
+      }
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
     },
   },
-  mounted() {},
+  mounted() {
+    //console.log(this.classList)
+  },
 };
 </script>
 
@@ -162,39 +152,76 @@ export default {
       class="centered-form"
       @submit="handleSubmit"
     >
-      <el-form-item label="用户名" prop="name">
-        <el-input v-model="userForm.name"></el-input>
+      <el-form-item label="ID" prop="id" v-if="!this.showPassword">
+        <el-input v-model="userForm.id" :disabled="this.IsDisabled"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password" v-if="showPassword">
+      <el-form-item label="用户名" prop="name">
+        <el-input
+          v-model="userForm.name"
+          :disabled="this.IsDisabled"
+        ></el-input>
+      </el-form-item>
+      <el-form-item label="密码" prop="password" v-if="this.showPassword">
         <el-input v-model="userForm.password" type="password" show-password />
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model="userForm.email"></el-input>
+        <el-input
+          v-model="userForm.email"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="真实姓名" prop="realName">
-        <el-input v-model="userForm.realName"></el-input>
+        <el-input
+          v-model="userForm.realName"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="学生学号" prop="userSchoollD">
-        <el-input v-model="userForm.userSchoollD"></el-input>
+        <el-input
+          v-model="userForm.userSchoollD"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="学校代码" prop="schoolCode">
-        <el-input v-model="userForm.schoolCode"></el-input>
+        <el-input
+          v-model="userForm.schoolCode"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
-      <el-form-item label="学生班级" prop="class">
-        <el-input v-model="userForm.class"></el-input>
+      <el-form-item label="学生班级" prop="class" label-width="auto">
+        <el-select
+          v-model="userForm.class"
+          placeholder="请选择班级"
+          :disabled="this.IsDisabled"
+        >
+          <el-option
+            v-for="item in this.classList"
+            :key="item.classid"
+            :label="item.classname"
+            :value="item.classname"
+          ></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="userForm.sex">
+        <el-radio-group v-model="userForm.sex" :disabled="this.IsDisabled">
           <el-radio label="男">男</el-radio>
           <el-radio label="女">女</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item>
         <div class="button-container" style="text-align: center">
-          <el-button type="primary" @click="handleSubmit('userForm')"
+          <el-button
+            type="primary"
+            @click="handleSubmit('userForm')"
+            :disabled="this.IsDisabled"
             >提交
           </el-button>
-          <el-button @click="resetForm('userForm')">重置</el-button>
+          <el-button
+            @click="resetForm('userForm')"
+            v-if="this.showPassword"
+            :disabled="this.IsDisabled"
+            >重置
+          </el-button>
         </div>
       </el-form-item>
     </el-form>
