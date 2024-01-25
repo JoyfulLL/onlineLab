@@ -13,34 +13,34 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import Pagination from '@/components/Pagination.vue'
 
-import {
-  uniUser,
-  uniEnvelope,
-  uniMars,
-  uniVenus,
-  uniAdjustCircle,
-  uniUserSquare,
-  uniMedal,
-  uniSearch,
-  uniChatInfo,
-  uniUserCircle,
-} from 'vue-unicons/dist/icons'
+// import {
+//   uniUser,
+//   uniEnvelope,
+//   uniMars,
+//   uniVenus,
+//   uniAdjustCircle,
+//   uniUserSquare,
+//   uniMedal,
+//   uniSearch,
+//   uniChatInfo,
+//   uniUserCircle,
+// } from 'vue-unicons/dist/icons'
 
-Unicon.add([
-  uniUser,
-  uniEnvelope,
-  uniMars,
-  uniVenus,
-  uniAdjustCircle,
-  uniUserSquare,
-  uniMedal,
-  uniSearch,
-  uniChatInfo,
-  uniUserCircle,
-])
+// Unicon.add([
+//   uniUser,
+//   uniEnvelope,
+//   uniMars,
+//   uniVenus,
+//   uniAdjustCircle,
+//   uniUserSquare,
+//   uniMedal,
+//   uniSearch,
+//   uniChatInfo,
+//   uniUserCircle,
+// ])
 
 //创建实例
-const app = createApp(App).use(Unicon)
+const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

@@ -83,9 +83,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const useAuth = useAuthStore()
-  const token = useAuth.data.token
   useElMenuActiveStore().elMenuActive = to.path
-  if (!token && to.name !== 'Login' && to.name !== 'Signup' && to.name !== 'StuForgetPassword') {
+  if (to.name !== 'Login' && to.name !== 'Signup' && to.name !== 'StuForgetPassword') {
     // 重定向到登录页面
     next({ name: 'Login' })
   } else {
