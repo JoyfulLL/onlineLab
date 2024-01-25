@@ -24,12 +24,12 @@
  *   <forget-password :editPasswordApi="editStunPasswd" />
  * </template>
  */
-import { ref, defineProps } from "vue";
-
+import { ref, defineProps } from 'vue'
+import { type AxiosResponse } from 'axios'
 interface UserFormData {
-  id: string;
-  name: string;
-  password: string;
+  id: string
+  name: string
+  password: string
 }
 
 const props = defineProps({
@@ -37,37 +37,23 @@ const props = defineProps({
     type: Function,
     required: true,
   },
-});
+})
 const formData = ref<UserFormData>({
-  id: "",
-  name: "",
-  password: "",
-});
+  id: '',
+  name: '',
+  password: '',
+})
 
 const submitForm = () => {
-  props
-    .editPasswordApi(
-      formData.value.id,
-      formData.value.name,
-      formData.value.password,
-    )
-    .then((res) => {
-      console.log(res.data.data.status);
-      // 其他处理逻辑
-    })
-    .catch((error) => {
-      console.error(error);
-      // 错误处理逻辑
-    });
-};
+  props.editPasswordApi(formData.value.id, formData.value.name, formData.value.password).then((res: AxiosResponse) => {
+    console.log(res.data.data.status)
+    // 其他处理逻辑
+  })
+}
 </script>
 
 <template>
-  <el-form
-    :model="formData"
-    label-width="80px"
-    @submit.native.prevent="submitForm"
-  >
+  <el-form :model="formData" label-width="80px" @submit.native.prevent="submitForm">
     <el-form-item label="ID">
       <el-input v-model="formData.id"></el-input>
     </el-form-item>

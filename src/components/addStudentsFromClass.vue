@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 /**
  * @file  addStudentsFromClass.vue
  * @author ljf13
@@ -14,28 +14,14 @@ import { checkToken } from '@/api/index.js'
 import classesList from '@/components/charts/classesListTable.vue'
 import { basicClassesStore } from '@/stores'
 
-interface FormData {
-  queryRealname: string
-  queryUserSchoollD: string
-  name: string
-  id: string
-}
-
-interface TableData {
-  queryRealname: string
-  queryUserSchoollD: string
-  name: string
-  id: string
-}
-
-const form = ref<FormData>({
+const form = ref({
   queryRealname: '',
   queryUserSchoollD: '',
   name: '',
   id: '',
 })
 
-const tableData = ref<TableData[]>([])
+const tableData = ref([])
 
 // 多选
 const multipleSelection = ref([])
@@ -43,8 +29,8 @@ const isAnyStudentSelected = ref(false)
 const selectStudents = ref([])
 const toUseMultipleSelection = ref(true)
 // 多选框
-const ids = ref<number[]>([])
-const studentID = ref<number>(0)
+const ids = ref([])
+const studentID = ref(0)
 const handleSelectionChange = (val) => {
   multipleSelection.value = val
   selectStudents.value = multipleSelection.value
@@ -69,12 +55,7 @@ const search = () => {
   // 发送信息给后端并处理返回的数据
   // 假设后端返回的数据是response
   // 将response赋值给tableData
-  const params: {
-    queryRealname?: string
-    queryUserSchoollD?: string
-    name?: string
-    id?: number
-  } = {}
+  const params = {}
   if (form.value.queryRealname) {
     params.queryRealname = form.value.queryRealname.trim()
   }

@@ -83,20 +83,28 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const useAuth = useAuthStore()
-  const isAuthenticated = useAuth.data.token
-  if (
-    to.meta.requireAuth &&
-    !isAuthenticated &&
-    to.name !== 'Login' &&
-    to.name !== 'Signup' &&
-    to.name !== 'StuForgetPassword'
-  ) {
-    next({ name: 'Login' }) // 重定向到登录页面
-  } else if (to.meta.showErrorPage && to.matched.length === 0) {
-    next('/404') // 重定向到404页面
+  const token = useAuth.data.token
+  useElMenuActiveStore().elMenuActive = to.path
+  if (!token && to.name !== 'Login' && to.name !== 'Signup' && to.name !== 'StuForgetPassword') {
+    // 重定向到登录页面
+    next({ name: 'Login' })
   } else {
-    next() // 其他情况正常导航
+    // 已登录状态或访问登录/注册页面，允许访问
+    next()
   }
 })
+
+// router.beforeEach((to, from, next) => {
+//   const useAuth = useAuthStore()
+//   useElMenuActiveStore().elMenuActive = to.path
+//   // const isAuthenticated = useAuth.data.token
+//   if (to.meta.requireAuth && to.name !== 'Login' && to.name !== 'Signup' && to.name !== 'StuForgetPassword') {
+//     next({ name: 'Login' }) // 重定向到登录页面
+//   } else if (to.meta.showErrorPage && to.matched.length === 0) {
+//     next('/404') // 重定向到404页面
+//   } else {
+//     next() // 其他情况正常导航
+//   }
+// })
 
 export default router
