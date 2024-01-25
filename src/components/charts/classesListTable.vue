@@ -7,18 +7,16 @@
  * @date 2024/1/22
  * classesList用于父组件传递Object列表
  */
-import { ref, defineProps, inject } from "vue";
-import { teacherJoinedClassStore } from "@/stores/classData.js";
-import { ElMessage, ElNotification, ElTableColumn } from "element-plus";
-import {
-  addStudentsToClass,
-  teacherJoinClass,
-  teacherLeaveClass,
-} from "@/api/classManagement/teacher/index.js";
-import { errorMessages } from "@/utils/errorMessagesCode";
+import { ref, defineProps, inject } from 'vue'
+import { teacherJoinedClassStore } from '@/stores/classData.js'
+import { ElMessage, ElNotification, ElTableColumn } from 'element-plus'
+import { addStudentsToClass, teacherJoinClass, teacherLeaveClass } from '@/api/classManagement/teacher/index.js'
+import { errorMessages } from '@/utils/errorMessagesCode'
+import { useAuthStore } from '@/stores/tokenStore'
+import { adminAddStudentToClass } from '@/api/classManagement/admin/index.js'
 
-const useClassList = teacherJoinedClassStore();
-const reload = inject("reload");
+const useClassList = teacherJoinedClassStore()
+const reload = inject('reload')
 const props = defineProps({
   keyword: {
     type: String,
@@ -47,130 +45,116 @@ const props = defineProps({
     type: Array,
     default: [],
   },
-});
+  studentID: {
+    type: Number,
+  },
+})
+
+const useScope = useAuthStore()
+// 读取当前用户的scope角色并存储
+const userScope = useScope.getScope() //获取到的scope
 
 // 多选
-const multipleSelection = ref([]);
-const isAnyStudentSelected = ref(false);
-const selectStudents = ref([]);
-const classname = ref();
+const multipleSelection = ref([])
+const isAnyStudentSelected = ref(false)
+const selectStudents = ref([])
+const classname = ref()
 // 多选框
 const handleSelectionChange = (val) => {
-  multipleSelection.value = val;
-  selectStudents.value = multipleSelection.value;
-  classname.value = selectStudents.value
-    .map((student) => student.classname)
-    .join(", ");
-  console.log(classname.value);
-  isAnyStudentSelected.value = selectStudents.value.length > 0;
-};
+  multipleSelection.value = val
+  selectStudents.value = multipleSelection.value
+  classname.value = selectStudents.value.map((student) => student.classname).join(', ')
+  console.log(classname.value)
+  isAnyStudentSelected.value = selectStudents.value.length > 0
+}
 
 // props.classesList
 const filteredData = computed(() => {
   if (props.keyword && Array.isArray(props.classesList)) {
-    const keywordWithoutSpaces = props.keyword.trim();
+    const keywordWithoutSpaces = props.keyword.trim()
     return props.classesList.filter((classItem) => {
       return (
         classItem &&
         classItem.classname &&
-        classItem.classname
-          .toLowerCase()
-          .includes(keywordWithoutSpaces.toLowerCase())
-      );
-    });
+        classItem.classname.toLowerCase().includes(keywordWithoutSpaces.toLowerCase())
+      )
+    })
   } else {
-    return props.classesList;
+    return props.classesList
   }
-});
+})
 
 // 教师自己加入班级
 const onSubMitTeacherJoinClass = async () => {
-  console.log("教师加入班级按钮点击");
+  console.log('教师加入班级按钮点击')
   await teacherJoinClass(classname.value)
     .then((res) => {
       if (res.data.status === 0) {
         //状态码为0，提交成功，关闭当前对话框
-        reload();
+        reload()
         ElMessage({
-          message: "加入班级成功",
-          type: "success",
-        });
+          message: '加入班级成功',
+          type: 'success',
+        })
       }
     })
     .catch((e) => {
-      let errorMessage = "失败";
+      let errorMessage = '失败'
       if (e.response.data.status) {
-        errorMessage = errorMessages[e.response.data.status] || "未知错误";
+        errorMessage = errorMessages[e.response.data.status] || '未知错误'
       } else {
-        errorMessage = "未知错误";
+        errorMessage = '未知错误'
       }
       ElNotification({
-        title: "错误",
+        title: '错误',
         message: errorMessage,
-        type: "error",
+        type: 'error',
         duration: 3000,
-      });
-    });
-};
+      })
+    })
+}
 
 // 教师将学生加入班级
 const onSubmitStuToClass = async () => {
-  console.log("加入学生进班级按钮点击");
-  await addStudentsToClass(props.studensId, classname.value)
-    .then((res) => {
+  console.log('加入学生进班级按钮点击')
+  if (userScope === 'admin') {
+    await adminAddStudentToClass(props.studentID, classname.value).then((res) => {
       if (res.data.status === 0) {
         //状态码为0，提交成功，关闭当前对话框
-        reload();
+        reload()
         ElMessage({
-          message: "操作成功",
-          type: "success",
-        });
+          message: '操作成功',
+          type: 'success',
+        })
       }
     })
-    .catch((e) => {
-      let errorMessage = "失败";
-      if (e.response.data.status) {
-        errorMessage = errorMessages[e.response.data.status] || "未知错误";
-      } else {
-        errorMessage = "未知错误";
+  } else {
+    await addStudentsToClass(props.studensId, classname.value).then((res) => {
+      if (res.data.status === 0) {
+        //状态码为0，提交成功，关闭当前对话框
+        reload()
+        ElMessage({
+          message: '操作成功',
+          type: 'success',
+        })
       }
-      ElNotification({
-        title: "错误",
-        message: errorMessage,
-        type: "error",
-        duration: 3000,
-      });
-    });
-};
+    })
+  }
+}
 
 //教师退出班级
 const onSubmitTeacherLeaveClass = async () => {
-  await teacherLeaveClass(classname.value)
-    .then((res) => {
-      if (res.data.status === 0) {
-        //状态码为0，提交成功，关闭当前对话框
-        reload();
-        ElMessage({
-          message: "成功退出班级",
-          type: "success",
-        });
-      }
-    })
-    .catch((e) => {
-      let errorMessage = "失败";
-      if (e.response.data.status) {
-        errorMessage = errorMessages[e.response.data.status] || "未知错误";
-      } else {
-        errorMessage = "未知错误";
-      }
-      ElNotification({
-        title: "错误",
-        message: errorMessage,
-        type: "error",
-        duration: 3000,
-      });
-    });
-};
+  await teacherLeaveClass(classname.value).then((res) => {
+    if (res.data.status === 0) {
+      //状态码为0，提交成功，关闭当前对话框
+      reload()
+      ElMessage({
+        message: '成功退出班级',
+        type: 'success',
+      })
+    }
+  })
+}
 </script>
 
 <template>
@@ -181,44 +165,23 @@ const onSubmitTeacherLeaveClass = async () => {
       border
       max-height="280px"
       :margin-top="props.marginTop"
-      @selection-change="handleSelectionChange"
-    >
-      <el-table-column
-        fixed
-        type="selection"
-        width="50"
-        v-if="props.useMultipleSelection"
-      />
-      <el-table-column prop="classid" label="班级ID" width="80" />
-      <el-table-column prop="classname" label="班级名称" width="300" />
+      @selection-change="handleSelectionChange">
+      <el-table-column fixed type="selection" width="50" v-if="props.useMultipleSelection" />
+      <el-table-column prop="classid" label="班级ID" width="70" />
+      <el-table-column prop="classname" label="班级名称" width="180" />
+      <el-table-column prop="teachername" label="教师姓名" width="150" />
       <el-table-column prop="teacherid" label="教师ID" width="180" />
       <el-table-column label="操作" v-if="props.showLeaveButton">
         <template #default="scope">
-          <el-button
-            type="danger"
-            size="default"
-            @click="onSubmitTeacherLeaveClass"
-          >
-            退出此班级
-          </el-button>
+          <el-button type="danger" size="default" @click="onSubmitTeacherLeaveClass"> 退出此班级 </el-button>
         </template>
       </el-table-column>
       <el-table-column label="操作" v-if="props.showOperation">
         <template #default="scope">
-          <el-button
-            type="primary"
-            size="default"
-            :disabled="!isAnyStudentSelected"
-            @click="onSubMitTeacherJoinClass"
-          >
+          <el-button type="primary" size="default" :disabled="!isAnyStudentSelected" @click="onSubMitTeacherJoinClass">
             教师加入班级
           </el-button>
-          <el-button
-            type="primary"
-            size="default"
-            @click="onSubmitStuToClass"
-            :disabled="!isAnyStudentSelected"
-          >
+          <el-button type="primary" size="default" @click="onSubmitStuToClass" :disabled="!isAnyStudentSelected">
             将学生移入班级
           </el-button>
         </template>

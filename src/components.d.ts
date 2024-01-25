@@ -7,7 +7,9 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AButton: typeof import('ant-design-vue/es')['Button']
     AddStudentsFromClass: typeof import('./components/addStudentsFromClass.vue')['default']
+    AResult: typeof import('ant-design-vue/es')['Result']
     ClassesListTable: typeof import('./components/charts/classesListTable.vue')['default']
     DataTable: typeof import('./components/charts/dataTable.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']

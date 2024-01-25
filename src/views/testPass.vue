@@ -1,13 +1,15 @@
-<script setup lang="ts">
-import forgetPassword from "@/components/auth/forgetPassword.vue";
-import { EditPassword } from "@/api/userManagement/editUserInfo.js";
-import classesList from "@/components/charts/classesListTable.vue"
-const editStunPasswd = EditPassword("/authrequired/admin/student/password");
-import addStudentsFromClass from "@/components/addStudentsFromClass.vue"
+<script setup>
+import forgetPassword from '@/components/auth/forgetPassword.vue'
+import { EditPassword } from '@/api/userManagement/editUserInfo.js'
+import classesList from '@/components/charts/classesListTable.vue'
+const editStunPasswd = EditPassword('/authrequired/admin/student/password')
+import addStudentsFromClass from '@/components/addStudentsFromClass.vue'
+
+const url = ref('/authrequired/admin/student/password')
 </script>
 
 <template>
-  <add-students-from-class/>
+  <forget-password :editPasswordApi="url" />
 </template>
 
 <style scoped lang="less"></style>

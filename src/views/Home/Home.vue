@@ -9,79 +9,54 @@
   <el-card class="box-card">
     <div class="demo-progress">
       <span>实验已完成</span>
-      <el-progress :stroke-width="26" :percentage="70" >
-
-      </el-progress>
+      <el-progress :stroke-width="26" :percentage="70"> </el-progress>
       <span>作业完成量</span>
-      <el-progress
-
-          :stroke-width="24"
-          :percentage="100"
-          status="success"
-
-     >
-
-      </el-progress>
+      <el-progress :stroke-width="24" :percentage="100" status="success"> </el-progress>
       <span>算法练习次数</span>
-      <el-progress
-
-          :stroke-width="22"
-          :percentage="80"
-          status="warning"
-      >
-
-      </el-progress>
-      <el-progress
-
-          :stroke-width="20"
-          :percentage="50"
-          status="exception"
-      />
+      <el-progress :stroke-width="22" :percentage="80" status="warning"> </el-progress>
+      <el-progress :stroke-width="20" :percentage="50" status="exception" />
     </div>
   </el-card>
   <el-progress type="circle" :percentage="100" status="success">
-
     <template #default="{ percentage }">
-      <span ><el-button type="success" :icon="Check" circle /></span>
+      <span><el-button type="success" :icon="Check" circle /></span>
       <span class="percentage-label">出勤</span>
     </template>
   </el-progress>
   <el-timeline>
-    <el-timeline-item
-        v-for="(activity, index) in activities"
-        :key="index"
-        :timestamp="activity.timestamp"
-    >
+    <el-timeline-item v-for="(activity, index) in activities" :key="index" :timestamp="activity.timestamp">
       {{ activity.content }}
     </el-timeline-item>
   </el-timeline>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
-import * as echarts from "echarts";
-import { checkToken } from "@/api";
-import { basicClassesStore } from "@/stores";
+import { ref, onMounted } from 'vue'
+import * as echarts from 'echarts'
+import { checkToken } from '@/api'
+import { basicClassesStore } from '@/stores'
 import { Check } from '@element-plus/icons-vue'
-import { useAuthStore } from "@/stores/tokenStore.js";
-import { teacherJoinedClassStore } from "@/stores/classData";
+import { useAuthStore } from '@/stores/tokenStore.js'
+import { teacherJoinedClassStore } from '@/stores/classData'
 
-const useClassList = teacherJoinedClassStore();
+const useClassList = teacherJoinedClassStore()
+const useScope = useAuthStore()
+const userScope = useScope.getScope()
+const classesStore = basicClassesStore()
 onMounted(() => {
-  checkToken();
-  fetchAllClassInfo();
-  fetchClassInfoList()
-});
-const classesStore = basicClassesStore();
-const useScope = useAuthStore();
-const fetchAllClassInfo = () => {
-  classesStore.storeClassesList(useScope.data.scope);
-};
+  checkToken()
+  fetchAllClassInfo()
+  if (userScope === 'student') {
+  } else {
+    // 如果当前用户不是学生，获取老师加入的班级列表
+    useClassList.storeTeacherList()
+  }
+})
 
-const fetchClassInfoList = ()=>{
-  useClassList.storeTeacherList()
-  // console.log(useClassList.teacherClassList)
+const fetchAllClassInfo = () => {
+  classesStore.storeClassesList(useScope.data.scope)
 }
+
 const activities = [
   {
     content: 'Event start',
@@ -99,8 +74,6 @@ const activities = [
 </script>
 
 <style scoped lang="less">
-
-
 .percentage-label {
   display: block;
   margin-top: 10px;
@@ -123,5 +96,4 @@ const activities = [
 .box-card {
   width: 500px;
 }
-
 </style>

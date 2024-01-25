@@ -1,31 +1,29 @@
 <script setup>
-import { checkToken } from "@/api/index.js";
-import { useAuthStore } from "@/stores/tokenStore.js";
-import { computed, ref } from "vue";
-import { onMounted } from "vue";
-import classesList from "@/components/charts/classesListTable.vue";
-import { teacherJoinedClassStore } from "@/stores/classData.js";
+import { checkToken } from '@/api/index.js'
+import { useAuthStore } from '@/stores/tokenStore.js'
+import { computed, ref } from 'vue'
+import { onMounted } from 'vue'
+import classesList from '@/components/charts/classesListTable.vue'
+import { teacherJoinedClassStore } from '@/stores/classData.js'
+
+const useAuth = useAuthStore()
+const userScope = useAuth.getScope()
+const userInfo = ref({ id: '', name: '', email: '', sex: '' })
+const useClassList = teacherJoinedClassStore()
 onMounted(() => {
-  checkToken();
-  getUserInfoData();
-  fetchClassList();
-});
+  checkToken()
+  getUserInfoData()
+  if (userScope === 'student') {
+  } else {
+    // 如果当前用户不是学生，获取老师加入的班级列表
+    useClassList.storeTeacherList()
+  }
+})
 
-const useAuth = useAuthStore();
-const userInfo = ref({ id: "", name: "", email: "", sex: "" });
-const useClassList=teacherJoinedClassStore();
 const getUserInfoData = () => {
-  userInfo.value = useAuth.userInfoArray;
+  userInfo.value = useAuth.userInfoArray
   //console.log(userInfo.value);
-};
-
-const fetchClassList = ()=>{
-  useClassList.storeTeacherList()
-  // console.log(useClassList.teacherClassList)
 }
-
-
-
 </script>
 
 <template>
@@ -101,7 +99,7 @@ const fetchClassList = ()=>{
           <el-button class="button" text>编辑</el-button>
         </div>
       </template>
-      <classes-list :classesList="useClassList.teacherClassList" :showLeaveButton="true"/>
+      <classes-list :classesList="useClassList.teacherClassList" :showLeaveButton="true" />
     </el-card>
   </div>
 </template>

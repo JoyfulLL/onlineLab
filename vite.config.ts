@@ -5,6 +5,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import Icons from 'unplugin-icons/vite'
 import IconsResolver from 'unplugin-icons/resolver'
 import path from 'path'
@@ -46,6 +47,9 @@ export default defineConfig({
         // Auto register Element Plus components
         // 自动导入 Element Plus 组件
         ElementPlusResolver(),
+        AntDesignVueResolver({
+          importStyle: false, // css in js
+        }),
       ],
 
       dts: path.resolve(pathSrc, 'components.d.ts'),

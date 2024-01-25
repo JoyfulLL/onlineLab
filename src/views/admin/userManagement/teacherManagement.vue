@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup>
 /**
  * @file  teacherManagement
  * @author ljf13
@@ -19,6 +19,7 @@ onMounted(() => {
   checkToken();
   fetchData();
 });
+
 
 const teacherDataTable = useTableDataStore();
 
@@ -196,11 +197,10 @@ function handleSizeChange(val) {
 // 用于搜索功能
 const queryInfo = ref("");
 
-const toSearch = () => {};
 
 // 表单遍历的数据为划分后且能够检索的数据
 const filteredData = computed(() => {
-  const query: string = queryInfo.value.toLowerCase().trim();
+  const query = queryInfo.value.toLowerCase().trim();
   let filtered = teacherDataTable.teachersList;
 
   if (query) {
