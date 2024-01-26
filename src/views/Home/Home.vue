@@ -32,7 +32,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import * as echarts from 'echarts'
 import { checkToken } from '@/api'
 import { basicClassesStore } from '@/stores'
 import { Check } from '@element-plus/icons-vue'

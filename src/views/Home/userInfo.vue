@@ -14,6 +14,7 @@ onMounted(() => {
   checkToken()
   getUserInfoData()
   if (userScope === 'student') {
+    console.log('userScope')
   } else {
     // 如果当前用户不是学生，获取老师加入的班级列表
     useClassList.storeTeacherList()
@@ -131,6 +132,7 @@ const getUserInfoData = () => {
 
 .box-card {
   width: 100%;
-  margin-right: 10px; /* 可以添加一些右侧间距 */
+  margin-right: 10px;
+  /* 可以添加一些右侧间距 */
 }
 </style>

@@ -6,7 +6,6 @@
  * @date 2024/1/18
  */
 import { regTeacher } from '@/api/userManagement/registerUser.js'
-import { errorMessages } from '@/utils/errorMessagesCode'
 
 interface Teacher {
   name: string
@@ -45,9 +44,7 @@ const submitForm = () => {
         teacher.value.realName,
         teacher.value.password,
         teacher.value.sex,
-      ).then((res) => {
-        console.log(res)
-      })
+      )
     } else {
       return false
     }

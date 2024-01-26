@@ -35,11 +35,9 @@ const handleSelectionChange = (val) => {
   multipleSelection.value = val
   selectStudents.value = multipleSelection.value
   ids.value = selectStudents.value.map((student) => student.id)
-  //console.log(ids.value)
   if (ids.value.length === 1) {
     studentID.value = ids.value[0]
   }
-  //console.log(studentID.value)
   isAnyStudentSelected.value = selectStudents.value.length > 0
 }
 
@@ -85,9 +83,6 @@ const search = () => {
         form.value.id = ''
       }
     })
-    .catch((e) => {
-      console.log(e)
-    })
 }
 </script>
 
@@ -113,12 +108,7 @@ const search = () => {
   <div class="search-container">
     <div class="search-title">依据班级名称检索班级</div>
     <el-form-item>
-      <el-input
-        class="search-input"
-        :style="{ width: '200px' }"
-        placeholder="搜索班级列表"
-        clearable
-        v-model="searchKeyword">
+      <el-input class="search-input" :style="{ width: '200px' }" placeholder="搜索班级列表" clearable v-model="searchKeyword">
         <template #prefix>
           <el-icon class="el-input__icon">
             <unicon name="search" fill="royalblue"></unicon>
@@ -126,14 +116,8 @@ const search = () => {
         </template>
       </el-input>
     </el-form-item>
-    <classes-list
-      :keyword="searchKeyword"
-      :classesList="useAllClassInfoList.classList"
-      :customStyle="customStyle"
-      :useMultipleSelection="toUseMultipleSelection"
-      :studens-id="ids"
-      :student-ID="studentID"
-      :showOperation="true" />
+    <classes-list :keyword="searchKeyword" :classesList="useAllClassInfoList.classList" :customStyle="customStyle"
+      :useMultipleSelection="toUseMultipleSelection" :studens-id="ids" :student-ID="studentID" :showOperation="true" />
   </div>
 </template>
 

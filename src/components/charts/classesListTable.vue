@@ -98,20 +98,6 @@ const onSubMitTeacherJoinClass = async () => {
         })
       }
     })
-    .catch((e) => {
-      let errorMessage = '失败'
-      if (e.response.data.status) {
-        errorMessage = errorMessages[e.response.data.status] || '未知错误'
-      } else {
-        errorMessage = '未知错误'
-      }
-      ElNotification({
-        title: '错误',
-        message: errorMessage,
-        type: 'error',
-        duration: 3000,
-      })
-    })
 }
 
 // 教师将学生加入班级
@@ -159,12 +145,7 @@ const onSubmitTeacherLeaveClass = async () => {
 
 <template>
   <div class="class-table" :style="customStyle">
-    <el-table
-      :data="filteredData"
-      style="width: auto"
-      border
-      max-height="280px"
-      :margin-top="props.marginTop"
+    <el-table :data="filteredData" style="width: auto" border max-height="280px" :margin-top="props.marginTop"
       @selection-change="handleSelectionChange">
       <el-table-column fixed type="selection" width="50" v-if="props.useMultipleSelection" />
       <el-table-column prop="classid" label="班级ID" width="70" />

@@ -25,7 +25,7 @@
  * </template>
  */
 import { ref, defineProps } from 'vue'
-import { type AxiosResponse } from 'axios'
+
 interface UserFormData {
   id: string
   name: string
@@ -45,10 +45,7 @@ const formData = ref<UserFormData>({
 })
 
 const submitForm = () => {
-  props.editPasswordApi(formData.value.id, formData.value.name, formData.value.password).then((res: AxiosResponse) => {
-    console.log(res.data.data.status)
-    // 其他处理逻辑
-  })
+  props.editPasswordApi(formData.value.id, formData.value.name, formData.value.password)
 }
 </script>
 
