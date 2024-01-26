@@ -13,31 +13,31 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/dist/index.css'
 import Pagination from '@/components/Pagination.vue'
 
-// import {
-//   uniUser,
-//   uniEnvelope,
-//   uniMars,
-//   uniVenus,
-//   uniAdjustCircle,
-//   uniUserSquare,
-//   uniMedal,
-//   uniSearch,
-//   uniChatInfo,
-//   uniUserCircle,
-// } from 'vue-unicons/dist/icons'
+import {
+  uniUser,
+  uniEnvelope,
+  uniMars,
+  uniVenus,
+  uniAdjustCircle,
+  uniUserSquare,
+  uniMedal,
+  uniSearch,
+  uniChatInfo,
+  uniUserCircle,
+} from 'vue-unicons/dist/icons'
 
-// Unicon.add([
-//   uniUser,
-//   uniEnvelope,
-//   uniMars,
-//   uniVenus,
-//   uniAdjustCircle,
-//   uniUserSquare,
-//   uniMedal,
-//   uniSearch,
-//   uniChatInfo,
-//   uniUserCircle,
-// ])
+Unicon.add([
+  uniUser,
+  uniEnvelope,
+  uniMars,
+  uniVenus,
+  uniAdjustCircle,
+  uniUserSquare,
+  uniMedal,
+  uniSearch,
+  uniChatInfo,
+  uniUserCircle,
+])
 
 //创建实例
 const app = createApp(App)
@@ -49,4 +49,11 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 //element-plus
 // app.config.globalProperties.$api= api
 app.config.globalProperties.$echarts = echarts
-app.use(pinia).use(VueAxios, axios).use(router).use(ElementPlus).component('Pagination', Pagination).mount('#app')
+app
+  .use(pinia)
+  .use(VueAxios, axios)
+  .use(router)
+  .use(ElementPlus)
+  .use(Unicon)
+  .component('Pagination', Pagination)
+  .mount('#app')
