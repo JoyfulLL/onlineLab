@@ -1,5 +1,3 @@
-import classRoutes from "@/router/classManagement";
-
 const homeRouter = [
   {
     path: "/Home",

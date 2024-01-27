@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { ref } from "vue";
 
 import type { UploadProps, UploadUserFile } from "element-plus";
 
