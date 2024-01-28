@@ -1,9 +1,4 @@
-<script setup>
-import { checkToken } from "@/api";
-onMounted(() => {
-  checkToken();
-});
-</script>
+<script setup></script>
 
 <template>算法练习</template>
 

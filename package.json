@@ -7,7 +7,8 @@
     "build": "run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "test:unit": "vitest",
-    "build-only": "vite build"
+    "build-only": "vite build",
+    "type-check": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
@@ -45,7 +46,7 @@
     "eslint-plugin-vue": "^9.20.1",
     "jsdom": "^22.1.0",
     "less": "^4.2.0",
-    "less-loader": "^11.1.4",
+    "less-loader": "7.x",
     "npm-run-all2": "^6.1.1",
     "typescript": "~5.2.0",
     "unplugin-auto-import": "^0.17.3",

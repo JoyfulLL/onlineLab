@@ -1,5 +1,5 @@
-import { defineStore } from "pinia";
-import service from "@/utils/axios";
+import service from "@/utils/axios"
+import { defineStore } from "pinia"
 export const useSidebarStore = defineStore({
   id: "sidebar",
   state: () => ({
@@ -8,17 +8,15 @@ export const useSidebarStore = defineStore({
   }),
   actions: {
     toggleCollapse() {
-      this.isCollapse = !this.isCollapse;
+      this.isCollapse = !this.isCollapse
     },
   },
-});
-
-
+})
 
 interface Class {
-  classid: string;
-  classname: string;
-  teacherid: string;
+  classid: string
+  classname: string
+  teacherid: string
 }
 
 //获取所有的班级，用于存储所有的班级信息
@@ -30,14 +28,12 @@ export const basicClassesStore = defineStore({
   actions: {
     async storeClassesList(scope: string) {
       try {
-        console.log(scope)
-        const response = await service.get("/authrequired/classes");
-        this.classList = response.data.data; // 将获取的班级列表存储在 classList 中
+        const response = await service.get("/authrequired/classes")
+        this.classList = response.data.data // 将获取的班级列表存储在 classList 中
       } catch (error) {
-        console.error("Failed to fetch class list:", error);
+        console.error("Failed to fetch class list:", error)
       }
     },
   },
   persist: true,
-});
-
+})

@@ -6,16 +6,14 @@
  * @date 2024/1/19
  */
 
-import { checkToken } from '@/api/index.js'
-import { reactive, ref, onMounted, inject } from 'vue'
-import { ElMessage, ElNotification } from 'element-plus'
-import { useTableDataStore } from '@/stores/userData/storeUserData'
-import { regTeacher } from '@/api/userManagement/registerUser.js'
-import { editTeacherInfo } from '@/api/userManagement/editUserInfo.js'
-import { rules } from '@/utils/formRules.js'
+import { editTeacherInfo } from "@/api/userManagement/editUserInfo.js"
+import { regTeacher } from "@/api/userManagement/registerUser.js"
+import { useTableDataStore } from "@/stores/userData/storeUserData"
+import { rules } from "@/utils/formRules.js"
+import { ElMessage } from "element-plus"
+import { inject, onMounted, reactive, ref } from "vue"
 
 onMounted(() => {
-  checkToken()
   fetchData()
 })
 
@@ -29,15 +27,15 @@ const fetchData = () => {
 
 // @注册信息的表单
 const userForm = reactive({
-  id: '',
-  name: '',
-  password: '',
-  email: '',
-  realName: '',
-  userSchoollD: '',
-  schoolCode: '',
-  class: '',
-  sex: '',
+  id: "",
+  name: "",
+  password: "",
+  email: "",
+  realName: "",
+  userSchoollD: "",
+  schoolCode: "",
+  class: "",
+  sex: "",
 })
 
 // 用于控制会话框显示
@@ -45,7 +43,7 @@ const dialogVisible = ref(false)
 
 // @用于判断当前动作
 // @区分当前是添加还是编辑
-const action = ref('add')
+const action = ref("add")
 
 // @显示密码框与否 编辑模式没有密码框
 const showPassword = ref()
@@ -56,7 +54,7 @@ const IsDisabled = ref(false)
 
 // @关闭会话框
 const handleClose = done => {
-  ElMessageBox.confirm('确定关闭？')
+  ElMessageBox.confirm("确定关闭？")
     .then(() => {
       done()
     })
@@ -68,7 +66,7 @@ const handleClose = done => {
 //此函数仅用于调出会话框，并不是用于提交表单
 //提交表单的函数为handleSubmit
 const addTeacher = async () => {
-  action.value = 'add'
+  action.value = "add"
   dialogVisible.value = true
   // 清空表单信息
   // @因为先点击编辑按钮，查看的信息会遗留在当前的表单
@@ -84,7 +82,7 @@ const addTeacher = async () => {
 //@用于”编辑按钮“，函数实际用途为查看用户信息
 //@将用户信息显示在表单中
 const editTeacher = row => {
-  action.value = 'edit'
+  action.value = "edit"
   dialogVisible.value = true
   // console.log(row)
   nextTick(() => {
@@ -94,26 +92,30 @@ const editTeacher = row => {
   IsDisabled.value = true
 }
 
-const reload = inject('reload')
+const reload = inject("reload")
 
 // @此函数用于提交表单
 // @判断动作的值，为add则调用新增用户接口
 // @否则调用的是修改用户的接口
 const handleSubmit = async () => {
-  if (action.value === 'add') {
-    await regTeacher(userForm.name, userForm.email, userForm.realName, userForm.password, userForm.sex).then(
-      res => {
-        if (res.data.status === 0) {
-          //状态码为0，提交成功，关闭当前对话框
-          dialogVisible.value = false
-          reload()
-          ElMessage({
-            message: '用户添加完毕',
-            type: 'success',
-          })
-        }
-      },
-    )
+  if (action.value === "add") {
+    await regTeacher(
+      userForm.name,
+      userForm.email,
+      userForm.realName,
+      userForm.password,
+      userForm.sex
+    ).then(res => {
+      if (res.data.status === 0) {
+        //状态码为0，提交成功，关闭当前对话框
+        dialogVisible.value = false
+        reload()
+        ElMessage({
+          message: "用户添加完毕",
+          type: "success",
+        })
+      }
+    })
   } else {
     //@ 在此处调用修改学生参数的接口
     // console.log('用户名',(newUserForm.value.name))
@@ -125,14 +127,14 @@ const handleSubmit = async () => {
       userForm.userSchoollD,
       userForm.schoolCode,
       userForm.class,
-      userForm.sex,
+      userForm.sex
     ).then(res => {
       if (res.data.status == 0) {
         dialogVisible.value = false
         reload()
         ElMessage({
-          message: '编辑成功',
-          type: 'success',
+          message: "编辑成功",
+          type: "success",
         })
       }
       //console.log(newUserForm.value.id);
@@ -159,7 +161,7 @@ function handleSizeChange(val) {
 }
 
 // 用于搜索功能
-const queryInfo = ref('')
+const queryInfo = ref("")
 
 // 表单遍历的数据为划分后且能够检索的数据
 const filteredData = computed(() => {
@@ -186,10 +188,20 @@ const filteredData = computed(() => {
   <div class="user-header">
     <!--    新增用户-->
     <el-button type="primary" @click="addTeacher()">+新增</el-button>
-    <el-dialog v-model="dialogVisible" :title="action == 'add' ? '添加教师' : '编辑教师'" width="30%" :before-close="handleClose">
+    <el-dialog
+      v-model="dialogVisible"
+      :title="action == 'add' ? '添加教师' : '编辑教师'"
+      width="30%"
+      :before-close="handleClose"
+    >
       <!--      教师注册组件表单-->
       <div class="form-container">
-        <el-form :model="userForm" class="centered-form" label-width="80px" :rules="rules">
+        <el-form
+          :model="userForm"
+          class="centered-form"
+          label-width="80px"
+          :rules="rules"
+        >
           <el-form-item label="ID号" prop="id" v-if="!showPassword">
             <el-input v-model="userForm.id" :disabled="IsDisabled"></el-input>
           </el-form-item>
@@ -197,7 +209,11 @@ const filteredData = computed(() => {
             <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password" v-if="showPassword">
-            <el-input v-model="userForm.password" type="password" show-password />
+            <el-input
+              v-model="userForm.password"
+              type="password"
+              show-password
+            />
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="userForm.email"></el-input>
@@ -214,7 +230,7 @@ const filteredData = computed(() => {
           <el-form-item>
             <div class="button-container">
               <el-button type="primary" @click="handleSubmit('userForm')">
-                {{ action == 'add' ? '添加' : '确认修改' }}
+                {{ action == "add" ? "添加" : "确认修改" }}
               </el-button>
               <el-button @click="dialogVisible = false">取消</el-button>
             </div>
@@ -226,7 +242,12 @@ const filteredData = computed(() => {
     <!--    搜索框-->
     <el-form :inline="true">
       <el-form-item>
-        <el-input class="w-50 m-2" placeholder="输入姓名" v-model="queryInfo" clearable>
+        <el-input
+          class="w-50 m-2"
+          placeholder="输入姓名"
+          v-model="queryInfo"
+          clearable
+        >
           <template #prefix>
             <el-icon class="el-input__icon">
               <unicon name="search" fill="royalblue"></unicon>
@@ -250,15 +271,24 @@ const filteredData = computed(() => {
       <el-table-column prop="sex" label="性别" width="55" />
       <el-table-column fixed="right" label="操作" min-width="100">
         <template #default="scope">
-          <el-button size="default" @click="editTeacher(scope.row)">编辑</el-button>
+          <el-button size="default" @click="editTeacher(scope.row)"
+            >编辑</el-button
+          >
           <el-button type="danger" size="default">移出</el-button>
         </template>
       </el-table-column>
     </el-table>
   </div>
-  <el-pagination :page-size="pageSize" :page-sizes="[10, 20, 30]" background default
-    layout="total,prev, pager, next, sizes" :total="teacherDataTable.teachersDataCount" @current-change="changePage"
-    @size-change="handleSizeChange" />
+  <el-pagination
+    :page-size="pageSize"
+    :page-sizes="[10, 20, 30]"
+    background
+    default
+    layout="total,prev, pager, next, sizes"
+    :total="teacherDataTable.teachersDataCount"
+    @current-change="changePage"
+    @size-change="handleSizeChange"
+  />
 </template>
 
 <style scoped lang="less">

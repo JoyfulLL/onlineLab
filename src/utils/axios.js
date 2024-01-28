@@ -1,53 +1,52 @@
-import axios from "axios";
-import { checkToken } from "@/api";
-import { useAuthStore } from "@/stores/tokenStore";
-import { errorMessages } from '@/utils/errorMessagesCode'
-import { ElNotification } from "element-plus";
+import { useAuthStore } from "@/stores/tokenStore"
+import { errorMessages } from "@/utils/errorMessagesCode"
+import axios from "axios"
+import { ElNotification } from "element-plus"
 const service = axios.create({
   baseURL: "http://8.219.238.232/api/",
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
-});
+})
 
 // 处理错误的函数
 function handleRequestError(error) {
-  let errorMessage = '失败';
+  let errorMessage = "失败"
   if (error.response && error.response.data && error.response.data.status) {
-    errorMessage = errorMessages[error.response.data.status] || '未知错误';
+    errorMessage = errorMessages[error.response.data.status] || "未知错误"
   }
   ElNotification({
-    title: '错误',
+    title: "错误",
     message: errorMessage,
-    type: 'error',
+    type: "error",
     duration: 3000,
-  });
+  })
 }
 
 // 添加请求拦截器
 service.interceptors.request.use(
-  (config) => {
-    const useAuth = useAuthStore();
-    const token = useAuth.data.token;
-    if (token) config.headers.Authorization = `Bearer ${token}`;
+  config => {
+    const useAuth = useAuthStore()
+    const token = useAuth.data.token
+    if (token) config.headers.Authorization = `Bearer ${token}`
     //   checkToken();
-    return config;
+    return config
   },
-  (error) => {
+  error => {
     // 对请求错误做些什么
-  },
-);
+  }
+)
 
 // 响应拦截器
 service.interceptors.response.use(
   response => {
     //对响应数据做些事
-    return response;
+    return response
   },
   error => {
     // 对响应错误做些事
-    handleRequestError(error);
-    return Promise.reject(error);
+    handleRequestError(error)
+    return Promise.reject(error)
   }
-);
+)
 
-export default service;
+export default service

@@ -4,18 +4,17 @@
  * @之后必须删除！！！
  */
 
-import { login } from '@/api'
-import { ElMessage } from 'element-plus'
-import { useAuthStore } from '@/stores/tokenStore'
-import { errorMessages } from '@/utils/errorMessagesCode'
+import { login } from "@/api"
+import { useAuthStore } from "@/stores/tokenStore"
+import { ElMessage } from "element-plus"
 
 export default {
-  name: 'LoginPage',
+  name: "LoginPage",
   data() {
     return {
       loginForm: {
-        username: 'testadmin',
-        password: 'Tueu38p5hhraeg95',
+        username: "testadmin",
+        password: "Tueu38p5hhraeg95",
       },
       rememberMe: false,
     }
@@ -23,24 +22,23 @@ export default {
 
   methods: {
     onSubmit() {
-      login(this.loginForm.username, this.loginForm.password).then((res) => {
-        // checkToken();
+      login(this.loginForm.username, this.loginForm.password).then(res => {
         if (res.data.status === 0) {
           ElMessage({
-            message: '登录成功',
-            type: 'success',
+            message: "登录成功",
+            type: "success",
             duration: 3000,
           })
           const authStore = useAuthStore()
           authStore.setData(res.data.data)
-          this.$router.push('/Home')
+          this.$router.push({ path: "/" })
         }
       })
     },
 
     toReg() {
       //跳转去注册
-      this.$router.push('/Zhuce')
+      this.$router.push("/Zhuce")
     },
   },
 
@@ -87,20 +85,30 @@ export default {
                 placeholder="用户名"
                 v-model="loginForm.username"
                 style="margin-bottom: 20px"
-                prop="username"></el-input>
+                prop="username"
+              ></el-input>
               <el-input
                 type="password"
                 placeholder="密码"
                 v-model="loginForm.password"
                 show-password
                 style="margin-bottom: 10px"
-                prop="password">
+                prop="password"
+              >
               </el-input>
               <div class="remember-row">
                 <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
-                <router-link to="/stuForgetPassword" class="forgot-password">忘记密码 </router-link>
+                <router-link to="/stuForgetPassword" class="forgot-password"
+                  >忘记密码
+                </router-link>
               </div>
-              <el-button type="primary" @click="onSubmit" class="login-button" :disabled="!canSubmit">登录 </el-button>
+              <el-button
+                type="primary"
+                @click="onSubmit"
+                class="login-button"
+                :disabled="!canSubmit"
+                >登录
+              </el-button>
             </el-form>
           </div>
         </div>
@@ -109,8 +117,8 @@ export default {
           <div class="other-login">
             <el-link type="primary" href="#">其它登录方式</el-link>
             <div class="icon-container">
-              <a href="#"><img src="../../assets/loginOrReg/qq.png" /></a>
-              <a href="#"><img src="../../assets/loginOrReg/wechat.png" /></a>
+              <a href="#"><img src="../../assets/loginOrReg/qq.png"/></a>
+              <a href="#"><img src="../../assets/loginOrReg/wechat.png"/></a>
             </div>
           </div>
         </div>

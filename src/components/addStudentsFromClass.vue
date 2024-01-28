@@ -6,7 +6,6 @@
  * @date 2024/1/23
  */
 import { teacherGetStudentInfo } from "@/api/classManagement/teacher/index.js"
-import { checkToken } from "@/api/index.js"
 import classesList from "@/components/charts/classesListTable.vue"
 import { basicClassesStore } from "@/stores"
 import {
@@ -24,14 +23,14 @@ const form = ref({
   name: "",
   id: "",
 })
-console.log("你好")
+
 const tableData = ref([])
 
 // 多选
 const multipleSelection = ref([])
 const isAnyStudentSelected = ref(false)
 const selectStudents = ref([])
-const toUseMultipleSelection = ref(true)
+
 // 多选框
 const ids = ref([])
 const studentID = ref(0)
@@ -52,7 +51,6 @@ const customStyle = ref({
   marginTop: "30px",
 })
 const search = () => {
-  checkToken()
   // 发送信息给后端并处理返回的数据
   // 假设后端返回的数据是response
   // 将response赋值给tableData
@@ -90,7 +88,7 @@ const search = () => {
 
 <template>
   <div class="search-container">
-    <div class="search-title">检索学生 输入其中一项即可</div>
+    <div class="search-title">检索学生 输入其中一项即可 可批量加入班级</div>
     <div class="search-box">
       <el-input
         v-model="form.queryRealname"
@@ -150,7 +148,7 @@ const search = () => {
       :keyword="searchKeyword"
       :classesList="useAllClassInfoList.classList"
       :customStyle="customStyle"
-      :useMultipleSelection="toUseMultipleSelection"
+      :can-add-studens="isAnyStudentSelected"
       :studens-id="ids"
       :student-ID="studentID"
       :showOperation="true"

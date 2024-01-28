@@ -24,7 +24,8 @@ const classRoutes = [
       {
         path: "homework",
         name: "homework",
-        component: () => import("../views/classManagement/homework.vue"),
+        component: () =>
+          import("../views/classManagement/homeWork/homework.vue"),
         meta: {
           requireAuth: true,
           role: ["admin", "teacher", "student"],
@@ -82,6 +83,6 @@ const classRoutes = [
       },
     ],
   },
-];
+]
 
-export default classRoutes;
+export default classRoutes

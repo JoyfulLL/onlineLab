@@ -1,20 +1,17 @@
 <script setup>
-import { checkToken } from '@/api/index.js'
-import { useAuthStore } from '@/stores/tokenStore.js'
-import { computed, ref } from 'vue'
-import { onMounted } from 'vue'
-import classesList from '@/components/charts/classesListTable.vue'
-import { teacherJoinedClassStore } from '@/stores/classData.js'
+import classesList from "@/components/charts/classesListTable.vue"
+import { teacherJoinedClassStore } from "@/stores/classData.js"
+import { useAuthStore } from "@/stores/tokenStore.js"
+import { onMounted, ref } from "vue"
 
 const useAuth = useAuthStore()
 const userScope = useAuth.getScope()
-const userInfo = ref({ id: '', name: '', email: '', sex: '' })
+const userInfo = ref({ id: "", name: "", email: "", sex: "" })
 const useClassList = teacherJoinedClassStore()
 onMounted(() => {
-  checkToken()
   getUserInfoData()
-  if (userScope === 'student') {
-    console.log('userScope')
+  if (userScope === "student") {
+    console.log("userScope")
   } else {
     // 如果当前用户不是学生，获取老师加入的班级列表
     useClassList.storeTeacherList()
@@ -100,7 +97,10 @@ const getUserInfoData = () => {
           <el-button class="button" text>编辑</el-button>
         </div>
       </template>
-      <classes-list :classesList="useClassList.teacherClassList" :showLeaveButton="true" />
+      <classes-list
+        :classesList="useClassList.teacherClassList"
+        :showLeaveButton="true"
+      />
     </el-card>
   </div>
 </template>

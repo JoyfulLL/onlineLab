@@ -7,19 +7,23 @@
  * @date 2024/1/22
  * classesList用于父组件传递Object列表
  */
-import { adminAddStudentToClass } from "@/api/classManagement/admin/index.js";
+import { adminAddStudentToClass } from "@/api/classManagement/admin/index.js"
 import {
   addStudentsToClass,
   teacherJoinClass,
   teacherLeaveClass,
-} from "@/api/classManagement/teacher/index.js";
-import { teacherJoinedClassStore } from "@/stores/classData.js";
-import { useAuthStore } from "@/stores/tokenStore";
-import { ElMessage, ElTableColumn } from "element-plus";
-import { defineProps, inject, ref } from "vue";
+} from "@/api/classManagement/teacher/index.js"
+import { basicClassesStore } from "@/stores"
+import { teacherJoinedClassStore } from "@/stores/classData.js"
+import { useAuthStore } from "@/stores/tokenStore"
+import { ElMessage, ElTableColumn } from "element-plus"
+import { defineProps, inject, ref } from "vue"
 
-const useClassList = teacherJoinedClassStore();
-const reload = inject("reload");
+// 所有班级
+const useAllClassInfoList = basicClassesStore()
+// 教师加入的班级
+const useClassList = teacherJoinedClassStore()
+const reload = inject("reload")
 const props = defineProps({
   keyword: {
     type: String,
@@ -51,32 +55,43 @@ const props = defineProps({
   studentID: {
     type: Number,
   },
-});
+  canAddStudens: {
+    type: Boolean,
+    default: false,
+  },
+})
 
-const useScope = useAuthStore();
+const useScope = useAuthStore()
 // 读取当前用户的scope角色并存储
-const userScope = useScope.getScope(); //获取到的scope
+const userScope = useScope.getScope() //获取到的scope
 
-// 多选
-const multipleSelection = ref([]);
-const isAnyStudentSelected = ref(false);
-const selectStudents = ref([]);
-const classname = ref();
+//单选
+const currentRow = ref()
+const classname = ref()
+const selectClassid = ref()
+const handelSingleSelection = val => {
+  currentRow.value = val
+  // console.log(currentRow.value)
+  // console.log(currentRow.value.classname)
+  classname.value = currentRow.value.classname
+  selectClassid.value = currentRow.value.classid
+}
+
 // 多选框
-const handleSelectionChange = val => {
-  multipleSelection.value = val;
-  selectStudents.value = multipleSelection.value;
-  classname.value = selectStudents.value
-    .map(student => student.classname)
-    .join(", ");
-  console.log(classname.value);
-  isAnyStudentSelected.value = selectStudents.value.length > 0;
-};
+// const handleSelectionChange = val => {
+//   multipleSelection.value = val
+//   selectStudents.value = multipleSelection.value
+//   classname.value = selectStudents.value
+//     .map(student => student.classname)
+//     .join(", ")
+//   isAnyStudentSelected.value = selectStudents.value.length > 0
+//   isAnyClassSelected.value = selectStudents.value.length > 0
+// }
 
 // props.classesList
 const filteredData = computed(() => {
   if (props.keyword && Array.isArray(props.classesList)) {
-    const keywordWithoutSpaces = props.keyword.trim();
+    const keywordWithoutSpaces = props.keyword.trim()
     return props.classesList.filter(classItem => {
       return (
         classItem &&
@@ -84,69 +99,108 @@ const filteredData = computed(() => {
         classItem.classname
           .toLowerCase()
           .includes(keywordWithoutSpaces.toLowerCase())
-      );
-    });
+      )
+    })
   } else {
-    return props.classesList;
+    return props.classesList
   }
-});
+})
 
 // 教师自己加入班级
 const onSubMitTeacherJoinClass = async () => {
-  console.log("教师加入班级按钮点击");
-  await teacherJoinClass(classname.value).then(res => {
-    if (res.data.status === 0) {
-      //状态码为0，提交成功，关闭当前对话框
-      reload();
+  ElMessageBox.confirm("确定要加入班级吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      await teacherJoinClass(classname.value).then(res => {
+        if (res.data.status === 0) {
+          //状态码为0，提交成功，关闭当前对话框
+          reload()
+          useAllClassInfoList.storeClassesList()
+          ElMessage({
+            message: "加入班级成功",
+            type: "success",
+          })
+        }
+      })
+    })
+    .catch(() => {
       ElMessage({
-        message: "加入班级成功",
-        type: "success",
-      });
-    }
-  });
-};
+        type: "info",
+        message: "取消加入",
+      })
+    })
+}
 
 // 教师将学生加入班级
 const onSubmitStuToClass = async () => {
-  console.log("加入学生进班级按钮点击");
-  if (userScope === "admin") {
-    await adminAddStudentToClass(props.studentID, classname.value).then(res => {
-      if (res.data.status === 0) {
-        //状态码为0，提交成功，关闭当前对话框
-        reload();
-        ElMessage({
-          message: "操作成功",
-          type: "success",
-        });
+  ElMessageBox.confirm("确定要将学生加入班级吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      if (userScope === "admin") {
+        await adminAddStudentToClass(props.studentID, classname.value).then(
+          res => {
+            if (res.data.status === 0) {
+              //状态码为0，提交成功，关闭当前对话框
+              reload()
+              ElMessage({
+                message: "操作成功",
+                type: "success",
+              })
+            }
+          }
+        )
+      } else {
+        await addStudentsToClass(props.studensId, classname.value).then(res => {
+          if (res.data.status === 0) {
+            //状态码为0，提交成功，关闭当前对话框
+            reload()
+            ElMessage({
+              message: "操作成功",
+              type: "success",
+            })
+          }
+        })
       }
-    });
-  } else {
-    await addStudentsToClass(props.studensId, classname.value).then(res => {
-      if (res.data.status === 0) {
-        //状态码为0，提交成功，关闭当前对话框
-        reload();
-        ElMessage({
-          message: "操作成功",
-          type: "success",
-        });
-      }
-    });
-  }
-};
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消操作",
+      })
+    })
+}
 
 //教师退出班级
 const onSubmitTeacherLeaveClass = async () => {
-  await teacherLeaveClass(classname.value).then(res => {
-    if (res.data.status === 0) {
-      //状态码为0，提交成功，关闭当前对话框
-      reload();
+  ElMessageBox.confirm("确定要退出班级吗？", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      await teacherLeaveClass(classname.value).then(res => {
+        if (res.data.status === 0) {
+          reload()
+          ElMessage({
+            message: "成功退出班级",
+            type: "success",
+          })
+        }
+      })
+    })
+    .catch(() => {
       ElMessage({
-        message: "成功退出班级",
-        type: "success",
-      });
-    }
-  });
-};
+        type: "info",
+        message: "取消退出",
+      })
+    })
+}
 </script>
 
 <template>
@@ -154,17 +208,12 @@ const onSubmitTeacherLeaveClass = async () => {
     <el-table
       :data="filteredData"
       style="width: auto"
+      highlight-current-row
       border
       max-height="280px"
       :margin-top="props.marginTop"
-      @selection-change="handleSelectionChange"
+      @current-change="handelSingleSelection"
     >
-      <el-table-column
-        fixed
-        type="selection"
-        width="50"
-        v-if="props.useMultipleSelection"
-      />
       <el-table-column prop="classid" label="班级ID" width="70" />
       <el-table-column prop="classname" label="班级名称" width="180" />
       <el-table-column prop="teachername" label="教师姓名" width="150" />
@@ -174,7 +223,8 @@ const onSubmitTeacherLeaveClass = async () => {
           <el-button
             type="danger"
             size="default"
-            @click="onSubmitTeacherLeaveClass"
+            :disabled="scope.row.classid !== selectClassid"
+            @click="onSubmitTeacherLeaveClass()"
           >
             退出此班级
           </el-button>
@@ -183,10 +233,10 @@ const onSubmitTeacherLeaveClass = async () => {
       <el-table-column label="操作" v-if="props.showOperation">
         <template #default="scope">
           <el-button
-            type="primary"
+            type="success"
             size="default"
-            :disabled="!isAnyStudentSelected"
-            @click="onSubMitTeacherJoinClass"
+            :disabled="scope.row.classid !== selectClassid"
+            @click="onSubMitTeacherJoinClass()"
           >
             教师加入班级
           </el-button>
@@ -194,7 +244,9 @@ const onSubmitTeacherLeaveClass = async () => {
             type="primary"
             size="default"
             @click="onSubmitStuToClass"
-            :disabled="!isAnyStudentSelected"
+            :disabled="
+              scope.row.classid !== selectClassid && props.canAddStudens
+            "
           >
             将学生移入班级
           </el-button>
