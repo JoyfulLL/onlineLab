@@ -56,7 +56,7 @@ yarn dev
 
 └── tsconfig.json
 
-使用 TypeScript 语法，支持JavaScript语法
+使用 JavaScript 语法，支持TypeScript语法
 
 启用 JSX 支持
 
