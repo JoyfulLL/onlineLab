@@ -15,6 +15,7 @@
 <script setup>
 import CommonAside from "@/layout/commonAside.vue"
 import CommonHeader from "@/layout/commonHeader.vue"
+//gitee github同步更新
 </script>
 
 <style scoped lang="less">
