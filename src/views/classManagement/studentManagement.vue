@@ -56,7 +56,10 @@ const useAllClassInfoList = basicClassesStore()
 
 const useClassList = teacherJoinedClassStore()
 const fetchClassList = () => {
-  useClassList.storeTeacherList()
+  if (userScope === "teacher") {
+    useClassList.storeTeacherList()
+  } else {
+  }
   // console.log(useClassList.teacherClassList)
 }
 
@@ -170,6 +173,7 @@ const currentPage = ref(1)
 function changePage(page) {
   currentPage.value = page
 }
+const totalData = ref(studentDataTable.studentsDataCount)
 
 // 用于更换页大小
 function handleSizeChange(val) {
@@ -283,8 +287,15 @@ const filteredData = ref(
             item.class.toLowerCase().includes(query))
         )
       })
+      totalData.value = Math.ceil(filtered.length / pageSize.value)
+    } else {
+      totalData.value = studentDataTable.studentsDataCount // 恢复原始总页数
     }
-    //将分页逻辑整合到 filteredData 计算属性中
+    // 当用户检索完成后，将当前页码重置为1
+    if (query && currentPage.value !== 1) {
+      currentPage.value = 1
+    }
+
     const startIndex = (currentPage.value - 1) * pageSize.value
     const endIndex = startIndex + pageSize.value
     return filtered.slice(startIndex, endIndex)
@@ -418,7 +429,7 @@ const filteredData = ref(
     background
     default
     layout="total,prev, pager, next, sizes"
-    :total="studentDataTable.studentsDataCount"
+    :total="totalData"
     @current-change="changePage"
     @size-change="handleSizeChange"
   />

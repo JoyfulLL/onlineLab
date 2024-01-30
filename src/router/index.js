@@ -52,7 +52,17 @@ const router = createRouter({
       meta: { requireAuth: true },
       name: "Home",
       redirect: "/Home",
-      children: [...classRoutes, ...homeRouter, ...userManagementRouters],
+      children: [
+        ...classRoutes,
+        ...homeRouter,
+        ...userManagementRouters,
+        {
+          path: "/Contributors",
+          name: "Contributors",
+          component: () => import("@/views/ContributorsList.vue"),
+          meta: { requireAuth: false, index: "4" },
+        },
+      ],
     },
     {
       path: "/stuForgetPassword",

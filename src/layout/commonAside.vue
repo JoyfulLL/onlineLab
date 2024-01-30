@@ -1,21 +1,21 @@
 <script setup>
-import { onMounted, ref, watch } from "vue";
-import { useSidebarStore } from "@/stores/index";
-import { useRouter, useRoute } from "vue-router";
-import { useAuthStore } from "@/stores/tokenStore";
-import { useMenuStore } from "@/stores/menu";
+import { useSidebarStore } from "@/stores/index"
+import { useMenuStore } from "@/stores/menu"
+import { useAuthStore } from "@/stores/tokenStore"
+import { onMounted, ref } from "vue"
+import { useRouter } from "vue-router"
 
-const useScope = useAuthStore();
+const useScope = useAuthStore()
 // 读取当前用户的scope角色并存储
-const userScope = useScope.getScope(); //获取到的scope
+const userScope = useScope.getScope() //获取到的scope
 
-onMounted(() => {});
+onMounted(() => {})
 // 侧边栏折叠
-const useToCollapse = useSidebarStore();
+const useToCollapse = useSidebarStore()
 // 菜单
-const menuStore = useMenuStore();
+const menuStore = useMenuStore()
 
-const router = useRouter();
+const router = useRouter()
 
 //一般用户菜单树——学生，老师
 //无用户管理菜单
@@ -70,7 +70,14 @@ const commonMenuTree = ref([
     ],
     scope: ["admin", "teacher", "student"],
   },
-]);
+  {
+    index: "4",
+    icon: "PieChart",
+    title: "贡献者",
+    name: "Contributors",
+    scope: ["admin", "teacher", "student"], // 适用于所有权限
+  },
+])
 
 //管理员独有菜单树
 //拥有所有菜单选项
@@ -147,21 +154,28 @@ const adminMenuTree = ref([
     ],
     scope: ["admin", "teacher", "student"],
   },
-]);
+  {
+    index: "4",
+    icon: "PieChart",
+    title: "贡献者",
+    name: "Contributors",
+    scope: ["admin", "teacher", "student"], // 适用于所有权限
+  },
+])
 
 //依据当前用户身份，获取到对应的menuTree
-menuStore.getMenuTreeByUserRole(userScope, adminMenuTree, commonMenuTree);
+menuStore.getMenuTreeByUserRole(userScope, adminMenuTree, commonMenuTree)
 
 // 用于路由跳转
-const clickMenu = (item) => {
+const clickMenu = item => {
   router.push({
     name: item.name,
-  });
-};
+  })
+}
 
 // 用于页面刷新后保持侧边菜单对应项展开
-const activePath = ref("");
-activePath.value = router.currentRoute._value.meta.index;
+const activePath = ref("")
+activePath.value = router.currentRoute._value.meta.index
 </script>
 
 <template>

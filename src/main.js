@@ -1,42 +1,46 @@
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
-import App from './App.vue'
-import Unicon from 'vue-unicons'
-import axios from 'axios'
-import VueAxios from 'vue-axios'
-import router from './router'
-import * as echarts from 'echarts'
-import ElementPlus from 'element-plus'
-import './assets/less/index.less'
-import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import 'element-plus/dist/index.css'
-import Pagination from '@/components/Pagination.vue'
+import Pagination from "@/components/Pagination.vue"
+import * as ElementPlusIconsVue from "@element-plus/icons-vue"
+import axios from "axios"
+import * as echarts from "echarts"
+import ElementPlus from "element-plus"
+import "element-plus/dist/index.css"
+import { createPinia } from "pinia"
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate"
+import { createApp } from "vue"
+import VueAxios from "vue-axios"
+import Unicon from "vue-unicons"
+import App from "./App.vue"
+import "./assets/less/index.less"
+import router from "./router"
 
 import {
-    uniUser,
-    uniEnvelope,
-    uniMars,
-    uniVenus,
-    uniAdjustCircle,
-    uniUserSquare,
-    uniMedal,
-    uniSearch,
-    uniChatInfo,
-    uniUserCircle,
-} from 'vue-unicons/dist/icons'
+  uniAdjustCircle,
+  uniBookOpen,
+  uniChatInfo,
+  uniEnvelope,
+  uniInfoCircle,
+  uniMars,
+  uniMedal,
+  uniSearch,
+  uniUser,
+  uniUserCircle,
+  uniUserSquare,
+  uniVenus,
+} from "vue-unicons/dist/icons"
 
 Unicon.add([
-    uniUser,
-    uniEnvelope,
-    uniMars,
-    uniVenus,
-    uniAdjustCircle,
-    uniUserSquare,
-    uniMedal,
-    uniSearch,
-    uniChatInfo,
-    uniUserCircle,
+  uniUser,
+  uniEnvelope,
+  uniMars,
+  uniVenus,
+  uniAdjustCircle,
+  uniUserSquare,
+  uniMedal,
+  uniSearch,
+  uniChatInfo,
+  uniUserCircle,
+  uniInfoCircle,
+  uniBookOpen,
 ])
 
 //创建实例
@@ -44,15 +48,16 @@ const app = createApp(App)
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-    app.component(key, component)
+  app.component(key, component)
 }
 //element-plus
 // app.config.globalProperties.$api= api
 app.config.globalProperties.$echarts = echarts
-app.use(pinia)
-    .use(VueAxios, axios)
-    .use(router)
-    .use(ElementPlus)
-    .use(Unicon)
-    .component('Pagination', Pagination)
-    .mount('#app')
+app
+  .use(pinia)
+  .use(VueAxios, axios)
+  .use(router)
+  .use(ElementPlus)
+  .use(Unicon)
+  .component("Pagination", Pagination)
+  .mount("#app")

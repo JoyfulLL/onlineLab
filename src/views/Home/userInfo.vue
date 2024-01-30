@@ -10,17 +10,14 @@ const userInfo = ref({ id: "", name: "", email: "", sex: "" })
 const useClassList = teacherJoinedClassStore()
 onMounted(() => {
   getUserInfoData()
-  if (userScope === "student") {
-    console.log("userScope")
-  } else {
-    // 如果当前用户不是学生，获取老师加入的班级列表
+  if (userScope === "teacher") {
     useClassList.storeTeacherList()
+  } else {
   }
 })
 
 const getUserInfoData = () => {
   userInfo.value = useAuth.userInfoArray
-  //console.log(userInfo.value);
 }
 </script>
 
@@ -64,11 +61,30 @@ const getUserInfoData = () => {
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">
+              <unicon name="info-circle" fill="royalblue"></unicon>
+              学号
+            </div>
+          </template>
+          {{ userInfo.userSchoollD }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
               <unicon name="medal" fill="royalblue"></unicon>
               班级
             </div>
           </template>
           {{ userInfo.class }}
+        </el-descriptions-item>
+
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">
+              <unicon name="book-open" fill="royalblue"></unicon>
+              学校
+            </div>
+          </template>
+          {{ userInfo.schoolCode }}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
@@ -110,7 +126,9 @@ const getUserInfoData = () => {
   display: flex;
   align-items: center;
 }
-
+.cell-item svg {
+  vertical-align: middle;
+}
 .card-header {
   display: flex;
   justify-content: space-between;

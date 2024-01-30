@@ -27,21 +27,15 @@ import CommonHeader from "@/layout/commonHeader.vue"
 }
 
 .common-layout {
+  height: 100vh;
   .lay-container {
     flex-wrap: nowrap;
-    .header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 80;
-    }
     .right-main {
       overflow-y: auto;
-      max-height: calc(100vh - 60px); /* 视口高度减去 common-header 的高度 */
+      height: calc(100vh - 60px); /* 视口高度减去 common-header 的高度 */
     }
   }
-  height: 100%;
+
   & > .el-container {
     height: 100%;
     & > .el-aside {

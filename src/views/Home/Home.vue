@@ -14,9 +14,7 @@ const userScope = useScope.getScope()
 const classesStore = basicClassesStore()
 onMounted(() => {
   fetchAllClassInfo()
-  if (userScope === "student") {
-  } else if (userScope === "teacher") {
-    // 如果当前用户不是学生，获取老师加入的班级列表
+  if (userScope === "teacher") {
     useClassList.storeTeacherList()
   } else {
   }
