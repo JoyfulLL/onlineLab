@@ -24,6 +24,20 @@ const useAllClassInfoList = basicClassesStore()
 // 教师加入的班级
 const useClassList = teacherJoinedClassStore()
 const reload = inject("reload")
+
+/**
+ * 参数传递说明
+ * keyword：搜索用的关键词，需要搜索功能才需要传递
+ * classList：班级列表——可以传递不同的班级列表
+ * customStyle：自定义样式用
+ * useMultipleSelection：是否使用多选框，默认否
+ * showOperation：是否需要对表格进行操作，默认否
+ * showLeaveButton：是否需要使用“离开班级”按钮，默认否
+ * isUserInfo：当前页面是否为个人主页，默认为否
+ * studensId：学生id列表，教师用于批量添加学生至班级
+ * studentID：单个学生的id
+ * canAddStudens：决定“添加学生”按钮能否使用
+ */
 const props = defineProps({
   keyword: {
     type: String,
@@ -41,6 +55,10 @@ const props = defineProps({
     default: false,
   },
   showOperation: {
+    type: Boolean,
+    default: false,
+  },
+  isUserInfo: {
     type: Boolean,
     default: false,
   },
@@ -76,17 +94,6 @@ const handelSingleSelection = val => {
   classname.value = currentRow.value.classname
   selectClassid.value = currentRow.value.classid
 }
-
-// 多选框
-// const handleSelectionChange = val => {
-//   multipleSelection.value = val
-//   selectStudents.value = multipleSelection.value
-//   classname.value = selectStudents.value
-//     .map(student => student.classname)
-//     .join(", ")
-//   isAnyStudentSelected.value = selectStudents.value.length > 0
-//   isAnyClassSelected.value = selectStudents.value.length > 0
-// }
 
 // props.classesList
 const filteredData = computed(() => {
@@ -241,6 +248,7 @@ const onSubmitTeacherLeaveClass = async () => {
             教师加入班级
           </el-button>
           <el-button
+            v-if="!props.isUserInfo"
             type="primary"
             size="default"
             @click="onSubmitStuToClass"

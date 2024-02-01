@@ -1,3 +1,9 @@
+<!--
+* @description 基础的页面布局
+* @fileName basicLayout.vue
+* @author LJF
+!-->
+
 <template>
   <div class="common-layout">
     <el-container class="lay-container">
@@ -15,7 +21,6 @@
 <script setup>
 import CommonAside from "@/layout/commonAside.vue"
 import CommonHeader from "@/layout/commonHeader.vue"
-//gitee github同步更新
 </script>
 
 <style scoped lang="less">

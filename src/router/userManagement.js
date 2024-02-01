@@ -33,8 +33,20 @@ const userManagementRouters = [
           index: "2-2",
         },
       },
+      {
+        path: "studentManagement",
+        name: "studentManagement",
+        component: () =>
+          import("../views/classManagement/studentManagement.vue"),
+        meta: {
+          requireAuth: true,
+          role: ["admin", "teacher"],
+          title: "学生管理",
+          index: "2-3",
+        },
+      },
     ],
   },
-];
+]
 
-export default userManagementRouters;
+export default userManagementRouters

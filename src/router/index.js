@@ -1,5 +1,6 @@
 import { checkToken } from "@/api"
 import homeRouter from "@/router/home"
+import userInfoRouter from "@/router/userInfo"
 import userManagementRouters from "@/router/userManagement"
 import { useElMenuActiveStore } from "@/stores/menu.js"
 import LoginPage from "@/views/LoginPage.vue"
@@ -36,7 +37,7 @@ const router = createRouter({
       meta: { showErrorPage: true },
     },
     {
-      path: "/:pathMatch(.*)",
+      path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: () => import("../views/resultPages/404.vue"),
       meta: { showErrorPage: true },
@@ -47,14 +48,27 @@ const router = createRouter({
       component: () => import("../views/testPass.vue"),
     },
     {
+      /**
+        登录成功后跳转到个人中心，个人中心展示自己的课程列表
+      */
       path: "/",
+      name: "userInfo",
+      redirect: "/userInfo",
+      component: () => import("../layout/homePageLayout.vue"),
+      meta: { requireAuth: true },
+      children: [...userInfoRouter],
+    },
+    {
+      /**
+        Home是点击对应课程之后的首页，每个课程的首页展示的数据不一样
+        但是首页结构一致，均用来展示完成的作业以及待做实验等数据
+      */
+      path: "/classroom",
       component: () => import("../layout/basicLayout.vue"),
       meta: { requireAuth: true },
-      name: "Home",
-      redirect: "/Home",
       children: [
-        ...classRoutes,
         ...homeRouter,
+        ...classRoutes,
         ...userManagementRouters,
         {
           path: "/Contributors",

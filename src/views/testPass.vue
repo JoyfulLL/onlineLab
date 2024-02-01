@@ -28,14 +28,11 @@ const updatePagedData = async () => {
     "https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/admin/students"
   )
   mockStulist.value = response.data.data.mocklist
-  const start = (currentPage.value - 1) * pageSize.value
-  const end = start + pageSize.value
-  pagedData.value = mockStulist.value.slice(start, end)
 }
 </script>
 
 <template>
-  <el-table :data="pagedData" style="width: 100%">
+  <el-table :data="mockStulist" style="width: 100%">
     <el-table-column prop="id" label="ID"> </el-table-column>
     <el-table-column prop="class" label="Class"> </el-table-column>
     <el-table-column prop="email" label="Email"> </el-table-column>
@@ -43,16 +40,6 @@ const updatePagedData = async () => {
     <el-table-column prop="realName" label="Real Name"> </el-table-column>
     <el-table-column prop="schoolCode" label="School Code"> </el-table-column>
   </el-table>
-  <el-pagination
-    @size-change="handleSizeChange"
-    @current-change="handleCurrentChange"
-    :current-page="currentPage"
-    :page-sizes="[10, 20, 30, 40]"
-    :page-size="pageSize"
-    layout="total, sizes, prev, pager, next, jumper"
-    :total="total"
-  >
-  </el-pagination>
 </template>
 
 <style scoped lang="less">

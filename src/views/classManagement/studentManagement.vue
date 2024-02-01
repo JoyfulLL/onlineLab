@@ -63,7 +63,10 @@ const fetchClassList = () => {
   // console.log(useClassList.teacherClassList)
 }
 
-// 处理班级数据
+/**
+ *
+ * @param {*} classData
+ */
 function processClassData(classData) {
   return Object.keys(classData).map(classid => ({
     classid: classData[classid].classid,
@@ -227,7 +230,7 @@ const removeSelectedStudents = async () => {
   }
 }
 
-// 提交移出的方法
+// use to remove students from class
 const handleRemoveClick = async () => {
   const confirmResult = await ElMessageBox.confirm(
     "确定要移出所选学生的班级？",
@@ -425,7 +428,7 @@ const filteredData = ref(
   <!-- 分页 -->
   <el-pagination
     :page-size="pageSize"
-    :page-sizes="[20, 30, 50]"
+    :page-sizes="[20, 30, 50, 100, 200]"
     background
     default
     layout="total,prev, pager, next, sizes"
@@ -460,6 +463,10 @@ const filteredData = ref(
   border-radius: 10px; // 添加圆角
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // 添加阴影
   overflow: hidden; // 防止遮挡样式
+  @media (max-width: 768px) {
+    // 在小于等于768px的设备上，表格宽度为100%
+    height: 1080px; // 在小于等于768px的设备上，表格高度为自动
+  }
 
   .pager {
     position: absolute;

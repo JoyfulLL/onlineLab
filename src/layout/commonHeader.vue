@@ -6,13 +6,23 @@
         class="icons"
         style="width: 30px; height: 30px"
         @click="handleCollapse"
+        v-if="!props.isHomePgae"
       >
         <component
           :is="useToCollapse.isCollapse ? 'Expand' : 'Fold'"
         ></component>
       </div>
-
-      <el-breadcrumb :separator-icon="ArrowRight" class="bread">
+      <!-- 顶部LOGO -->
+      <img
+        style="max-width: 180px; max-height: 60px"
+        src="@/assets/logo.png"
+        v-if="props.isHomePgae"
+      />
+      <el-breadcrumb
+        :separator-icon="ArrowRight"
+        class="bread"
+        v-if="!props.isHomePgae"
+      >
         <!-- 首页是一定存在的所以直接写死 -->
         <el-breadcrumb-item
           v-for="item in routers"
@@ -41,7 +51,7 @@
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item>
-              <router-link to="/Home/userInfo">
+              <router-link to="/userInfo">
                 <el-icon class="icon">
                   <Setting />
                 </el-icon>
@@ -67,6 +77,13 @@ import { useMenuStore } from "@/stores/menu"
 import { useAuthStore } from "@/stores/tokenStore"
 import { ArrowRight, Setting, SwitchButton } from "@element-plus/icons-vue"
 import { useRouter } from "vue-router"
+
+const props = defineProps({
+  isHomePgae: {
+    type: Boolean,
+    default: false,
+  },
+})
 
 const useToCollapse = useSidebarStore()
 let handleCollapse = () => {

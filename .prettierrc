@@ -4,6 +4,6 @@
   "jsxSingleQuote": false,
   "singleQuote": false,
   "endOfLine": "lf",
-  "semi": false,
-  "trailingComma": "es5"
+  "trailingComma": "es5",
+  "semi": false
 }

@@ -8,7 +8,7 @@ import { useRouter } from "vue-router"
 const useScope = useAuthStore()
 // 读取当前用户的scope角色并存储
 const userScope = useScope.getScope() //获取到的scope
-
+console.log(userScope)
 onMounted(() => {})
 // 侧边栏折叠
 const useToCollapse = useSidebarStore()
@@ -17,7 +17,16 @@ const menuStore = useMenuStore()
 
 const router = useRouter()
 
-//一般用户菜单树——学生，老师
+//课程列表
+const courses = ref([
+  { courseid: 1, title: "计算机网络", description: "这是计算机网络" },
+  { courseid: 2, title: "数据结构", description: "这是数据结构的描述" },
+  { courseid: 3, title: "高等数学1", description: "这是一个描述2" },
+  { courseid: 4, title: "高等数学2", description: "这是一个描述2" },
+  { courseid: 5, title: "高等数学3", description: "这是一个描述3" },
+])
+
+//一般用户菜单树——学生
 //无用户管理菜单
 const commonMenuTree = ref([
   {
@@ -55,13 +64,67 @@ const commonMenuTree = ref([
       },
       {
         subIndex: "3-4",
-        subIcon: "UserFilled",
-        title: "学生管理",
-        name: "studentManagement",
-        subScope: ["admin", "teacher"],
+        subIcon: "EditPen",
+        title: "算法练习题",
+        name: "algorithmExercises",
+        subScope: ["admin", "teacher", "student"],
+      },
+    ],
+    scope: ["admin", "teacher", "student"],
+  },
+  {
+    index: "4",
+    icon: "PieChart",
+    title: "贡献者",
+    name: "Contributors",
+    scope: ["admin", "teacher", "student"], // 适用于所有权限
+  },
+])
+
+// 教师菜单
+const teacherMenuTree = ref([
+  {
+    index: "1",
+    icon: "PieChart",
+    title: "总览",
+    name: "Home",
+    scope: ["admin", "teacher", "student"], // 适用于所有权限
+  },
+  {
+    index: "2-3",
+    icon: "UserFilled",
+    title: "学生管理",
+    name: "studentManagement",
+    scope: ["admin", "teacher"],
+  },
+  {
+    index: "3",
+    icon: "DataBoard",
+    title: "学习空间",
+    subMenu: [
+      {
+        subIndex: "3-1",
+        subIcon: "Notebook",
+        title: "作业",
+        name: "homework",
+        subScope: ["admin", "teacher", "student"],
       },
       {
-        subIndex: "3-5",
+        subIndex: "3-2",
+        subIcon: "Tools",
+        title: "实验任务",
+        name: "experimentTaskManagement",
+        subScope: ["admin", "teacher", "student"],
+      },
+      {
+        subIndex: "3-3",
+        subIcon: "UploadFilled",
+        title: "资料共享",
+        name: "fileShare",
+        subScope: ["admin", "teacher", "student"],
+      },
+      {
+        subIndex: "3-4",
         subIcon: "EditPen",
         title: "算法练习题",
         name: "algorithmExercises",
@@ -108,6 +171,13 @@ const adminMenuTree = ref([
         name: "adminSelf",
         subScope: "admin",
       },
+      {
+        subIndex: "2-3",
+        subIcon: "UserFilled",
+        title: "学生管理",
+        name: "studentManagement",
+        subScope: ["admin", "teacher"],
+      },
     ],
     scope: ["admin"],
   },
@@ -139,13 +209,6 @@ const adminMenuTree = ref([
       },
       {
         subIndex: "3-4",
-        subIcon: "UserFilled",
-        title: "学生管理",
-        name: "studentManagement",
-        subScope: ["admin", "teacher"],
-      },
-      {
-        subIndex: "3-5",
         subIcon: "EditPen",
         title: "算法练习题",
         name: "algorithmExercises",
@@ -164,12 +227,18 @@ const adminMenuTree = ref([
 ])
 
 //依据当前用户身份，获取到对应的menuTree
-menuStore.getMenuTreeByUserRole(userScope, adminMenuTree, commonMenuTree)
+menuStore.getMenuTreeByUserRole(
+  userScope,
+  adminMenuTree,
+  commonMenuTree,
+  teacherMenuTree
+)
 
 // 用于路由跳转
 const clickMenu = item => {
   router.push({
     name: item.name,
+    params: { courseid: 1 },
   })
 }
 
@@ -213,7 +282,7 @@ activePath.value = router.currentRoute._value.meta.index
         <!--        当subMenu不存在时，下方的v-if为真，运行-->
         <el-menu-item
           :index="item.index"
-          v-if="!item.subMenu && item.scope.includes(userScope)"
+          v-if="item.scope.includes(userScope) && !item.subMenu"
           :key="item.index"
           @click="clickMenu(item)"
         >

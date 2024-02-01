@@ -7,8 +7,8 @@
 <script setup>
 import { useRouter } from "vue-router"
 const router = useRouter()
-const goBackToHome = () => {
-  router.push("/Home")
+const goBackToUserInfo = () => {
+  router.push("/userInfo")
 }
 </script>
 
@@ -19,7 +19,7 @@ const goBackToHome = () => {
     sub-title="Sorry, the page you visited does not exist."
   >
     <template #extra>
-      <a-button type="primary" @click="goBackToHome">Back Home</a-button>
+      <a-button type="primary" @click="goBackToUserInfo">返回个人中心</a-button>
     </template>
   </a-result>
 </template>

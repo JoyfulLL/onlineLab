@@ -1,12 +1,45 @@
 <template>
-  <test-pass />
+  <div class="demo-progress">
+    <el-progress type="circle" :percentage="0" />
+    <el-progress type="circle" :percentage="28" />
+    <el-progress type="circle" :percentage="100" status="success" />
+    <el-progress type="circle" :percentage="70" status="warning" />
+    <el-progress type="circle" :percentage="50" status="exception" />
+  </div>
+  <el-card class="box-card">
+    <div class="demo-progress">
+      <span>实验已完成</span>
+      <el-progress :stroke-width="26" :percentage="70"> </el-progress>
+      <span>作业完成量</span>
+      <el-progress :stroke-width="24" :percentage="100" status="success">
+      </el-progress>
+      <span>算法练习次数</span>
+      <el-progress :stroke-width="22" :percentage="80" status="warning">
+      </el-progress>
+      <el-progress :stroke-width="20" :percentage="50" status="exception" />
+    </div>
+  </el-card>
+  <el-progress type="circle" :percentage="100" status="success">
+    <template #default="{ percentage }">
+      <span><el-button type="success" :icon="Check" circle/></span>
+      <span class="percentage-label">出勤</span>
+    </template>
+  </el-progress>
+  <el-timeline>
+    <el-timeline-item
+      v-for="(activity, index) in activities"
+      :key="index"
+      :timestamp="activity.timestamp"
+    >
+      {{ activity.content }}
+    </el-timeline-item>
+  </el-timeline>
 </template>
 
 <script setup>
 import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData"
 import { useAuthStore } from "@/stores/tokenStore.js"
-import testPass from "@/views/testPass.vue"
 import { onMounted } from "vue"
 const useClassList = teacherJoinedClassStore()
 const useScope = useAuthStore()

@@ -12,7 +12,7 @@
 const classRoutes = [
   //班级管理
   {
-    path: "/classManagement",
+    path: "/classroom/:courseid/",
     name: "classManagement",
     meta: {
       requireAuth: true,
@@ -58,18 +58,6 @@ const classRoutes = [
         },
       },
       {
-        path: "studentManagement",
-        name: "studentManagement",
-        component: () =>
-          import("../views/classManagement/studentManagement.vue"),
-        meta: {
-          requireAuth: true,
-          role: ["admin", "teacher"],
-          title: "学生管理",
-          index: "3-4",
-        },
-      },
-      {
         path: "algorithmExercises",
         name: "algorithmExercises",
         component: () =>
@@ -78,7 +66,7 @@ const classRoutes = [
           requireAuth: true,
           role: ["admin", "teacher", "student"],
           title: "算法练习",
-          index: "3-5",
+          index: "3-4",
         },
       },
     ],
