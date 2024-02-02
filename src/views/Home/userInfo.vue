@@ -224,6 +224,7 @@ const courses = ref([
       </el-col>
     </el-row>
   </div>
+  <!-- 底部的课程列表 -->
   <CourseList :courses="courses" />
 </template>
 

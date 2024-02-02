@@ -99,7 +99,11 @@ router.beforeEach(async (to, from, next) => {
     to.name === "Login" ||
     to.name === "Signup" ||
     to.name === "StuForgetPassword" ||
-    to.name === "Contributors"
+    to.name === "Contributors" ||
+    to.name === "Success" ||
+    to.name === "Forbidden" ||
+    to.name === "ServerError" ||
+    to.name === "NotFound"
   ) {
     next() // 如果是登录页面，直接放行 不需要校验
   } else {

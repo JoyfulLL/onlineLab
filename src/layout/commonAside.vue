@@ -32,7 +32,7 @@ const commonMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
-    title: "总览",
+    title: "总览1",
     name: "Home",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
@@ -230,8 +230,8 @@ const adminMenuTree = ref([
 menuStore.getMenuTreeByUserRole(
   userScope,
   adminMenuTree,
-  commonMenuTree,
-  teacherMenuTree
+  teacherMenuTree,
+  commonMenuTree
 )
 
 // 用于路由跳转

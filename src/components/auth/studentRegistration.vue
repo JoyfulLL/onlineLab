@@ -5,20 +5,20 @@
  * @description 用于注册学生
  * @date 2024/1/10
  */
-import { regStu } from '@/api/userManagement/registerUser.js'
-import { ElMessage, ElNotification } from 'element-plus'
-import { errorMessages } from '@/utils/errorMessagesCode'
-import { rules } from '@/utils/formRules.js'
-import { editStuInfo } from '@/api/userManagement/editUserInfo'
-import { basicClassesStore } from '@/stores'
-import { mapState } from 'pinia'
+import { regStu } from "@/api/userManagement/registerUser.js"
+import { ElMessage, ElNotification } from "element-plus"
+import { errorMessages } from "@/utils/errorMessagesCode"
+import { rules } from "@/utils/formRules.js"
+import { editStuInfo } from "@/api/userManagement/editUserInfo"
+import { basicClassesStore } from "@/stores"
+import { mapState } from "pinia"
 
 export default {
   computed: {
     rules() {
       return rules
     },
-    ...mapState(basicClassesStore, ['classList']),
+    ...mapState(basicClassesStore, ["classList"]),
   },
   props: {
     userData: {
@@ -35,14 +35,14 @@ export default {
     },
     action: {
       type: String,
-      default: 'edit',
+      default: "edit",
     },
   },
   data() {
     return {
       userForm: {},
-      regAction: 'reg',
-      editAction: 'edit',
+      regAction: "reg",
+      editAction: "edit",
     }
   },
   //用于侦听 编辑 按钮的数据变化
@@ -56,7 +56,6 @@ export default {
   },
   methods: {
     handleSubmit() {
-      console.log(this.userForm.class)
       if (this.regAction === this.action) {
         regStu(
           this.userForm.name,
@@ -66,17 +65,17 @@ export default {
           this.userForm.userSchoollD,
           this.userForm.schoolCode,
           this.userForm.class,
-          this.userForm.sex,
-        ).then((res) => {
+          this.userForm.sex
+        ).then(res => {
           if (res.data.status == 0) {
             //判断status是否为0
             ElMessage({
-              message: '注册成功',
-              type: 'success',
+              message: "注册成功",
+              type: "success",
               duration: 3000,
             })
             //注册成功，跳转到成功的界面
-            this.$router.push('/success')
+            this.$router.push("/success")
           }
         })
       } else if (this.editAction === this.action) {
@@ -88,20 +87,20 @@ export default {
           this.userForm.userSchoollD,
           this.userForm.schoolCode,
           this.userForm.class,
-          this.userForm.sex,
-        ).then((res) => {
+          this.userForm.sex
+        ).then(res => {
           if (res.data.status === 0) {
-            this.$emit('edit-success', false)
+            this.$emit("edit-success", false)
             ElMessage({
-              message: '编辑成功',
-              type: 'success',
+              message: "编辑成功",
+              type: "success",
             })
           }
         })
       }
     },
-    resetForm(formName) {
-      this.$refs[formName].resetFields()
+    resetForm(form) {
+      this.$refs[form].resetFields()
     },
   },
   mounted() {
@@ -118,35 +117,56 @@ export default {
       ref="form"
       :rules="rules"
       class="centered-form"
-      @submit="handleSubmit">
+      @submit="handleSubmit"
+    >
       <el-form-item label="ID" prop="id" v-if="!this.showPassword">
         <el-input v-model="userForm.id" :disabled="this.IsDisabled"></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="name">
-        <el-input v-model="userForm.name" :disabled="this.IsDisabled"></el-input>
+        <el-input
+          v-model="userForm.name"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" v-if="this.showPassword">
         <el-input v-model="userForm.password" type="password" show-password />
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model="userForm.email" :disabled="this.IsDisabled"></el-input>
+        <el-input
+          v-model="userForm.email"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="真实姓名" prop="realName">
-        <el-input v-model="userForm.realName" :disabled="this.IsDisabled"></el-input>
+        <el-input
+          v-model="userForm.realName"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="学生学号" prop="userSchoollD">
-        <el-input v-model="userForm.userSchoollD" :disabled="this.IsDisabled"></el-input>
+        <el-input
+          v-model="userForm.userSchoollD"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="学校代码" prop="schoolCode">
-        <el-input v-model="userForm.schoolCode" :disabled="this.IsDisabled"></el-input>
+        <el-input
+          v-model="userForm.schoolCode"
+          :disabled="this.IsDisabled"
+        ></el-input>
       </el-form-item>
       <el-form-item label="学生班级" prop="class" label-width="auto">
-        <el-select v-model="userForm.class" placeholder="请选择班级" :disabled="this.IsDisabled">
+        <el-select
+          v-model="userForm.class"
+          placeholder="请选择班级"
+          :disabled="this.IsDisabled"
+        >
           <el-option
             v-for="item in this.classList"
             :key="item.classid"
             :label="item.classname"
-            :value="item.classname"></el-option>
+            :value="item.classname"
+          ></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
@@ -157,8 +177,16 @@ export default {
       </el-form-item>
       <el-form-item>
         <div class="button-container" style="text-align: center">
-          <el-button type="primary" @click="handleSubmit('userForm')" :disabled="this.IsDisabled">提交 </el-button>
-          <el-button @click="resetForm('userForm')" v-if="this.showPassword" :disabled="this.IsDisabled"
+          <el-button
+            type="primary"
+            @click="handleSubmit('userForm')"
+            :disabled="this.IsDisabled"
+            >提交
+          </el-button>
+          <el-button
+            @click="resetForm('userForm')"
+            v-if="this.showPassword"
+            :disabled="this.IsDisabled"
             >重置
           </el-button>
         </div>

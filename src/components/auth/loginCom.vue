@@ -38,11 +38,6 @@ export default {
         }
       })
     },
-
-    toReg() {
-      //跳转去注册
-      this.$router.push("/Zhuce")
-    },
   },
 
   computed: {
@@ -117,8 +112,17 @@ export default {
         </div>
         <!-- 右边的底部栏，用于第三方API -->
         <div class="bottom-section">
+          <div class="signup">
+            <el-link
+              type="primary"
+              href="/signup"
+              style="font-size: 18px;"
+              target="_blank"
+              >注册</el-link
+            >
+          </div>
           <div class="other-login">
-            <el-link type="primary" href="#">其它登录方式</el-link>
+            <p type="default">其它登录方式</p>
             <div class="icon-container">
               <a href="#"><img src="../../assets/loginOrReg/qq.png"/></a>
               <a href="#"><img src="../../assets/loginOrReg/wechat.png"/></a>
@@ -185,35 +189,31 @@ export default {
 }
 
 .bottom-section {
-  /* 下半部分样式 */
   flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.signup {
+  order: 1; /* 显示在左边 */
 }
 
 .other-login {
+  order: 2; /* 显示在右边 */
   display: flex;
-  margin-bottom: 20px;
-  justify-content: flex-end;
-  /* 将内容向右对齐 */
-}
-
-.other-login-link {
-  font-size: 14px;
-  margin-left: 10px;
-  /* 调整链接与图标的间距 */
-  text-decoration: none;
-  color: #333;
+  align-items: center;
 }
 
 .icon-container {
-  margin-left: 20px;
-  /* 添加左侧间距 */
+  display: flex;
 }
 
 .icon-container img {
   /* 图片大小 */
   width: 35px;
   height: 35px;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .form-container {

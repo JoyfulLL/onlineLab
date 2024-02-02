@@ -15,12 +15,12 @@ function handleRequestError(error) {
   if (error.response && error.response.data && error.response.data.status) {
     const statusCode = error.response.data.status
     errorMessage = errorMessages[statusCode] || "未知错误"
-    if (statusCode === 7) {
-      // 状态码为7，没有权限访问此网站，返回上一级
-      // 跳转到上一页
-      router.go(-1)
-      return // 终止函数继续执行
-    }
+    // if (statusCode === 7) {
+    //   // 状态码为7，没有权限访问此网站，返回上一级
+    //   // 跳转到上一页
+    //   router.go(-1)
+    //   return // 终止函数继续执行
+    // }
   }
 
   ElNotification({
