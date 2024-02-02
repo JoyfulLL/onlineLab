@@ -31,6 +31,9 @@ export default {
           })
           const authStore = useAuthStore()
           authStore.setData(res.data.data)
+          //将token存储到cookies
+          // const token = res.data.data.token
+          // document.cookie = `token=${token}; path=/;`
           this.$router.push({ path: "/" })
         }
       })

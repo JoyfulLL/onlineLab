@@ -33,9 +33,14 @@ export function login(username, password) {
 //       })
 //   })
 // }
+let isAuthenticated = false
+
 export function checkToken(shouldCheck) {
   if (!shouldCheck) {
     return Promise.resolve(true) // 如果不需要校验，直接返回 true
+  }
+  if (isAuthenticated) {
+    return Promise.resolve(true) // 如果已经校验过token，直接返回缓存的结果
   }
   return new Promise((resolve, reject) => {
     const useAuth = useAuthStore()
@@ -46,8 +51,6 @@ export function checkToken(shouldCheck) {
         if (res.data.status === 0) {
           useAuth.setCheckTokenData(res.data.data)
           resolve(true) // 校验成功，返回 true
-        } else {
-          resolve(false) // 校验失败，返回 false
         }
       })
       .catch(error => {

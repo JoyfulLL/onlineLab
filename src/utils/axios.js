@@ -1,3 +1,4 @@
+import router from "@/router"
 import { useAuthStore } from "@/stores/tokenStore"
 import { errorMessages } from "@/utils/errorMessagesCode"
 import axios from "axios"
@@ -12,8 +13,16 @@ const service = axios.create({
 function handleRequestError(error) {
   let errorMessage = "失败"
   if (error.response && error.response.data && error.response.data.status) {
-    errorMessage = errorMessages[error.response.data.status] || "未知错误"
+    const statusCode = error.response.data.status
+    errorMessage = errorMessages[statusCode] || "未知错误"
+    if (statusCode === 7) {
+      // 状态码为7，没有权限访问此网站，返回上一级
+      // 跳转到上一页
+      router.go(-1)
+      return // 终止函数继续执行
+    }
   }
+
   ElNotification({
     title: "错误",
     message: errorMessage,

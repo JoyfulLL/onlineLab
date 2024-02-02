@@ -2,10 +2,11 @@ import { checkToken } from "@/api"
 import homeRouter from "@/router/home"
 import userInfoRouter from "@/router/userInfo"
 import userManagementRouters from "@/router/userManagement"
-import { useElMenuActiveStore } from "@/stores/menu.js"
 import LoginPage from "@/views/LoginPage.vue"
 import { createRouter, createWebHistory } from "vue-router"
 import classRoutes from "./classManagement"
+// 引入进度条
+import { close, start } from "../utils/nprogress.js"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -93,22 +94,24 @@ const router = createRouter({
 
 //全局路由守卫
 router.beforeEach(async (to, from, next) => {
+  start()
   if (
     to.name === "Login" ||
     to.name === "Signup" ||
-    to.name === "StuForgetPassword"
+    to.name === "StuForgetPassword" ||
+    to.name === "Contributors"
   ) {
     next() // 如果是登录页面，直接放行 不需要校验
   } else {
     try {
       let isAuthenticated = await checkToken(true) // 需要校验 token
-      useElMenuActiveStore().elMenuActive = to.path
       if (to.meta.requireAuth && !isAuthenticated) {
         // 重定向到登录页面
         next({ name: "Login" })
       } else if (to.meta.showErrorPage && to.matched.length === 0) {
         next("/404")
       } else {
+        close()
         // 已登录状态 允许访问
         next()
       }
@@ -117,6 +120,10 @@ router.beforeEach(async (to, from, next) => {
       next({ name: "Login" })
     }
   }
+})
+
+router.afterEach(() => {
+  close()
 })
 
 export default router
