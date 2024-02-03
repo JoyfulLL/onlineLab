@@ -33,29 +33,20 @@ export function login(username, password) {
 //       })
 //   })
 // }
-let isAuthenticated = false
 
-export function checkToken(shouldCheck) {
-  if (!shouldCheck) {
-    return Promise.resolve(true) // 如果不需要校验，直接返回 true
-  }
-  if (isAuthenticated) {
-    return Promise.resolve(true) // 如果已经校验过token，直接返回缓存的结果
-  }
-  return new Promise((resolve, reject) => {
-    const useAuth = useAuthStore()
-    const token = useAuth.data.token
-    service
-      .get("/isvalid", { Authorization: `Bearer ${token}` })
-      .then(res => {
-        if (res.data.status === 0) {
-          useAuth.setCheckTokenData(res.data.data)
-          resolve(true) // 校验成功，返回 true
-        }
-      })
-      .catch(error => {
-        console.error("发生错误，将用户导航回登录界面", error)
-        resolve(false) // 发生错误，返回 false
-      })
-  })
-}
+// token的校验放在全局解析守卫处
+
+// export function checkToken() {
+//   const useAuth = useAuthStore()
+//   const token = useAuth.data.token
+//   service
+//     .get("/isvalid", { Authorization: `Bearer ${token}` })
+//     .then(res => {
+//       if (res.data.status === 0) {
+//         useAuth.setCheckTokenData(res.data.data)
+//       }
+//     })
+//     .catch(error => {
+//       console.error("发生错误，将用户导航回登录界面", error)
+//     })
+// }

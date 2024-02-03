@@ -10,18 +10,34 @@ const router = useRouter()
 const goBackToUserInfo = () => {
   router.push("/userInfo")
 }
+
+const backTo = () => {
+  router.go(-1)
+}
 </script>
 
 <template>
-  <a-result
-    status="404"
-    title="404"
-    sub-title="Sorry, the page you visited does not exist."
-  >
+  <a-result status="404" title="404" sub-title="此页面貌似不存在喔~">
     <template #extra>
-      <a-button type="primary" @click="goBackToUserInfo">返回个人中心</a-button>
+      <div class="button-container">
+        <a-button @click="backTo" class="custom-button">返回上一级</a-button>
+        <a-button type="primary" @click="goBackToUserInfo" class="custom-button"
+          >返回个人中心</a-button
+        >
+      </div>
     </template>
   </a-result>
 </template>
 
-<style lang="lcss" scoped></style>
+<style lang="less" scoped>
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.custom-button {
+  width: 200px;
+}
+</style>

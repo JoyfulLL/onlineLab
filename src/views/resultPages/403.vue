@@ -4,14 +4,44 @@
 * @author LJF
 * @date 2024/01/25 22:24:47
 !-->
-<script setup></script>
+<script setup>
+import router from "@/router"
+
+const backTo = () => {
+  router.go(-1)
+}
+
+const toLogin = () => {
+  router.push("/login")
+}
+</script>
 
 <template>
-  <a-result status="403" title="403" sub-title="Sorry, you are not authorized to access this page.">
+  <a-result
+    status="403"
+    title="403"
+    sub-title="抱歉，您暂时无权限访问，或登陆后重试"
+  >
     <template #extra>
-      <a-button type="primary">Back Home</a-button>
+      <div class="button-container">
+        <a-button type="primary" @click="backTo">返回上一级</a-button>
+        <a-button @click="toLogin" style="color: rgb(58, 127, 6);"
+          >登录</a-button
+        >
+      </div>
     </template>
   </a-result>
 </template>
 
-<style lang="lcss" scoped></style>
+<style lang="less" scoped>
+.button-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+.custom-button {
+  width: 200px;
+}
+</style>
