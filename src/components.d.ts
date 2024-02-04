@@ -63,4 +63,7 @@ declare module 'vue' {
     TeacherRegistration: typeof import('./components/auth/teacherRegistration.vue')['default']
     TestCharts: typeof import('./components/charts/testCharts.vue')['default']
   }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
+  }
 }

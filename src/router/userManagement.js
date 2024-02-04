@@ -3,6 +3,7 @@ const userManagementRouters = [
   {
     path: "/userManagement",
     name: "userManagement",
+    redirect: "/userManagement/studentManagement",
     meta: {
       requireAuth: true,
       role: ["admin"],

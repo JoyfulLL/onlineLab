@@ -8,17 +8,16 @@
  * 用来放置有权限（roles 属性）的路由
  * 必须带有 name 属性
  */
-
-const classRoutes = [
-  //班级管理
+//每个课程的路由
+const courseRoutes = [
   {
-    path: "/classroom/:courseid/",
+    path: "/courseroom/:courseid/",
     name: "classManagement",
     meta: {
       requireAuth: true,
       role: ["admin", "teacher", "student"],
       title: "学习空间",
-      index: "3",
+      index: "4",
     },
     children: [
       {
@@ -30,7 +29,7 @@ const classRoutes = [
           requireAuth: true,
           role: ["admin", "teacher", "student"],
           title: "作业",
-          index: "3-1",
+          index: "4-1",
         },
       },
       {
@@ -43,7 +42,7 @@ const classRoutes = [
           visiable: true,
           role: ["admin", "teacher", "student"],
           title: "实验任务",
-          index: "3-2",
+          index: "4-2",
         },
       },
       {
@@ -54,7 +53,7 @@ const classRoutes = [
           requireAuth: true,
           role: ["admin", "teacher", "student"],
           title: "资料共享",
-          index: "3-3",
+          index: "4-3",
         },
       },
       {
@@ -66,11 +65,11 @@ const classRoutes = [
           requireAuth: true,
           role: ["admin", "teacher", "student"],
           title: "算法练习",
-          index: "3-4",
+          index: "4-4",
         },
       },
     ],
   },
 ]
 
-export default classRoutes
+export default courseRoutes

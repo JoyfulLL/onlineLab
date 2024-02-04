@@ -7,7 +7,7 @@
 
 const homeRouter = [
   {
-    path: "/classroom/:courseid/home",
+    path: "/courseroom/:courseid/home",
     name: "Home",
     component: () => import("../views/Home/Home.vue"),
     meta: {

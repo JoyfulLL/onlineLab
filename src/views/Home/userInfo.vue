@@ -117,8 +117,8 @@ const courses = ref([
     />
   </el-dialog>
   <div class="card-container">
-    <el-row :gutter="20">
-      <el-col :span="24" :md="12" :lg="12">
+    <el-row class="card-row">
+      <el-col>
         <el-card class="box-card">
           <template #header>
             <div class="card-header">
@@ -203,7 +203,8 @@ const courses = ref([
           </el-descriptions>
         </el-card>
       </el-col>
-      <el-col :span="24" :md="12" :lg="12">
+      <!-- 班级列表区域，管理员账号不需要显示，管理员可以在功能区进入班级管理 -->
+      <el-col v-if="userScope !== 'admin'">
         <el-card class="class-card">
           <template #header>
             <div class="card-header">
@@ -222,13 +223,41 @@ const courses = ref([
           />
         </el-card>
       </el-col>
+      <!-- 
+        根据平台的作用，功能管理区暂时不对教师开放
+        教师管理学生以及班级，可以在对应的课程下管理 
+      -->
+      <el-col>
+        <el-card class="adminOperation" v-if="userScope === 'admin'">
+          <template #header>
+            <div class="card-header">
+              <span>功能区</span>
+            </div>
+          </template>
+          <div class="icon-container">
+            <router-link class="icon-wrapper" to="/userManagement">
+              <unicon name="user" fill="royalblue"></unicon>
+              <span class="icon-label">用户管理</span>
+            </router-link>
+            <router-link class="icon-wrapper" to="/classRoomManagement">
+              <unicon name="book-reader" fill="royalblue"></unicon>
+              <span class="icon-label">班级管理</span>
+            </router-link>
+            <div class="icon-wrapper">
+              <unicon name="swatchbook" fill="royalblue"></unicon>
+              <span class="icon-label">课程管理</span>
+            </div>
+            <!-- 更多的功能 -->
+          </div>
+        </el-card>
+      </el-col>
     </el-row>
   </div>
   <!-- 底部的课程列表 -->
   <CourseList :courses="courses" />
 </template>
 
-<style scoped>
+<style scoped lang="less">
 @media (max-width: 767px) {
   .card-container {
     margin-top: 30px;
@@ -282,19 +311,101 @@ const courses = ref([
 
 .card-container {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
+}
+
+.card-row {
+  flex-wrap: wrap;
+  margin: -10px;
+}
+
+.el-col {
+  flex-basis: 100%;
+  max-width: 100%;
+  margin: 10px;
+}
+
+@media screen and (min-width: 768px) {
+  .el-col {
+    flex-basis: calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
 }
 
 .box-card {
-  width: auto;
+  width: 550px;
   height: 100%;
   margin-right: 10px;
   margin-left: 10px;
+}
+.adminOperation {
+  margin-left: 20px;
+  width: 500px;
+  height: 100%;
 }
 .class-card {
   width: 768px;
   height: 100%;
   margin-right: 10px;
   margin-left: 10px;
+}
+
+@color-blue: royalblue;
+@color-green: green;
+@color-red: red;
+@color-orange: orange;
+@color-purple: purple;
+
+.icon-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.icon-wrapper {
+  flex-basis: calc(20% - 20px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 2px solid royalblue;
+  border-radius: 10px;
+  padding: 10px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.icon-wrapper .icon-label {
+  margin-top: 10px;
+}
+
+.icon-wrapper:nth-child(1) {
+  border-color: @color-blue;
+}
+
+.icon-wrapper:nth-child(2) {
+  border-color: @color-green;
+}
+
+.icon-wrapper:nth-child(3) {
+  border-color: @color-red;
+}
+
+.icon-wrapper:nth-child(4) {
+  border-color: @color-orange;
+}
+
+.icon-wrapper:nth-child(5) {
+  border-color: @color-purple;
+}
+
+/**
+还可以往下定义更多的颜色
+*/
+
+@media screen and (max-width: 768px) {
+  .icon-wrapper {
+    flex-basis: calc(50% - 20px);
+  }
 }
 </style>

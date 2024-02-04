@@ -15,7 +15,7 @@
         :key="course.courseid"
       >
         <router-link
-          :to="'/classroom/' + course.courseid + '/home'"
+          :to="'/courseroom/' + course.courseid + '/home'"
           target="_blank"
         >
           <el-card
@@ -42,7 +42,7 @@
       <el-table-column prop="description" label="描述" width="220">
         <template #default="scope">
           <router-link
-            :to="'/classroom/' + scope.row.courseid + '/home'"
+            :to="'/courseroom/' + scope.row.courseid + '/home'"
             target="_blank"
             >{{ scope.row.description }}</router-link
           >

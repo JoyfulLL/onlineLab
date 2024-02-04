@@ -68,8 +68,9 @@ import { ElMessage, ElNotification } from "element-plus"
 import { rules } from "@/utils/formRules.js"
 import { basicClassesStore } from "@/stores"
 import { useRouter } from "vue-router"
-import { watch, ref } from "vue"
+import { onMounted, ref, onBeforeUnmount } from "vue"
 const router = useRouter()
+
 //班级列表
 const useClassesList = basicClassesStore()
 const classList = useClassesList.classList

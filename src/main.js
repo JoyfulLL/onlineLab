@@ -16,12 +16,14 @@ import router from "./router"
 import {
   uniAdjustCircle,
   uniBookOpen,
+  uniBookReader,
   uniChatInfo,
   uniEnvelope,
   uniInfoCircle,
   uniMars,
   uniMedal,
   uniSearch,
+  uniSwatchbook,
   uniUser,
   uniUserCircle,
   uniUserSquare,
@@ -41,6 +43,8 @@ Unicon.add([
   uniUserCircle,
   uniInfoCircle,
   uniBookOpen,
+  uniBookReader,
+  uniSwatchbook,
 ])
 
 //创建实例

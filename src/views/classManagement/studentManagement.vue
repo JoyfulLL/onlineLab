@@ -26,6 +26,7 @@ import { useTableDataStore } from "@/stores/userData/storeUserData"
 import { errorMessages } from "@/utils/errorMessagesCode"
 import { ElMessage, ElNotification } from "element-plus"
 import { inject, onMounted, reactive, ref } from "vue"
+import { ElLoading } from "element-plus"
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   fetchData()
@@ -36,6 +37,7 @@ onMounted(() => {
 // @用于在新增用户/编辑用户后刷新表格
 const reload = inject("reload")
 
+const loading = ref(true)
 // @注册信息的表单
 let userForm = reactive({
   id: "",
@@ -94,6 +96,10 @@ const filterClasses = (value, row) => {
 // 数据获取
 const fetchData = async () => {
   await studentDataTable.showStuInfo()
+
+  // Loading should be closed asynchronously
+  loading.value = false
+
   // 数据获取完成后，可以执行其他操作或访问Store中的数据
   //console.log(studentDataTable.stuList.map(student => student?.name))
 }
@@ -390,6 +396,8 @@ const filteredData = ref(
       stripe
       max-height="650"
       @selection-change="handleSelectionChange"
+      v-loading="loading"
+      element-loading-text="数据加载中"
     >
       <el-table-column fixed type="selection" width="50" />
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />

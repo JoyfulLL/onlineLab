@@ -183,32 +183,39 @@ const adminMenuTree = ref([
   },
   {
     index: "3",
+    icon: "Connection",
+    title: "班级管理",
+    name: "classRoomManagement",
+    scope: ["admin"],
+  },
+  {
+    index: "4",
     icon: "DataBoard",
     title: "学习空间",
     subMenu: [
       {
-        subIndex: "3-1",
+        subIndex: "4-1",
         subIcon: "Notebook",
         title: "作业",
         name: "homework",
         subScope: ["admin", "teacher", "student"],
       },
       {
-        subIndex: "3-2",
+        subIndex: "4-2",
         subIcon: "Tools",
         title: "实验任务",
         name: "experimentTaskManagement",
         subScope: ["admin", "teacher", "student"],
       },
       {
-        subIndex: "3-3",
+        subIndex: "4-3",
         subIcon: "UploadFilled",
         title: "资料共享",
         name: "fileShare",
         subScope: ["admin", "teacher", "student"],
       },
       {
-        subIndex: "3-4",
+        subIndex: "4-4",
         subIcon: "EditPen",
         title: "算法练习题",
         name: "algorithmExercises",
@@ -218,7 +225,7 @@ const adminMenuTree = ref([
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "4",
+    index: "5",
     icon: "PieChart",
     title: "贡献者",
     name: "Contributors",

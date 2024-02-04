@@ -6,7 +6,8 @@ import service from "@/utils/axios.js"
 import LoginPage from "@/views/LoginPage.vue"
 import { ElNotification } from "element-plus"
 import { createRouter, createWebHistory } from "vue-router"
-import classRoutes from "./classManagement"
+import classRoutes from "./adminClassesMan"
+import courseRoutes from "./classManagement"
 // 引入进度条
 import { close, start } from "../utils/nprogress.js"
 const router = createRouter({
@@ -66,13 +67,14 @@ const router = createRouter({
         Home是点击对应课程之后的首页，每个课程的首页展示的数据不一样
         但是首页结构一致，均用来展示完成的作业以及待做实验等数据
       */
-      path: "/classroom",
+      path: "/courseroom",
       component: () => import("../layout/basicLayout.vue"),
       meta: { requireAuth: true },
       children: [
         ...homeRouter,
-        ...classRoutes,
+        ...courseRoutes,
         ...userManagementRouters,
+        ...classRoutes,
         {
           path: "/Contributors",
           name: "Contributors",

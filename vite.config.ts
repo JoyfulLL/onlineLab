@@ -1,26 +1,30 @@
-import { fileURLToPath, URL } from 'node:url'
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
-import Icons from 'unplugin-icons/vite'
-import IconsResolver from 'unplugin-icons/resolver'
-import path from 'path'
-import Inspect from 'vite-plugin-inspect'
+import vue from "@vitejs/plugin-vue"
+import vueJsx from "@vitejs/plugin-vue-jsx"
+import { fileURLToPath, URL } from "node:url"
+import path from "path"
+import AutoImport from "unplugin-auto-import/vite"
+import IconsResolver from "unplugin-icons/resolver"
+import Icons from "unplugin-icons/vite"
+import {
+  AntDesignVueResolver,
+  ElementPlusResolver,
+} from "unplugin-vue-components/resolvers"
+import Components from "unplugin-vue-components/vite"
+import { defineConfig } from "vite"
+import viteCompression from "vite-plugin-compression"
+import Inspect from "vite-plugin-inspect"
 // https://vitejs.dev/config/
 
-const pathSrc = path.resolve(__dirname, 'src')
+const pathSrc = path.resolve(__dirname, "src")
 export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    viteCompression(),
     AutoImport({
       // Auto import functions from Vue, e.g. ref, reactive, toRef...
       // 自动导入 Vue 相关函数，如：ref, reactive, toRef 等
-      imports: ['vue'],
+      imports: ["vue"],
 
       // Auto import functions from Element Plus, e.g. ElMessage, ElMessageBox... (with style)
       // 自动导入 Element Plus 相关函数，如：ElMessage, ElMessageBox... (带样式)
@@ -30,11 +34,10 @@ export default defineConfig({
         // Auto import icon components
         // 自动导入图标组件
         IconsResolver({
-          prefix: 'Icon',
+          prefix: "Icon",
         }),
       ],
-
-      dts: path.resolve(pathSrc, 'auto-imports.d.ts'),
+      dts: path.resolve(pathSrc, "auto-imports.d.ts"),
     }),
 
     Components({
@@ -42,7 +45,7 @@ export default defineConfig({
         // Auto register icon components
         // 自动注册图标组件
         IconsResolver({
-          enabledCollections: ['ep'],
+          enabledCollections: ["ep"],
         }),
         // Auto register Element Plus components
         // 自动导入 Element Plus 组件
@@ -52,7 +55,7 @@ export default defineConfig({
         }),
       ],
 
-      dts: path.resolve(pathSrc, 'components.d.ts'),
+      dts: path.resolve(pathSrc, "components.d.ts"),
     }),
 
     Icons({
@@ -63,7 +66,7 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  }
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+    },
+  },
 })
