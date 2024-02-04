@@ -1,7 +1,6 @@
 <script>
 /**
- * @页面预存了管理员账号与密码
- * @之后必须删除！！！
+
  */
 
 import { login } from "@/api"
@@ -13,10 +12,11 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "testadmin",
-        password: "Tueu38p5hhraeg95",
+        username: "",
+        password: "",
       },
       rememberMe: false,
+      isPasswordVisible: false,
     }
   },
 
@@ -37,6 +37,9 @@ export default {
           this.$router.push({ path: "/" })
         }
       })
+    },
+    togglePasswordVisibility() {
+      this.isPasswordVisible = !this.isPasswordVisible
     },
   },
 
@@ -79,21 +82,43 @@ export default {
               <!-- 分割线 -->
               <el-divider />
 
-              <el-input
-                placeholder="用户名"
-                v-model="loginForm.username"
-                style="margin-bottom: 20px"
-                prop="username"
-              ></el-input>
-              <el-input
-                type="password"
-                placeholder="密码"
-                v-model="loginForm.password"
-                show-password
-                style="margin-bottom: 10px"
-                prop="password"
-              >
-              </el-input>
+              <div class="input-group">
+                <input
+                  type="text"
+                  placeholder=" "
+                  v-model="loginForm.username"
+                  style="margin-bottom: 20px"
+                  prop="username"
+                />
+                <label class="placeholder">
+                  用户名
+                </label>
+              </div>
+
+              <div class="input-group">
+                <input
+                  :type="isPasswordVisible ? 'text' : 'password'"
+                  placeholder=" "
+                  v-model="loginForm.password"
+                  style="margin-bottom: 10px"
+                  prop="password"
+                  autocomplete="on"
+                />
+                <label class="placeholder">
+                  密码
+                </label>
+                <div class="password-toggle">
+                  <el-icon @click="togglePasswordVisibility">
+                    <template v-if="isPasswordVisible">
+                      <View />
+                    </template>
+                    <template v-else>
+                      <Hide />
+                    </template>
+                  </el-icon>
+                </div>
+              </div>
+
               <div class="remember-row">
                 <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
                 <router-link to="/stuForgetPassword" class="forgot-password"
@@ -116,13 +141,13 @@ export default {
             <el-link
               type="primary"
               href="/signup"
-              style="font-size: 18px;"
+              style="font-size: 15px;"
               target="_blank"
               >注册</el-link
             >
           </div>
           <div class="other-login">
-            <p type="default">其它登录方式</p>
+            <p type="default" style="font-size: 15px;">其它登录方式</p>
             <div class="icon-container">
               <a href="#"><img src="../../assets/loginOrReg/qq.png"/></a>
               <a href="#"><img src="../../assets/loginOrReg/wechat.png"/></a>
@@ -281,5 +306,58 @@ export default {
 .forgot-password {
   font-size: 12px;
   float: left;
+}
+
+/**
+登录表单输入框样式
+*/
+.input-group {
+  position: relative;
+}
+input {
+  padding: 10px;
+  border-radius: 5px;
+  outline: none;
+  color: #444444;
+  border: 1px solid #0da2ff;
+  width: 90%;
+  font-size: 14px;
+}
+.placeholder {
+  position: absolute;
+  top: 10px;
+  left: 8px;
+  font-size: 14px;
+  padding: 0px 5px;
+  color: #0da2ff;
+  transition: 0.3s;
+  pointer-events: none;
+}
+input:focus + .placeholder,
+input:not(:placeholder-shown) + .placeholder {
+  top: -15px;
+}
+/**
+password input icon stytle
+*/
+.password-toggle {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  right: 20px;
+  cursor: pointer;
+}
+
+.toggle-icon {
+  font-size: 18px;
+  color: #0da2ff;
+}
+
+.hide-icon::before {
+  content: "\f070";
+}
+
+.show-icon::before {
+  content: "\f06e";
 }
 </style>
