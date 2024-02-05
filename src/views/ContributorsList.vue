@@ -10,9 +10,9 @@ const frontendContributors = ref([
     id: 1,
     name: "JoyfulLL",
     realName: "梁俊枫",
-    linesOfCode: 11992,
-    commits: 50,
-    description: "设计和实现前端逻辑、页面整体布局、样式、交互效果、菜单栏",
+    linesOfCode: 13565,
+    commits: 59,
+    description: "前端负责人，所有前端",
   },
   {
     id: 2,
@@ -27,9 +27,9 @@ const backendContributors = ref([
     id: 4,
     name: "MeteorsLiu",
     realName: "郭浩蓝",
-    linesOfCode: 6186,
-    commits: 29,
-    description: "",
+    linesOfCode: 6203,
+    commits: 33,
+    description: "项目负责人，后端负责人",
   },
   {
     id: 5,
@@ -89,7 +89,7 @@ const getGitHubProfileLink = username => {
           </template>
           <p class="card-text">提交数：{{ contributor.commits }}</p>
           <p class="card-text">代码行数：{{ contributor.linesOfCode }}</p>
-          <p class="card-text">贡献：{{ contributor.description }}</p>
+          <p class="card-description">贡献：{{ contributor.description }}</p>
         </el-card>
       </el-card>
     </div>
@@ -129,7 +129,7 @@ const getGitHubProfileLink = username => {
           </template>
           <p class="card-text">提交数：{{ contributor.commits }}</p>
           <p class="card-text">代码行数：{{ contributor.linesOfCode }}</p>
-          <p class="card-text">贡献：{{ contributor.description }}</p>
+          <p class="card-description">贡献：{{ contributor.description }}</p>
         </el-card>
       </el-card>
     </div>
@@ -175,7 +175,9 @@ const getGitHubProfileLink = username => {
 .card-text {
   margin-bottom: 10px; /* 根据需求调整行间距大小 */
 }
-
+.card-description {
+  color: rgb(241, 127, 40);
+}
 .spacer {
   margin-left: 5px; /* 根据需求调整间距大小 */
 }

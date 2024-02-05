@@ -4,16 +4,16 @@
  * @description
  * @date 2024/1/19
  */
-import service from "@/utils/axios";
+import service from "@/utils/axios"
 
 export function EditPassword(url) {
-  return function (id, name, newPassword) {
+  return function(id, name, newPassword) {
     return service.patch(url, {
       id: id,
       name: name,
       password: newPassword,
-    });
-  };
+    })
+  }
 }
 
 export function editTeacherInfo(
@@ -24,7 +24,7 @@ export function editTeacherInfo(
   userSchoollD,
   schoolCode,
   studentClass,
-  sex,
+  sex
 ) {
   return service.patch("/authrequired/admin/teacher", {
     id: id,
@@ -35,7 +35,7 @@ export function editTeacherInfo(
     schoolCode: schoolCode,
     class: studentClass,
     sex: sex,
-  });
+  })
 }
 
 // @管理员修改指定学生信息
@@ -47,7 +47,7 @@ export function editStuInfo(
   userSchoollD,
   schoolCode,
   studentClass,
-  sex,
+  sex
 ) {
   return service.patch("/authrequired/admin/student", {
     id: id,
@@ -58,5 +58,23 @@ export function editStuInfo(
     schoolCode: schoolCode,
     class: studentClass,
     sex: sex,
-  });
+  })
+}
+
+// 教师修改自己的信息
+export function teacherEditUserInfo(email, schoolCode, sex) {
+  return service.patch("/authrequired/teacher/", {
+    email: email,
+    schoolCode: schoolCode,
+    sex: sex,
+  })
+}
+// 学生修改自己的信息
+export function stuEditUserInfo(email, userSchoollD, schoolCode, sex) {
+  return service.patch("/authrequired/student/{action}", {
+    email: email,
+    userSchoollD: userSchoollD,
+    schoolCode: schoolCode,
+    sex: sex,
+  })
 }

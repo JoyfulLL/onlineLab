@@ -1,14 +1,36 @@
+<!--
+* @description This is the first page when user login
+* @fileName userInfo.vue
+* @author LJF
+* @date 2024/02/05 14:06:44
+!-->
+
 <script setup>
 import classesList from "@/components/charts/classesListTable.vue"
+import { ElMessage, ElNotification } from "element-plus"
 import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
-import { onMounted, ref } from "vue"
-
+import { onMounted, ref, watch } from "vue"
+import { Edit } from "@element-plus/icons-vue"
+import {
+  teacherEditUserInfo,
+  stuEditUserInfo,
+} from "@/api/userManagement/editUserInfo.js"
+const reload = inject("reload")
 const useAuth = useAuthStore()
 const userScope = useAuth.getScope()
 const classesStore = basicClassesStore()
-const userInfo = ref({ id: "", name: "", email: "", sex: "" })
+const userInfo = ref({
+  id: "",
+  name: "",
+  email: "",
+  sex: "",
+  realName: "",
+  schoolCode: "",
+  userSchoollD: "",
+  studentClass: "",
+})
 const useClassList = teacherJoinedClassStore()
 onMounted(() => {
   getUserInfoData()
@@ -18,9 +40,13 @@ onMounted(() => {
   } else {
   }
 })
+const loading = ref(true)
 
+const initialUserInfo = ref([])
 const getUserInfoData = () => {
   userInfo.value = useAuth.userInfoArray
+  initialUserInfo.value = { ...userInfo.value }
+  loading.value = false
 }
 
 const fetchAllClassInfo = () => {
@@ -84,6 +110,68 @@ const courses = ref([
     teachername: "肖",
   },
 ])
+
+// edit user info {data function compute}
+const editMode = ref(false)
+const cancelEditMode = () => {
+  editMode.value = false
+}
+// const toggleEditMode = () => {
+//   editMode.value = !editMode.value
+//   if (!editMode.value) {
+//     if (isFormDirty.value) {
+//       saveUserInfo()
+//     }
+//   }
+//   console.log(initialUserInfo.value)
+// }
+
+const toggleEditMode = () => {
+  editMode.value = !editMode.value
+  if (!editMode.value) {
+    if (JSON.stringify(userInfo) !== JSON.stringify(initialUserInfo)) {
+      saveUserInfo()
+    }
+  }
+}
+
+const saveUserInfo = () => {
+  ElMessageBox.confirm("确定保存修改的信息？", "Warning", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(() => {
+      const { email, userSchoollD, schoolCode, sex } = userInfo.value
+
+      // Determine the appropriate API function based on the user's scope
+
+      if (userScope === "teacher") {
+        teacherEditUserInfo(email, schoolCode, sex)
+          .then(res => {
+            reload()
+          })
+          .catch(error => {
+            console.error(error)
+          })
+      } else {
+        stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(res => {
+          reload()
+        })
+      }
+
+      ElMessage({
+        type: "success",
+        message: "修改成功",
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消",
+      })
+    })
+}
 </script>
 
 <template>
@@ -117,165 +205,199 @@ const courses = ref([
     />
   </el-dialog>
   <div class="card-container">
-    <el-row class="card-row">
-      <el-col>
-        <el-card class="box-card">
-          <template #header>
-            <div class="card-header">
-              <span>个人信息</span>
-              <el-button class="button" text>编辑</el-button>
-            </div>
-          </template>
-          <el-descriptions :column="2" border>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="adjust-circle" fill="royalblue"></unicon>
-                  用户ID
-                </div>
+    <div>
+      <el-card class="box-card" v-loading="loading">
+        <template #header>
+          <div class="card-header">
+            <span>个人信息</span>
+            <el-button
+              class="button"
+              type="warning"
+              @click="cancelEditMode"
+              v-show="editMode"
+            >
+              取消
+            </el-button>
+            <el-button
+              v-if="userScope !== 'admin'"
+              class="button"
+              type="primary"
+              @click="toggleEditMode"
+              :icon="Edit"
+            >
+              <template v-if="loading">
+                <i class="el-icon-loading"></i> 正在提交...
               </template>
-              {{ userInfo.id }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="user" fill="royalblue"></unicon>
-                  用户名
-                </div>
+              <template v-else>
+                {{ editMode ? "保存" : "编辑" }}
               </template>
-              {{ userInfo.name }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="user-square" fill="royalblue"></unicon>
-                  姓名
-                </div>
-              </template>
-              {{ userInfo.realName }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="info-circle" fill="royalblue"></unicon>
-                  学号
-                </div>
-              </template>
+            </el-button>
+          </div>
+        </template>
+        <el-descriptions :column="2" border>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="adjust-circle" fill="royalblue"></unicon>
+                用户ID
+              </div>
+            </template>
+            {{ userInfo.id }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="user" fill="royalblue"></unicon>
+                用户名
+              </div>
+            </template>
+            {{ userInfo.name }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="user-square" fill="royalblue"></unicon>
+                姓名
+              </div>
+            </template>
+            {{ userInfo.realName }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="info-circle" fill="royalblue"></unicon>
+                学号
+              </div>
+            </template>
+            <template v-if="editMode">
+              <el-input
+                v-model="userInfo.userSchoollD"
+                :disabled="!editMode || userScope === 'teacher'"
+              ></el-input>
+            </template>
+            <template v-else>
               {{ userInfo.userSchoollD }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="medal" fill="royalblue"></unicon>
-                  班级
-                </div>
-              </template>
-              {{ userInfo.class }}
-            </el-descriptions-item>
-
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="book-open" fill="royalblue"></unicon>
-                  学校
-                </div>
-              </template>
+            </template>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="medal" fill="royalblue"></unicon>
+                班级
+              </div>
+            </template>
+            {{ userInfo.class }}
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="book-open" fill="royalblue"></unicon>
+                学校
+              </div>
+            </template>
+            <template v-if="editMode">
+              <el-input
+                v-model="userInfo.schoolCode"
+                :disabled="!editMode"
+              ></el-input>
+            </template>
+            <template v-else>
               {{ userInfo.schoolCode }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="envelope" fill="royalblue"></unicon>
-                  邮箱
-                </div>
-              </template>
+            </template>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="envelope" fill="royalblue"></unicon>
+                邮箱
+              </div>
+            </template>
+            <template v-if="editMode">
+              <el-input
+                v-model="userInfo.email"
+                :disabled="!editMode"
+              ></el-input>
+            </template>
+            <template v-else>
               {{ userInfo.email }}
-            </el-descriptions-item>
-            <el-descriptions-item>
-              <template #label>
-                <div class="cell-item">
-                  <unicon name="mars" fill="royalblue"></unicon>
-                  性别
-                </div>
-              </template>
+            </template>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                <unicon name="mars" fill="royalblue"></unicon>
+                性别
+              </div>
+            </template>
+            <template v-if="editMode">
+              <el-input v-model="userInfo.sex" :disabled="!editMode"></el-input>
+            </template>
+            <template v-else>
               {{ userInfo.sex }}
-            </el-descriptions-item>
-          </el-descriptions>
-        </el-card>
-      </el-col>
-      <!-- 班级列表区域，管理员账号不需要显示，管理员可以在功能区进入班级管理 -->
-      <el-col v-if="userScope !== 'admin'">
-        <el-card class="class-card">
-          <template #header>
-            <div class="card-header">
-              <span>当前加入的班级</span>
-              <el-button
-                class="button"
-                type="primary"
-                @click="teacherJoinNewClass"
-                >加入班级</el-button
-              >
-            </div>
-          </template>
-          <classes-list
-            :classesList="useClassList.teacherClassList"
-            :showLeaveButton="true"
-          />
-        </el-card>
-      </el-col>
-      <!-- 
+            </template>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-card>
+    </div>
+    <!-- 
+      班级列表区域，管理员账号不需要显示，管理员可以在功能区进入班级管理
+      学生仅能加入一个班级，因此也不需要显示
+     -->
+    <div v-if="userScope === 'teacher'">
+      <el-card class="class-card">
+        <template #header>
+          <div class="card-header">
+            <span>当前加入的班级</span>
+            <el-button
+              class="button"
+              type="success"
+              @click="teacherJoinNewClass"
+              >加入班级</el-button
+            >
+          </div>
+        </template>
+        <classes-list
+          :classesList="useClassList.teacherClassList"
+          :showLeaveButton="true"
+        />
+      </el-card>
+    </div>
+    <!-- 
         根据平台的作用，功能管理区暂时不对教师开放
         教师管理学生以及班级，可以在对应的课程下管理 
       -->
-      <el-col>
-        <el-card class="adminOperation" v-if="userScope === 'admin'">
-          <template #header>
-            <div class="card-header">
-              <span>功能区</span>
-            </div>
-          </template>
-          <div class="icon-container">
-            <router-link class="icon-wrapper" to="/userManagement">
-              <unicon name="user" fill="royalblue"></unicon>
-              <span class="icon-label">用户管理</span>
-            </router-link>
-            <router-link class="icon-wrapper" to="/classRoomManagement">
-              <unicon name="book-reader" fill="royalblue"></unicon>
-              <span class="icon-label">班级管理</span>
-            </router-link>
-            <div class="icon-wrapper">
-              <unicon name="swatchbook" fill="royalblue"></unicon>
-              <span class="icon-label">课程管理</span>
-            </div>
-            <!-- 更多的功能 -->
+    <div>
+      <el-card class="adminOperation" v-if="userScope === 'admin'">
+        <template #header>
+          <div class="card-header">
+            <span>功能区</span>
           </div>
-        </el-card>
-      </el-col>
-    </el-row>
+        </template>
+        <div class="icon-container">
+          <router-link class="icon-wrapper" to="/userManagement">
+            <unicon name="user" fill="royalblue"></unicon>
+            <span class="icon-label">用户管理</span>
+          </router-link>
+          <router-link class="icon-wrapper" to="/classRoomManagement">
+            <unicon name="book-reader" fill="royalblue"></unicon>
+            <span class="icon-label">班级管理</span>
+          </router-link>
+          <div class="icon-wrapper">
+            <unicon name="swatchbook" fill="royalblue"></unicon>
+            <span class="icon-label">课程管理</span>
+          </div>
+          <!-- 更多的功能 -->
+        </div>
+      </el-card>
+    </div>
+    <div>
+      <!-- 底部的课程列表 -->
+      <CourseList :courses="courses" />
+    </div>
   </div>
-  <!-- 底部的课程列表 -->
-  <CourseList :courses="courses" />
 </template>
 
 <style scoped lang="less">
-@media (max-width: 767px) {
-  .card-container {
-    margin-top: 30px;
-    .class-card {
-      margin-top: 10px;
-    }
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1199px) {
-  .card-container {
-    margin-top: 30px;
-    .class-card {
-      margin-top: 10px;
-    }
-  }
-}
-
 .search-container {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -311,43 +433,28 @@ const courses = ref([
 
 .card-container {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: center;
+}
+.card-container > div {
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-.card-row {
-  flex-wrap: wrap;
-  margin: -10px;
-}
-
-.el-col {
-  flex-basis: 100%;
-  max-width: 100%;
-  margin: 10px;
-}
-
-@media screen and (min-width: 768px) {
-  .el-col {
-    flex-basis: calc(50% - 20px);
-    max-width: calc(50% - 20px);
+@media (min-width: 876px) {
+  .card-container > div {
+    width: 65%;
   }
 }
 
 .box-card {
-  width: 550px;
   height: 100%;
-  margin-right: 10px;
-  margin-left: 10px;
 }
 .adminOperation {
-  margin-left: 20px;
-  width: 500px;
   height: 100%;
 }
 .class-card {
-  width: 768px;
   height: 100%;
-  margin-right: 10px;
-  margin-left: 10px;
 }
 
 @color-blue: royalblue;

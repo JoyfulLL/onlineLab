@@ -24,8 +24,13 @@ const toLogin = () => {
   >
     <template #extra>
       <div class="button-container">
-        <a-button type="primary" @click="backTo">返回上一级</a-button>
-        <a-button @click="toLogin" style="color: rgb(58, 127, 6);"
+        <a-button type="primary" @click="backTo" class="custom-button"
+          >返回上一级</a-button
+        >
+        <a-button
+          @click="toLogin"
+          style="color: rgb(58, 127, 6);"
+          class="custom-button"
           >登录</a-button
         >
       </div>
