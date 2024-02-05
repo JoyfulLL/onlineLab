@@ -22,21 +22,33 @@ export default {
 
   methods: {
     onSubmit() {
-      login(this.loginForm.username, this.loginForm.password).then(res => {
-        if (res.data.status === 0) {
-          ElMessage({
-            message: "登录成功",
-            type: "success",
-            duration: 3000,
-          })
-          const authStore = useAuthStore()
-          authStore.setData(res.data.data)
-          //将token存储到cookies
-          // const token = res.data.data.token
-          // document.cookie = `token=${token}; path=/;`
-          this.$router.push({ path: "/" })
-        }
-      })
+      login(this.loginForm.username, this.loginForm.password)
+        .then(res => {
+          if (res.data.status === 0) {
+            ElMessage({
+              message: "登录成功",
+              type: "success",
+              duration: 3000,
+            })
+            const authStore = useAuthStore()
+            authStore.setData(res.data.data)
+            //将token存储到cookies
+            // const token = res.data.data.token
+            // document.cookie = `token=${token}; path=/;`
+            this.$router.push({ path: "/" })
+          }
+        })
+        .catch(error => {
+          console.error(error.response.data.reason)
+          if (error.response.data.status === 1) {
+            ElNotification({
+              title: "错误",
+              message: error.response.data.reason,
+              type: "error",
+              duration: 3000,
+            })
+          }
+        })
     },
     togglePasswordVisibility() {
       this.isPasswordVisible = !this.isPasswordVisible
