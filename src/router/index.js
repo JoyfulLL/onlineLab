@@ -8,7 +8,7 @@ import { ElNotification } from "element-plus"
 import { createRouter, createWebHistory } from "vue-router"
 import classRoutes from "./adminClassesMan"
 import courseRoutes from "./classManagement"
-// 引入进度条
+// 引入全局进度条
 import { close, start } from "../utils/nprogress.js"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +21,7 @@ const router = createRouter({
     {
       path: "/signup",
       name: "Signup",
-      component: () => import("../views/zhuce.vue"),
+      component: () => import("../views/stuRegistration.vue"),
     },
     {
       path: "/success",

@@ -12,6 +12,17 @@ const userManagementRouters = [
     },
     children: [
       {
+        path: "adminSelf",
+        name: "adminSelf",
+        component: () => import("../views/admin/userManagement/adminSelf.vue"),
+        meta: {
+          requireAuth: true,
+          role: ["admin"],
+          title: "管理员",
+          index: "2-1",
+        },
+      },
+      {
         path: "teacherManagement",
         name: "teacherManagement",
         component: () =>
@@ -20,17 +31,6 @@ const userManagementRouters = [
           requireAuth: true,
           role: ["admin"],
           title: "教师管理",
-          index: "2-1",
-        },
-      },
-      {
-        path: "adminSelf",
-        name: "adminSelf",
-        component: () => import("../views/admin/userManagement/adminSelf.vue"),
-        meta: {
-          requireAuth: true,
-          role: ["admin"],
-          title: "管理员",
           index: "2-2",
         },
       },

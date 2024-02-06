@@ -7,6 +7,7 @@
  */
 
 import { editTeacherInfo } from "@/api/userManagement/editUserInfo.js"
+import { deleteTeacher } from "@/api/userManagement/removeUser.js"
 import { regTeacher } from "@/api/userManagement/registerUser.js"
 import { useTableDataStore } from "@/stores/userData/storeUserData"
 import { rules } from "@/utils/formRules.js"
@@ -18,11 +19,15 @@ onMounted(() => {
 })
 
 const teacherDataTable = useTableDataStore()
-
-// 数据获取
-const fetchData = () => {
+const loading = ref(true)
+// Fetching data
+const fetchData = async () => {
   teacherDataTable.showTeachersInfo()
-  // console.log(teacherDataTable.teachersList);
+  /**
+   * When the data starts to load, loading is displayed
+   * and the loading animation ends after the loading is completed.
+   */
+  loading.value = false
 }
 
 // @注册信息的表单
@@ -119,29 +124,71 @@ const handleSubmit = async () => {
   } else {
     //@ 在此处调用修改学生参数的接口
     // console.log('用户名',(newUserForm.value.name))
-    await editTeacherInfo(
-      userForm.id,
-      userForm.name,
-      userForm.email,
-      userForm.realName,
-      userForm.userSchoollD,
-      userForm.schoolCode,
-      userForm.class,
-      userForm.sex
-    ).then(res => {
-      if (res.data.status == 0) {
-        dialogVisible.value = false
-        reload()
-        ElMessage({
-          message: "编辑成功",
-          type: "success",
-        })
-      }
-      //console.log(newUserForm.value.id);
+    ElMessageBox.confirm("确定要修改吗？", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      confirmButtonClass: "btnConfirm",
     })
+      .then(async () => {
+        await editTeacherInfo(
+          userForm.id,
+          userForm.name,
+          userForm.email,
+          userForm.realName,
+          userForm.userSchoollD,
+          userForm.schoolCode,
+          userForm.class,
+          userForm.sex
+        ).then(res => {
+          if (res.data.status == 0) {
+            dialogVisible.value = false
+            reload()
+            ElMessage({
+              message: "编辑成功",
+              type: "success",
+            })
+          }
+          //console.log(newUserForm.value.id);
+        })
+      })
+      .catch(() => {
+        ElMessage({
+          type: "info",
+          message: "取消",
+        })
+      })
   }
 }
 
+// for admin to delete teacher
+const handleDeleteTeacher = row => {
+  ElMessageBox.confirm(
+    "确定要永久删除此教师吗？注意此操作不可逆！！！",
+    "警告",
+    {
+      confirmButtonText: "确定删除",
+      cancelButtonText: "取消操作",
+      confirmButtonClass: "btnConfirm",
+      type: "error",
+    }
+  )
+    .then(async () => {
+      await deleteTeacher(row.id).then(() => {
+        reload()
+        ElMessage({
+          message: "删除成功",
+          type: "success",
+          duration: 3500,
+        })
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消",
+      })
+    })
+}
 // @以下代码用于分页
 // 页面显示数据量 默认为10条
 const pageSize = ref(10)
@@ -187,7 +234,7 @@ const filteredData = computed(() => {
 <template>
   <div class="user-header">
     <!--    新增用户-->
-    <el-button type="primary" @click="addTeacher()">+新增</el-button>
+    <el-button type="success" @click="addTeacher()">+注册教师</el-button>
     <el-dialog
       v-model="dialogVisible"
       :title="action == 'add' ? '添加教师' : '编辑教师'"
@@ -261,7 +308,14 @@ const filteredData = computed(() => {
     </el-form>
   </div>
   <div class="table">
-    <el-table :data="filteredData" style="width: 100%" border max-height="600">
+    <el-table
+      :data="filteredData"
+      style="width: 100%"
+      border
+      max-height="600"
+      v-loading="loading"
+      element-loading-text="数据加载中"
+    >
       <el-table-column fixed prop="id" label="ID号" width="180" />
       <el-table-column prop="realName" label="姓名" width="120" />
       <!--      <el-table-column prop="class" label="班级" width="150" />-->
@@ -272,9 +326,14 @@ const filteredData = computed(() => {
       <el-table-column fixed="right" label="操作" min-width="100">
         <template #default="scope">
           <el-button size="default" @click="editTeacher(scope.row)"
-            >编辑</el-button
+            >编辑个人信息
+          </el-button>
+          <el-button
+            type="danger"
+            size="default"
+            @click="handleDeleteTeacher(scope.row)"
+            >删除教师</el-button
           >
-          <el-button type="danger" size="default">移出</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -333,5 +392,10 @@ const filteredData = computed(() => {
   display: flex;
   justify-content: center;
   margin-top: 20px; // 调整上边距
+}
+
+.btnConfirm {
+  background: #fff;
+  color: #67c23a;
 }
 </style>

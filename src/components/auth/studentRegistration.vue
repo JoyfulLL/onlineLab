@@ -55,7 +55,7 @@ export default {
     },
   },
   methods: {
-    handleSubmit() {
+    async handleSubmit() {
       if (this.regAction === this.action) {
         regStu(
           this.userForm.name,
@@ -79,24 +79,32 @@ export default {
           }
         })
       } else if (this.editAction === this.action) {
-        editStuInfo(
-          this.userForm.id,
-          this.userForm.name,
-          this.userForm.email,
-          this.userForm.realName,
-          this.userForm.userSchoollD,
-          this.userForm.schoolCode,
-          this.userForm.class,
-          this.userForm.sex
-        ).then(res => {
-          if (res.data.status === 0) {
-            this.$emit("edit-success", false)
-            ElMessage({
-              message: "编辑成功",
-              type: "success",
-            })
-          }
-        })
+        const confirmResult = await ElMessageBox.confirm(
+          "确定修改吗？",
+          "警告",
+          { type: "warning" }
+        )
+        if (confirmResult === "confirm") {
+          await editStuInfo(
+            this.userForm.id,
+            this.userForm.name,
+            this.userForm.email,
+            this.userForm.realName,
+            this.userForm.userSchoollD,
+            this.userForm.schoolCode,
+            this.userForm.class,
+            this.userForm.sex
+          ).then(res => {
+            if (res.data.status === 0) {
+              this.$emit("edit-success", false)
+              ElMessage({
+                message: "编辑成功",
+                type: "success",
+              })
+            }
+          })
+        } else {
+        }
       }
     },
     resetForm(form) {
@@ -120,7 +128,7 @@ export default {
       @submit="handleSubmit"
     >
       <el-form-item label="ID" prop="id" v-if="!this.showPassword">
-        <el-input v-model="userForm.id" :disabled="this.IsDisabled"></el-input>
+        <el-input v-model="userForm.id" disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="name">
         <el-input
@@ -155,7 +163,7 @@ export default {
           :disabled="this.IsDisabled"
         ></el-input>
       </el-form-item>
-      <el-form-item label="学生班级" prop="class" label-width="auto">
+      <el-form-item label="学生班级" prop="class">
         <el-select
           v-model="userForm.class"
           placeholder="请选择班级"

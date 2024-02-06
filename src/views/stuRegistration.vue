@@ -1,3 +1,85 @@
+<script setup>
+import { regStu } from "@/api/userManagement/registerUser.js"
+import { ElMessage, ElNotification } from "element-plus"
+import { rules } from "@/utils/formRules.js"
+import { basicClassesStore } from "@/stores"
+import { useRouter } from "vue-router"
+import { onMounted, ref, onBeforeUnmount, computed } from "vue"
+const router = useRouter()
+
+//班级列表
+const useClassesList = basicClassesStore()
+const classList = useClassesList.classList
+
+// 注册表单
+const userForm = reactive({
+  name: "",
+  password: "",
+  email: "",
+  realName: "",
+  userSchoollD: "",
+  schoolCode: "",
+  class: "",
+  sex: "",
+})
+
+const isDisabled = computed(() => {
+  return (
+    !userForm.name ||
+    !userForm.password ||
+    !userForm.realName ||
+    !userForm.userSchoollD ||
+    !userForm.email ||
+    !userForm.schoolCode ||
+    !userForm.class ||
+    !userForm.sex
+  )
+})
+// 清空表单
+const form = ref(null)
+const resetForm = () => {
+  form.value.resetFields()
+}
+// 学生注册提交
+const handleSubmit = () => {
+  ElMessageBox.confirm("注册之后，班级不可以修改。确定提交吗？", "Warning", {
+    confirmButtonText: "确定",
+    confirmButtonClass: "btnConfirm",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      await regStu(
+        userForm.name,
+        userForm.password,
+        userForm.email,
+        userForm.realName,
+        userForm.userSchoollD,
+        userForm.schoolCode,
+        userForm.class,
+        userForm.sex
+      ).then(res => {
+        if (res.data.status == 0) {
+          //判断status是否为0
+          ElMessage({
+            message: "注册成功",
+            type: "success",
+            duration: 3000,
+          })
+          //注册成功，跳转到成功的界面
+          router.push("/success")
+        }
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消",
+      })
+    })
+}
+</script>
+
 <template>
   <div class="card-container">
     <el-card class="form-card" shadow="hover">
@@ -51,7 +133,10 @@
         </el-form-item>
         <el-form-item>
           <div class="button-container" style="text-align: center">
-            <el-button type="primary" @click="handleSubmit('userForm')"
+            <el-button
+              type="primary"
+              @click="handleSubmit('userForm')"
+              :disabled="isDisabled"
               >提交
             </el-button>
             <el-button type="warning" @click="resetForm">重置</el-button>
@@ -61,63 +146,6 @@
     </el-card>
   </div>
 </template>
-
-<script setup>
-import { regStu } from "@/api/userManagement/registerUser.js"
-import { ElMessage, ElNotification } from "element-plus"
-import { rules } from "@/utils/formRules.js"
-import { basicClassesStore } from "@/stores"
-import { useRouter } from "vue-router"
-import { onMounted, ref, onBeforeUnmount } from "vue"
-const router = useRouter()
-
-//班级列表
-const useClassesList = basicClassesStore()
-const classList = useClassesList.classList
-
-// 注册表单
-const userForm = reactive({
-  name: "",
-  password: "",
-  confirmPassword: "",
-  email: "",
-  realName: "",
-  userSchoollD: "",
-  schoolCode: "",
-  class: "",
-  sex: "",
-})
-
-// 清空表单
-const form = ref(null)
-const resetForm = () => {
-  form.value.resetFields()
-}
-// 学生注册提交
-const handleSubmit = () => {
-  regStu(
-    userForm.name,
-    userForm.password,
-    userForm.email,
-    userForm.realName,
-    userForm.userSchoollD,
-    userForm.schoolCode,
-    userForm.class,
-    userForm.sex
-  ).then(res => {
-    if (res.data.status == 0) {
-      //判断status是否为0
-      ElMessage({
-        message: "注册成功",
-        type: "success",
-        duration: 3000,
-      })
-      //注册成功，跳转到成功的界面
-      router.push("/success")
-    }
-  })
-}
-</script>
 
 <style scoped lang="less">
 .card-container {

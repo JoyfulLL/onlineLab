@@ -143,16 +143,16 @@ const adminMenuTree = ref([
     subMenu: [
       {
         subIndex: "2-1",
-        subIcon: "teacher",
-        title: "教师管理",
-        name: "teacherManagement",
+        subIcon: "admin",
+        title: "管理员",
+        name: "adminSelf",
         subScope: "admin",
       },
       {
         subIndex: "2-2",
-        subIcon: "admin",
-        title: "管理员",
-        name: "adminSelf",
+        subIcon: "teacher",
+        title: "教师管理",
+        name: "teacherManagement",
         subScope: "admin",
       },
       {

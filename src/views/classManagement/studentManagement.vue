@@ -16,7 +16,10 @@
  @ 2、依据信息获取对应的学生
  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
-import { removeStudentFromClass } from "@/api/userManagement/removeUser"
+import {
+  removeStudentFromClass,
+  deleteStudent,
+} from "@/api/userManagement/removeUser"
 import addStudentsFromClass from "@/components/addStudentsFromClass.vue"
 import studentRegistration from "@/components/auth/studentRegistration.vue"
 import { basicClassesStore } from "@/stores"
@@ -26,7 +29,7 @@ import { useTableDataStore } from "@/stores/userData/storeUserData"
 import { errorMessages } from "@/utils/errorMessagesCode"
 import { ElMessage, ElNotification } from "element-plus"
 import { inject, onMounted, reactive, ref } from "vue"
-import { ElLoading } from "element-plus"
+
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   fetchData()
@@ -96,7 +99,10 @@ const filterClasses = (value, row) => {
 // 数据获取
 const fetchData = async () => {
   await studentDataTable.showStuInfo()
-
+  /**
+   * When the data starts to load, loading is displayed
+   * and the loading animation ends after the loading is completed.
+   */
   // Loading should be closed asynchronously
   loading.value = false
 
@@ -237,41 +243,75 @@ const removeSelectedStudents = async () => {
 }
 
 // use to remove students from class
-const handleRemoveClick = async () => {
-  const confirmResult = await ElMessageBox.confirm(
-    "确定要移出所选学生的班级？",
-    "提示",
-    { type: "warning" }
-  )
-  if (confirmResult === "confirm") {
-    await removeSelectedStudents()
-  } else {
-  }
+const handleRemoveClick = () => {
+  ElMessageBox.confirm("确定要移出所选学生的班级", "提示", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "error",
+  })
+    .then(async () => {
+      await removeSelectedStudents()
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消",
+      })
+    })
 }
 
 // 将一个学生移出班级的按钮方法
 const removeFromClass = async row => {
   const { id } = row
-  const confirmResult = await ElMessageBox.confirm(
-    "确定要移出所选学生吗？",
-    "提示",
-    {
-      type: "warning",
-    }
-  )
-  if (confirmResult === "confirm") {
-    // 用户点击了确认按钮,执行移出班级的操作
-    await removeStudentFromClass(id, userScope).then(() => {
+  ElMessageBox.confirm("确定将所选学生移出班级吗？", "Warning", {
+    confirmButtonText: "确定",
+    cancelButtonText: "取消",
+    type: "warning",
+  })
+    .then(async () => {
+      await removeStudentFromClass(id, userScope).then(() => {
+        ElMessage({
+          message: "移出成功",
+          type: "success",
+        })
+      })
+      reload()
+    })
+    .catch(() => {
       ElMessage({
-        message: "移出成功",
-        type: "success",
+        type: "info",
+        message: "取消",
       })
     })
-    reload()
-  } else {
-    // 用户点击了取消按钮
-    // 可以不做任何操作
-  }
+}
+
+// for administrator to delete stundent
+const handleDelete = row => {
+  ElMessageBox.confirm(
+    "确定要永久删除此学生吗？注意此操作不可逆！！！",
+    "警告",
+    {
+      confirmButtonText: "确定删除",
+      cancelButtonText: "取消",
+      type: "error",
+    }
+  )
+    .then(async () => {
+      await deleteStudent(row.id).then(() => {
+        reload()
+        ElMessage({
+          message: "删除成功",
+          type: "success",
+          duration: 3500,
+        })
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: "info",
+        message: "取消",
+      })
+    })
 }
 
 // 用于搜索功能
@@ -359,7 +399,6 @@ const filteredData = ref(
       <div class="form-container">
         <student-registration
           :showPassword="false"
-          :IsDisabled="IsDisabled.value"
           :userData="userForm"
           :action="MyEditAction"
           @edit-success="closeEditDialog"
@@ -427,8 +466,16 @@ const filteredData = ref(
             type="danger"
             size="default"
             @click="removeFromClass(scope.row)"
-            >移出班级</el-button
+            >移出班级
+          </el-button>
+          <el-button
+            @click="handleDelete(scope.row)"
+            type="danger"
+            size="default"
+            v-if="userScope === 'admin'"
           >
+            删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
