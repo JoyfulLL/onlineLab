@@ -1,7 +1,7 @@
 /**
  * @file  removeUser.js
  * @author ljf13
- * @description 待后端开发移除功能
+ * @description 将学生移出班级  删除用户
  * @date 2024/1/19
  */
 
