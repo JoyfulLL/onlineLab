@@ -45,18 +45,6 @@ export const rules = {
       trigger: "blur",
     },
   ],
-  confirmPassword: [
-    {
-      validator: (rule, value, callback) => {
-        if (value !== userForm.password && userForm.password !== "") {
-          callback(new Error("两次输入密码不一致!"))
-        } else {
-          callback()
-        }
-      },
-      trigger: "blur",
-    },
-  ],
   email: [
     { required: true, message: "请输入邮箱", trigger: "blur" },
     {

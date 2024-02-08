@@ -40,6 +40,10 @@ const form = ref(null)
 const resetForm = () => {
   form.value.resetFields()
 }
+// when user reFocus,clearValidate message
+function handleFocus(field) {
+  form.value.clearValidate(field)
+}
 // 学生注册提交
 const handleSubmit = () => {
   ElMessageBox.confirm("注册之后，班级不可以修改。确定提交吗？", "Warning", {
@@ -81,73 +85,102 @@ const handleSubmit = () => {
 </script>
 
 <template>
-  <div class="card-container">
-    <el-card class="form-card" shadow="hover">
-      <a class="back-link" href="/login"
-        ><el-icon color="#409EFC" size="20"><Back /></el-icon
-      ></a>
-      <h2 class="form-title">学生注册</h2>
-      <el-form
-        :model="userForm"
-        label-width="80px"
-        ref="form"
-        :rules="rules"
-        class="centered-form"
-        @submit="handleSubmit"
-      >
-        <el-form-item label="用户名" prop="name">
-          <el-input v-model="userForm.name"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="userForm.password" type="password" show-password />
-        </el-form-item>
-        <el-form-item label="真实姓名" prop="realName">
-          <el-input v-model="userForm.realName"></el-input>
-        </el-form-item>
-        <el-form-item label="学生学号" prop="userSchoollD">
-          <el-input v-model="userForm.userSchoollD"></el-input>
-        </el-form-item>
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="userForm.email"></el-input>
-        </el-form-item>
-        <el-form-item label="学校代码" prop="schoolCode">
-          <el-input v-model="userForm.schoolCode"></el-input>
-        </el-form-item>
-        <el-form-item label="班级" prop="class">
-          <el-select v-model="userForm.class" placeholder="请选择班级">
-            <el-option
-              v-for="item in classList"
-              :key="item.classid"
-              :label="item.classname"
-              :value="item.classname"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="性别" prop="sex">
-          <div class="centered-radio">
-            <el-radio-group v-model="userForm.sex">
-              <el-radio label="男">男</el-radio>
-              <el-radio label="女">女</el-radio>
-            </el-radio-group>
-          </div>
-        </el-form-item>
-        <el-form-item>
-          <div class="button-container" style="text-align: center">
-            <el-button
-              type="primary"
-              @click="handleSubmit('userForm')"
-              :disabled="isDisabled"
-              >提交
-            </el-button>
-            <el-button type="warning" @click="resetForm">重置</el-button>
-          </div>
-        </el-form-item>
-      </el-form>
-    </el-card>
+  <div id="building">
+    <div class="card-container">
+      <el-card class="form-card" shadow="hover">
+        <a class="back-link" href="/login"
+          ><el-icon color="#409EFC" size="20"><Back /></el-icon
+        ></a>
+        <h2 class="form-title">学生注册</h2>
+        <el-form
+          :model="userForm"
+          label-width="80px"
+          ref="form"
+          :rules="rules"
+          class="centered-form"
+          @submit="handleSubmit"
+        >
+          <el-form-item label="用户名" prop="name">
+            <el-input
+              v-model="userForm.name"
+              @focus="handleFocus('name')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="密码" prop="password">
+            <el-input
+              v-model="userForm.password"
+              type="password"
+              show-password
+              @focus="handleFocus('password')"
+            />
+          </el-form-item>
+          <el-form-item label="真实姓名" prop="realName">
+            <el-input
+              v-model="userForm.realName"
+              @focus="handleFocus('realName')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="学生学号" prop="userSchoollD">
+            <el-input
+              v-model="userForm.userSchoollD"
+              @focus="handleFocus('userSchoollD')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="邮箱" prop="email">
+            <el-input
+              v-model="userForm.email"
+              @focus="handleFocus('email')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="学校代码" prop="schoolCode">
+            <el-input
+              v-model="userForm.schoolCode"
+              @focus="handleFocus('schoolCode')"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="班级" prop="class">
+            <el-select v-model="userForm.class" placeholder="请选择班级">
+              <el-option
+                v-for="item in classList"
+                :key="item.classid"
+                :label="item.classname"
+                :value="item.classname"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="性别" prop="sex">
+            <div class="centered-radio">
+              <el-radio-group v-model="userForm.sex">
+                <el-radio label="男">男</el-radio>
+                <el-radio label="女">女</el-radio>
+              </el-radio-group>
+            </div>
+          </el-form-item>
+          <el-form-item>
+            <div class="button-container" style="text-align: center">
+              <el-button
+                type="primary"
+                @click="handleSubmit('userForm')"
+                :disabled="isDisabled"
+                >提交
+              </el-button>
+              <el-button type="warning" @click="resetForm">重置</el-button>
+            </div>
+          </el-form-item>
+        </el-form>
+      </el-card>
+    </div>
   </div>
 </template>
 
 <style scoped lang="less">
+#building {
+  background: url("/src/assets/img/BackgroundImg/SignupBg.png");
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  background-size: 100% 100%;
+}
 .card-container {
   display: flex;
   justify-content: center;
