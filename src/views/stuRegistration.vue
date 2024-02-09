@@ -175,7 +175,7 @@ const handleSubmit = () => {
 
 <style scoped lang="less">
 #building {
-  background: url("/src/assets/img/BackgroundImg/SignupBg.png");
+  background: url("/src/assets/img/BackgroundImg/SignupBg-min.png");
   width: 100%;
   height: 100%;
   position: fixed;

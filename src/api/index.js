@@ -6,8 +6,16 @@
 import { useAuthStore } from "@/stores/tokenStore.js"
 import service from "@/utils/axios.js"
 // 登录接口
-export function login(username, password) {
-  return service.post("/login", { name: username, password: password })
+export function login(usernameOrEmail, password) {
+  let requestData = {}
+
+  if (usernameOrEmail.includes("@")) {
+    requestData = { queryemail: usernameOrEmail, password: password }
+  } else {
+    requestData = { name: usernameOrEmail, password: password }
+  }
+
+  return service.post("/login", requestData)
 }
 
 // token校验，如果用户的token过期，则将用户导航到登陆界面

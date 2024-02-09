@@ -1,72 +1,103 @@
-<script>
+<script setup>
 /**
 
  */
 
 import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
+import { rules } from "@/utils/formRules"
 import { ElMessage } from "element-plus"
+import { useRouter } from "vue-router"
+const router = useRouter()
+const loginForm = ref({
+  username: "",
+  email: "",
+  password: "",
+})
+const rememberMe = ref(false)
+const isPasswordVisible = ref(false)
 
-export default {
-  name: "LoginPage",
-  data() {
-    return {
-      loginForm: {
-        username: "",
-        password: "",
-      },
-      rememberMe: false,
-      isPasswordVisible: false,
-    }
-  },
+const activeName = ref("统一身份认证")
 
-  methods: {
-    onSubmit() {
-      login(this.loginForm.username, this.loginForm.password)
-        .then(res => {
-          if (res.data.status === 0) {
-            ElMessage({
-              message: "登录成功",
-              type: "success",
-              duration: 3000,
-            })
-            const authStore = useAuthStore()
-            authStore.setData(res.data.data)
-            //将token存储到cookies
-            // const token = res.data.data.token
-            // document.cookie = `token=${token}; path=/;`
-            this.$router.push({ path: "/" })
-          }
-        })
-        .catch(error => {
-          console.error(error.response.data.reason)
-          if (error.response.data.status === 1) {
-            ElNotification({
-              title: "错误",
-              message: error.response.data.reason,
-              type: "error",
-              duration: 3000,
-            })
-          }
-        })
-    },
-    togglePasswordVisibility() {
-      this.isPasswordVisible = !this.isPasswordVisible
-    },
-  },
-
-  computed: {
-    canSubmit() {
-      const { username, password } = this.loginForm
-      return Boolean(username && password)
-    },
-  },
+const handleClick = (tab, event) => {
+  console.log(tab, event)
 }
+
+// 因为在登录的API处已经做了传递参数的处理，故不需要在此区分name或者Email
+const onSubmitWithName = () => {
+  login(loginForm.value.username, loginForm.value.password)
+    .then(res => {
+      if (res.data.status === 0) {
+        ElMessage({
+          message: "登录成功",
+          type: "success",
+          duration: 3000,
+        })
+        const authStore = useAuthStore()
+        authStore.setData(res.data.data)
+        //将token存储到cookies
+        // const token = res.data.data.token
+        // document.cookie = `token=${token}; path=/;`
+        router.push({ path: "/" })
+      }
+    })
+    .catch(error => {
+      console.error(error.response.data.reason)
+      if (error.response.data.status === 1) {
+        ElNotification({
+          title: "错误",
+          message: error.response.data.reason,
+          type: "error",
+          duration: 3000,
+        })
+      }
+    })
+}
+
+const onSubmitWithEmail = () => {
+  login(loginForm.value.email, loginForm.value.password)
+    .then(res => {
+      if (res.data.status === 0) {
+        ElMessage({
+          message: "登录成功",
+          type: "success",
+          duration: 3000,
+        })
+        const authStore = useAuthStore()
+        authStore.setData(res.data.data)
+        router.push({ path: "/" })
+      }
+    })
+    .catch(error => {
+      console.error(error.response.data.reason)
+      if (error.response.data.status === 1) {
+        ElNotification({
+          title: "错误",
+          message: error.response.data.reason,
+          type: "error",
+          duration: 3000,
+        })
+      }
+    })
+}
+
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
+const canSubmit = computed(() => {
+  const { username, password } = loginForm.value
+  return Boolean(username && password)
+})
+
+const canSubmitWithEmail = computed(() => {
+  const { email, password } = loginForm.value
+  return Boolean(email && password)
+})
 </script>
 
 <template>
   <div id="building">
-    <div class="login-page" :style="backgroundDiv">
+    <div class="login-page">
       <!-- 整个登录表单 -->
       <div class="center-container">
         <!-- 左半部分，存放图片 -->
@@ -77,6 +108,7 @@ export default {
         <!-- 右半部分 -->
         <div class="right-section">
           <!-- 右边的上半部分，用于登录表单 -->
+
           <div class="top-section">
             <div class="form-container">
               <!-- 新增的div -->
@@ -84,7 +116,6 @@ export default {
                 <div class="form-top">
                   <div class="title">
                     统一身份认证
-                    <el-link type="info" href="#">手机/邮箱</el-link>
                   </div>
                   <div class="right">
                     <el-link type="info" href="#" style="font-size: 11px"
@@ -94,41 +125,42 @@ export default {
                 </div>
                 <!-- 分割线 -->
                 <el-divider />
+                <div class="input-container">
+                  <div class="input-group">
+                    <input
+                      type="text"
+                      placeholder=" "
+                      v-model="loginForm.username"
+                      style="margin-bottom: 20px"
+                      prop="username"
+                    />
+                    <label class="placeholder">
+                      用户名/邮箱
+                    </label>
+                  </div>
 
-                <div class="input-group">
-                  <input
-                    type="text"
-                    placeholder=" "
-                    v-model="loginForm.username"
-                    style="margin-bottom: 20px"
-                    prop="username"
-                  />
-                  <label class="placeholder">
-                    用户名
-                  </label>
-                </div>
-
-                <div class="input-group">
-                  <input
-                    :type="isPasswordVisible ? 'text' : 'password'"
-                    placeholder=" "
-                    v-model="loginForm.password"
-                    style="margin-bottom: 10px"
-                    prop="password"
-                    autocomplete="on"
-                  />
-                  <label class="placeholder">
-                    密码
-                  </label>
-                  <div class="password-toggle">
-                    <el-icon @click="togglePasswordVisibility">
-                      <template v-if="isPasswordVisible">
-                        <View />
-                      </template>
-                      <template v-else>
-                        <Hide />
-                      </template>
-                    </el-icon>
+                  <div class="input-group">
+                    <input
+                      :type="isPasswordVisible ? 'text' : 'password'"
+                      placeholder=" "
+                      v-model="loginForm.password"
+                      style="margin-bottom: 10px"
+                      prop="password"
+                      autocomplete="on"
+                    />
+                    <label class="placeholder">
+                      密码
+                    </label>
+                    <div class="password-toggle">
+                      <el-icon @click="togglePasswordVisibility">
+                        <template v-if="isPasswordVisible">
+                          <View />
+                        </template>
+                        <template v-else>
+                          <Hide />
+                        </template>
+                      </el-icon>
+                    </div>
                   </div>
                 </div>
 
@@ -140,25 +172,17 @@ export default {
                 </div>
                 <el-button
                   type="primary"
-                  @click="onSubmit"
+                  @click="onSubmitWithName"
                   class="login-button"
                   :disabled="!canSubmit"
                   >登录
                 </el-button>
+                <!-- 分割线 -->
               </el-form>
             </div>
           </div>
           <!-- 右边的底部栏，用于第三方API -->
           <div class="bottom-section">
-            <div class="signup">
-              <el-link
-                type="primary"
-                href="/signup"
-                style="font-size: 15px;"
-                target="_blank"
-                >注册</el-link
-              >
-            </div>
             <div class="other-login">
               <p type="default" style="font-size: 15px;">其它登录方式</p>
               <div class="icon-container">
@@ -169,6 +193,15 @@ export default {
           </div>
         </div>
       </div>
+      <div class="signup">
+        还没有账号？
+        <el-link
+          type="primary"
+          href="/signup"
+          style="font-size: 18px ;text-decoration: underline; "
+          >去注册
+        </el-link>
+      </div>
     </div>
   </div>
 </template>
@@ -177,18 +210,21 @@ export default {
 /* 在这里添加样式 */
 .login-page {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
+
 /* backgroundimg setting */
 #building {
-  background: url("/src/assets/img/BackgroundImg/loginBg.png");
+  background: url("/src/assets/img/BackgroundImg/loginBg-min.png");
   width: 100%;
   height: 100%;
   position: fixed;
   background-size: 100% 100%;
 }
+
 .center-container {
   display: flex;
   justify-content: center;
@@ -238,16 +274,20 @@ export default {
 .bottom-section {
   flex: 1;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-end;
 }
 
 .signup {
-  order: 1; /* 显示在左边 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
 }
 
 .other-login {
-  order: 2; /* 显示在右边 */
+  order: 2;
+  /* 显示在右边 */
   display: flex;
   align-items: center;
 }
@@ -333,9 +373,14 @@ export default {
 /**
 登录表单输入框样式
 */
+
+.input-container {
+  margin-top: 15px;
+}
 .input-group {
   position: relative;
 }
+
 input {
   padding: 10px;
   border-radius: 5px;
@@ -345,6 +390,7 @@ input {
   width: 90%;
   font-size: 14px;
 }
+
 .placeholder {
   position: absolute;
   top: 10px;
@@ -355,10 +401,12 @@ input {
   transition: 0.3s;
   pointer-events: none;
 }
+
 input:focus + .placeholder,
 input:not(:placeholder-shown) + .placeholder {
   top: -15px;
 }
+
 /**
 password input icon stytle
 */
