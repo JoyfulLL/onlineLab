@@ -134,6 +134,9 @@ const getGitHubProfileLink = username => {
       </el-card>
     </div>
   </div>
+  <div class="footerCon">
+    数据更新于：2024年2月9日
+  </div>
 </template>
 
 <style lang="less" scoped>

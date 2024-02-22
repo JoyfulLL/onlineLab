@@ -395,9 +395,30 @@ const saveUserInfo = () => {
       <CourseList :courses="courses" />
     </div>
   </div>
+  <div class="footerCon">
+    <el-link
+      href="https://beian.miit.gov.cn/"
+      target="_blank"
+      type="default"
+      class="footerLink"
+      >粤ICP备2024184954号
+    </el-link>
+  </div>
 </template>
 
 <style scoped lang="less">
+.footerCon {
+  bottom: 5px;
+  left: 0;
+  width: 100%;
+  background-color: transparent;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.footerLink {
+  text-align: center;
+}
 .search-container {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);

@@ -15,7 +15,7 @@
       <!-- 顶部LOGO -->
       <img
         style="max-width: 180px; max-height: 60px"
-        src="@/assets/logo.png"
+        src="@/assets/demoLogo/logo_transparent.png"
         v-if="props.isHomePgae"
       />
       <el-breadcrumb

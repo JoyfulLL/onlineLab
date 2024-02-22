@@ -115,7 +115,8 @@ router.beforeEach(async (to, from, next) => {
     next() // 如果是登录页面，直接放行 不需要校验
   } else {
     //为了加快DOM渲染，将token的校验放在解析守卫
-    const token = localStorage.getItem("token")
+    const useAuth = useAuthStore()
+    const token = useAuth.data.token
     if (!token) {
       next({ name: "Login" })
     } else {

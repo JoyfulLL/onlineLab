@@ -25,7 +25,6 @@ export const useMenuStore = defineStore({
       }
     },
   },
-  persist: true,
 })
 
 export const useElMenuActiveStore = defineStore("elMenuActive", () => {

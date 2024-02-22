@@ -24,10 +24,10 @@ export const useAuthStore = defineStore("auth", {
       this.data.refreshtoken = refreshtoken
       this.data.expiredAt = expiredAt
 
-      localStorage.setItem("token", token)
+      // localStorage.setItem("token", token)
       localStorage.setItem("scope", scope)
-      localStorage.setItem("refreshtoken", refreshtoken)
-      localStorage.setItem("expiredAt", expiredAt.toString())
+      // localStorage.setItem("refreshtoken", refreshtoken)
+      // localStorage.setItem("expiredAt", expiredAt.toString())
     },
     setCheckTokenData(userInfo) {
       //校验成功后，可以获取到用户的基础信息
