@@ -20,7 +20,7 @@ export default {
       type="default"
       class="footerLink"
     >
-      粤ICP备2024184954号
+      粤ICP备2024184954号-1
     </el-link>
   </div>
 </template>
