@@ -248,7 +248,9 @@ activePath.value = router.currentRoute._value.meta.index
       }"
     >
       <!-- 
-      学校的名称以及logo仅能用于项目完成后，不能用于demo中，否则会违反备案！！！ 
+      学校的名称以及logo仅能用于项目完成后，不能用于demo中，否则会违反备案！！！    
+      -->
+      <!-- 
       <div v-if="!useToCollapse.isCollapse">
         <img
           style="max-width: 180px; max-height: 55px"
@@ -262,19 +264,20 @@ activePath.value = router.currentRoute._value.meta.index
           src="@/assets/fav.png"
           alt="Collapsed Logo"
         />
-      </div> 
-    -->
+      </div>  
+      -->
+
       <div v-if="!useToCollapse.isCollapse">
         <img
-          style="max-width: 180px; max-height: 55px"
-          src="@/assets/demoLogo/logo_transparent.png"
+          style="max-width: 180px; height: 55px"
+          src="@/assets/demoLogo/vuejs.png"
           alt="Expanded Logo"
         />
       </div>
       <div v-else>
         <img
           style="width: 35px; max-height: 35px"
-          src="@/assets/demoLogo/logo_transparent.png"
+          src="@/assets/demoLogo/favicon.ico"
           alt="Collapsed Logo"
         />
       </div>
@@ -350,12 +353,12 @@ activePath.value = router.currentRoute._value.meta.index
   display: flex;
   justify-content: center;
   align-items: center;
-  // &.collapsed {
-  //   margin-top: 22px;
-  // }
-  // &.expanded {
-  //   margin-top: 24px;
-  // }
+  &.collapsed {
+    margin-top: 22px;
+  }
+  &.expanded {
+    margin-top: 24px;
+  }
 }
 
 .el-sub-menu.is-active {

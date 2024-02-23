@@ -10,8 +10,8 @@ const frontendContributors = ref([
     id: 1,
     name: "JoyfulLL",
     realName: "梁俊枫",
-    linesOfCode: 13999,
-    commits: 63,
+    linesOfCode: 14203,
+    commits: 67,
     description: "前端负责人，所有前端",
   },
   {
@@ -135,7 +135,7 @@ const getGitHubProfileLink = username => {
     </div>
   </div>
   <div class="footerCon">
-    数据更新于：2024年2月9日
+    数据更新于：2024年2月23日
   </div>
 </template>
 

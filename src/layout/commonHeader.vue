@@ -8,14 +8,14 @@
         @click="handleCollapse"
         v-if="!props.isHomePgae"
       >
-        <component
-          :is="useToCollapse.isCollapse ? 'Expand' : 'Fold'"
-        ></component>
+        <component :is="useToCollapse.isCollapse ? 'Expand' : 'Fold'" />
       </div>
       <!-- 顶部LOGO -->
+      <!-- 测试阶段，使用vuelogo代替学校logo -->
+      <!-- 学校logo地址：src="@/assets/logo.png" -->
       <img
         style="max-width: 180px; max-height: 60px"
-        src="@/assets/demoLogo/logo_transparent.png"
+        src="@/assets/demoLogo/favicon.ico"
         v-if="props.isHomePgae"
       />
       <el-breadcrumb
@@ -96,6 +96,11 @@ const authStore = useAuthStore()
 const handleLoginOut = () => {
   authStore.deleteToken()
   router.push("/login")
+  ElNotification({
+    title: "退出成功",
+    message: "账号退出成功",
+    duration: 2000,
+  })
 }
 // console.log(router.currentRoute.value.matched);
 // 用于面包屑

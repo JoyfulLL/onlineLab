@@ -34,6 +34,16 @@ const toLogin = () => {
           >登录</a-button
         >
       </div>
+      <div class="footer">
+        <el-link
+          href="http://beian.miit.gov.cn/"
+          target="_blank"
+          type="default"
+          class="footerLink"
+        >
+          粤ICP备2024184954号-1
+        </el-link>
+      </div>
     </template>
   </a-result>
 </template>

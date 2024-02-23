@@ -40,6 +40,12 @@ const onSubmitWithName = () => {
         // document.cookie = `token=${token}; path=/;`
         router.push({ path: "/" })
       }
+      ElNotification({
+        title: "温馨提示",
+        message: "此网站处于测试阶段，并非最终效果；所有数据仅用于测试",
+        type: "warning",
+        duration: 4500,
+      })
     })
     .catch(error => {
       console.error(error.response.data.reason)
@@ -393,7 +399,7 @@ input {
 
 .placeholder {
   position: absolute;
-  top: 10px;
+  top: 12px;
   left: 8px;
   font-size: 14px;
   padding: 0px 5px;

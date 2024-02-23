@@ -28,10 +28,10 @@ export default {
 <style lang="less">
 .footer {
   position: fixed;
-  bottom: 5px;
+  bottom: 0px;
   left: 0;
   width: 100%;
-  background-color: transparent;
+  background-color: white;
   padding: 10px 0;
   text-align: center;
 }

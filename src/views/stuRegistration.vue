@@ -171,6 +171,16 @@ const handleSubmit = () => {
       </el-card>
     </div>
   </div>
+  <div class="footer">
+    <el-link
+      href="https://beian.miit.gov.cn/"
+      target="_blank"
+      type="primary"
+      style="font-size: medium;color: gray;"
+    >
+      粤ICP备2024184954号-1
+    </el-link>
+  </div>
 </template>
 
 <style scoped lang="less">

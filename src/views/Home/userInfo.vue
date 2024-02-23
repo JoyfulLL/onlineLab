@@ -462,7 +462,7 @@ const saveUserInfo = () => {
   margin-bottom: 20px;
 }
 
-@media (min-width: 762px) {
+@media (min-width: 1080px) {
   .card-container > div {
     width: 65%;
   }
