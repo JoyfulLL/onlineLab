@@ -224,7 +224,8 @@ const canSubmitWithEmail = computed(() => {
 
 /* backgroundimg setting */
 #building {
-  background: url("/src/assets/img/BackgroundImg/loginBg-min.png");
+  /* background: url("/src/assets/img/BackgroundImg/loginBg-min.png"); */
+  background-color: #b3e19d;
   width: 100%;
   height: 100%;
   position: fixed;

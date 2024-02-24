@@ -31,7 +31,6 @@ export default {
   bottom: 0px;
   left: 0;
   width: 100%;
-  background-color: white;
   padding: 10px 0;
   text-align: center;
 }
