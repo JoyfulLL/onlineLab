@@ -12,6 +12,13 @@ const reload=()=>{
 }
 provide('reload', reload);
 
+
+const prefersColorScheme = window.matchMedia('(prefers-color-scheme: light)');
+if (prefersColorScheme.matches) {
+	console.log('浅色模式');
+} else {
+	console.log('深色模式');
+}
 </script>
 
 <template>

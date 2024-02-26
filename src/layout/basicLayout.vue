@@ -46,8 +46,12 @@ import CommonHeader from "@/layout/commonHeader.vue"
     height: 100%;
     & > .el-aside {
       height: 100%;
-      background-color: #ffffff;
+      //background-color: #ffffff;
     }
   }
 }
+html:not(.dark) .right-main {
+  background-color: #f6f6f6; /* 设置亮色模式下 el-main 的背景色为灰色 */
+}
+
 </style>

@@ -79,7 +79,7 @@ const router = createRouter({
           path: "/Contributors",
           name: "Contributors",
           component: () => import("@/views/ContributorsList.vue"),
-          meta: { requireAuth: false, index: "4", title: "项目贡献者" },
+          meta: { requireAuth: false, index: "99", title: "项目贡献者" },
         },
       ],
     },

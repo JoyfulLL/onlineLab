@@ -1,0 +1,67 @@
+/**
+ * Author: 
+ * Date: 2024年2月26日22点20分
+ * File: 
+ * Description: for dark theme
+ */
+
+html.dark {
+    /* 自定义深色背景颜色 */
+    --el-menu-item-color: #ffffff;
+
+    /* 分页器的页码颜色 */
+    .el-pagination.is-background .btn-next.is-active,
+    .el-pagination.is-background .btn-prev.is-active,
+    .el-pagination.is-background .el-pager li.is-active {
+        --el-color-primary: #000 --el-color-white:white
+    }
+}
+
+/* 侧板菜单栏黑色样式设置  开始*/
+
+/* 设置字体颜色为白色 */
+html.dark .el-menu-item.is-active {
+    color: #ffffff;
+    background-color: #3e8ef7 !important;
+
+    /* 白色 */
+    span {
+        color: #ffffff;
+    }
+}
+
+html.dark .el-menu-item.is-active::after {
+    display: none;
+    /* 不显示竖线 */
+}
+
+html.dark .el-sub-menu.is-active {
+    background-color: transparent !important;
+}
+
+html.dark .el-sub-menu__title.icons.is-active {
+    background-color: #3e8ef7 !important;
+}
+
+html.dark .el-menu-item:hover {
+    background-color: #555555;
+    /* 鼠标悬停时的背景颜色为深灰色 */
+    border-radius: 8px;
+    /* 添加圆角 */
+}
+
+/* 侧板菜单栏黑色样式设置  结束*/
+
+
+/* 顶部的面包屑字体颜色设置 开始 */
+html.dark .bread span {
+    color: #d9bb95 !important;
+    cursor: pointer !important;
+}
+
+html.dark .el-breadcrumb__item:last-child .el-breadcrumb__inner {
+    color: #fc9105 !important;
+    font-weight: 800 !important;
+}
+/* 顶部的面包屑字体颜色设置 结束 */
+

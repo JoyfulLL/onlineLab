@@ -34,6 +34,15 @@
       </el-breadcrumb>
     </div>
     <div class="r-content">
+      <el-switch
+        inline-prompt
+        :style="{ marginRight: '10px' }"
+        active-color="#000"
+        active-text="暗色"
+        inactive-text="明亮"
+        v-model="theme"
+        @click="toggle()"
+      ></el-switch>
       <el-badge :value="1" class="item">
         <el-icon class="icon">
           <Bell />
@@ -77,7 +86,8 @@ import { useMenuStore } from "@/stores/menu"
 import { useAuthStore } from "@/stores/tokenStore"
 import { ArrowRight, Setting, SwitchButton } from "@element-plus/icons-vue"
 import { useRouter } from "vue-router"
-
+import { useToggle } from "@vueuse/shared"
+import { useDark } from "@vueuse/core"
 const props = defineProps({
   isHomePgae: {
     type: Boolean,
@@ -108,6 +118,25 @@ const routers = computed(() => {
   // 过滤掉没有meta的
   return router.currentRoute.value.matched.filter(item => item.meta.title)
 })
+
+/* start——暗黑模式 */
+const theme = ref(false)
+const isDark = useDark({
+  // 存储到localStorage/sessionStorage中的Key 根据自己的需求更改
+  storageKey: "useDarkKEY",
+  // 暗黑class名字
+  valueDark: "dark",
+  // 高亮class名字
+  valueLight: "light",
+})
+console.log(isDark.value)
+if (isDark.value == false) {
+  theme.value = false
+} else {
+  theme.value = true
+}
+const toggle = useToggle(isDark)
+/* End——暗黑模式 */
 </script>
 
 <style lang="less" scoped>
@@ -122,7 +151,7 @@ header {
   align-items: center;
   width: 100%;
   backdrop-filter: saturate(50%) blur(4px);
-  background-image: radial-gradient(transparent 1px, #ffffff 1px);
+  //background-image: radial-gradient(transparent 1px, #ffffff 1px);
   background-size: 4px 4px;
   border-bottom: 1px solid #ccc;
 }
@@ -151,7 +180,6 @@ header {
 }
 
 .l-content {
-  color: #333333; // 设置文本颜色
   display: flex; // 使用Flexbox布局
   align-items: center; // 垂直居中对齐
 
@@ -167,12 +195,18 @@ header {
   }
 }
 
-// .bread /deep/ span {
-//   color: #fff !important;
-//   cursor: pointer !important;
+.el-breadcrumb .el-breadcrumb__inner{
+  color: #9b9b9b !important;
+  font-weight: 400 !important;
+}
+/* 不被选中时的颜色 */
+// .el-breadcrumb ::v-deep .el-breadcrumb__inner {
+//         color: #d9bb95 !important;
+//         font-weight:400 !important;
 // }
-:deep(.bread span) {
+/* 被选中时的颜色 */
+.el-breadcrumb__item:last-child .el-breadcrumb__inner {
   color: #000000 !important;
-  cursor: pointer !important;
+  font-weight: 800 !important;
 }
 </style>

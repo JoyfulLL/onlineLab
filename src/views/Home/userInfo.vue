@@ -13,6 +13,7 @@ import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
 import { onMounted, ref, watch } from "vue"
 import { Edit } from "@element-plus/icons-vue"
+
 import {
   teacherEditUserInfo,
   stuEditUserInfo,
@@ -172,9 +173,12 @@ const saveUserInfo = () => {
       })
     })
 }
+
 </script>
 
 <template>
+  
+
   <el-dialog
     v-model="teacherJoinNewClassDia"
     width="50%"

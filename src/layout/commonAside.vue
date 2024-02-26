@@ -65,7 +65,7 @@ const commonMenuTree = ref([
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "4",
+    index: "99",
     icon: "PieChart",
     title: "贡献者",
     name: "Contributors",
@@ -118,7 +118,7 @@ const teacherMenuTree = ref([
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "4",
+    index: "99",
     icon: "PieChart",
     title: "贡献者",
     name: "Contributors",
@@ -209,7 +209,7 @@ const adminMenuTree = ref([
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "5",
+    index: "99",
     icon: "PieChart",
     title: "贡献者",
     name: "Contributors",
@@ -330,7 +330,9 @@ activePath.value = router.currentRoute._value.meta.index
   width: 16px;
   height: 16px;
 }
-
+.icons.is-active{
+  color: #409eff;
+}
 .centered {
   text-align: center;
 }
@@ -361,19 +363,22 @@ activePath.value = router.currentRoute._value.meta.index
   }
 }
 
+
+
+// logo距离顶部的边距
+.el-menu-vertical-demo {
+  margin-top: 22px;
+}
 .el-sub-menu.is-active {
   background-color: #d9ecff !important; /* 背景使用淡蓝色 */
   border-radius: 8px;
   span {
     color: #409eff;
   }
+  .icons{
+    color: #409eff;
+  }
 }
-
-// logo距离顶部的边距
-.el-menu-vertical-demo {
-  margin-top: 22px;
-}
-
 .el-menu-item.is-active {
   position: relative; /* 设置相对定位 */
   &::after {

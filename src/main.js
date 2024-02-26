@@ -3,6 +3,8 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue"
 import axios from "axios"
 import * as echarts from "echarts"
 import ElementPlus from "element-plus"
+import 'element-plus/theme-chalk/dark/css-vars.css'
+import '@/assets/dark/css-vars.css'
 import "element-plus/dist/index.css"
 import { createPinia } from "pinia"
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate"
