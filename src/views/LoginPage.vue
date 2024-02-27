@@ -3,27 +3,27 @@ import loginCom from "@/components/auth/loginCom.vue"
 import { useToggle } from "@vueuse/shared"
 import { useDark } from "@vueuse/core"
 /* start——暗黑模式 */
-const theme = ref(false)
-const isDark = useDark({
-  // 存储到localStorage/sessionStorage中的Key 根据自己的需求更改
-  storageKey: "useDarkKEY",
-  // 暗黑class名字
-  valueDark: "dark",
-  // 高亮class名字
-  valueLight: "light",
-})
-console.log(isDark.value)
-if (isDark.value == false) {
-  theme.value = false
-} else {
-  theme.value = true
-}
-const toggle = useToggle(isDark)
+// const theme = ref(false)
+// const isDark = useDark({
+//   // 存储到localStorage/sessionStorage中的Key 根据自己的需求更改
+//   storageKey: "useDarkKEY",
+//   // 暗黑class名字
+//   valueDark: "dark",
+//   // 高亮class名字
+//   valueLight: "light",
+// })
+// console.log(isDark.value)
+// if (isDark.value == false) {
+//   theme.value = false
+// } else {
+//   theme.value = true
+// }
+// const toggle = useToggle(isDark)
 /* End——暗黑模式 */
 </script>
 
 <template>
-  <el-switch
+  <!-- <el-switch
         inline-prompt
         :style="{ marginLeft: '10px' }"
         active-color="#000"
@@ -31,7 +31,7 @@ const toggle = useToggle(isDark)
         inactive-text="默认"
         v-model="theme"
         @click="toggle()"
-      ></el-switch>
+      ></el-switch> -->
   <div>
     <loginCom />
   </div>

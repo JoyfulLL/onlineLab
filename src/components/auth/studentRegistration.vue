@@ -133,7 +133,7 @@ export default {
       <el-form-item label="用户名" prop="name">
         <el-input
           v-model="userForm.name"
-          :disabled="this.IsDisabled"
+          disabled="true"
         ></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" v-if="this.showPassword">

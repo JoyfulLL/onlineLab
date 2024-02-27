@@ -10,8 +10,8 @@ const frontendContributors = ref([
     id: 1,
     name: "JoyfulLL",
     realName: "梁俊枫",
-    linesOfCode: 14503,
-    commits: 70,
+    linesOfCode: 14515,
+    commits: 71,
     description: "前端负责人，所有前端",
   },
   {

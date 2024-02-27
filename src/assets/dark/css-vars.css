@@ -7,7 +7,7 @@
 
 html.dark {
     /* 自定义深色背景颜色 */
-    --el-menu-item-color: #ffffff;
+    --el-menu-item-color: #000000;
 
     /* 分页器的页码颜色 */
     .el-pagination.is-background .btn-next.is-active,
@@ -55,7 +55,7 @@ html.dark .el-menu-item:hover {
 
 /* 顶部的面包屑字体颜色设置 开始 */
 html.dark .bread span {
-    color: #d9bb95 !important;
+    color: #d9bb95 ;
     cursor: pointer !important;
 }
 
@@ -64,4 +64,3 @@ html.dark .el-breadcrumb__item:last-child .el-breadcrumb__inner {
     font-weight: 800 !important;
 }
 /* 顶部的面包屑字体颜色设置 结束 */
-

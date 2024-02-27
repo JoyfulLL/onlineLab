@@ -22,6 +22,7 @@
         :separator-icon="ArrowRight"
         class="bread"
         v-if="!props.isHomePgae"
+        id="breadcrumb"
       >
         <!-- 首页是一定存在的所以直接写死 -->
         <el-breadcrumb-item
@@ -34,20 +35,16 @@
       </el-breadcrumb>
     </div>
     <div class="r-content">
-      <el-switch
-        inline-prompt
+      <div aria-label="toggle dark mode">
+        <el-switch
         :style="{ marginRight: '10px' }"
-        active-color="#000"
-        active-text="暗色"
-        inactive-text="明亮"
         v-model="theme"
-        @click="toggle()"
-      ></el-switch>
-      <el-badge :value="1" class="item">
-        <el-icon class="icon">
-          <Bell />
-        </el-icon>
-      </el-badge>
+        :active-action-icon="Moon"
+        :inactive-action-icon="Sunny"
+        active-color="#6b6d71"
+        @click="toggleTheme"
+      />
+      </div>
       <el-dropdown>
         <div>
           <unicon
@@ -88,6 +85,7 @@ import { ArrowRight, Setting, SwitchButton } from "@element-plus/icons-vue"
 import { useRouter } from "vue-router"
 import { useToggle } from "@vueuse/shared"
 import { useDark } from "@vueuse/core"
+import { Moon, Sunny } from "@element-plus/icons-vue"
 const props = defineProps({
   isHomePgae: {
     type: Boolean,
@@ -99,7 +97,7 @@ const useToCollapse = useSidebarStore()
 let handleCollapse = () => {
   useToCollapse.toggleCollapse()
 }
-const menuStore = useMenuStore()
+
 const router = useRouter()
 const authStore = useAuthStore()
 //登出函数
@@ -112,7 +110,7 @@ const handleLoginOut = () => {
     duration: 2000,
   })
 }
-// console.log(router.currentRoute.value.matched);
+
 // 用于面包屑
 const routers = computed(() => {
   // 过滤掉没有meta的
@@ -120,22 +118,49 @@ const routers = computed(() => {
 })
 
 /* start——暗黑模式 */
-const theme = ref(false)
-const isDark = useDark({
-  // 存储到localStorage/sessionStorage中的Key 根据自己的需求更改
-  storageKey: "useDarkKEY",
-  // 暗黑class名字
-  valueDark: "dark",
-  // 高亮class名字
-  valueLight: "light",
-})
-console.log(isDark.value)
-if (isDark.value == false) {
-  theme.value = false
-} else {
-  theme.value = true
+const theme = ref()
+const isDark = useDark()
+const toggleTheme = event => {
+  const x = event.clientX
+  const y = event.clientY
+  const endRadius = Math.hypot(
+    Math.max(x, innerWidth - x),
+    Math.max(y, innerHeight - y)
+  )
+
+  // 执行切换主题动画
+  const transition = document.startViewTransition(() => {
+    const root = document.documentElement
+    root.classList.add(isDark.value ? "light" : "dark")
+    root.classList.remove(isDark.value ? "dark" : "light")
+  })
+
+  // 动画就绪后执行动画效果
+  transition.ready.then(() => {
+    const clipPath = [
+      `circle(0px at ${x}px ${y}px)`,
+      `circle(${endRadius}px at ${x}px ${y}px)`,
+    ]
+
+    // 执行剪辑路径动画
+    document.documentElement.animate(
+      {
+        clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
+      },
+      {
+        duration: 400,
+        easing: "ease-in",
+        pseudoElement: isDark.value
+          ? "::view-transition-old(root)"
+          : "::view-transition-new(root)",
+      }
+    )
+    isDark.value = !isDark.value
+  })
+  console.log(theme.value);
+    //theme.value=!theme.value
 }
-const toggle = useToggle(isDark)
+
 /* End——暗黑模式 */
 </script>
 
@@ -195,18 +220,14 @@ header {
   }
 }
 
-.el-breadcrumb .el-breadcrumb__inner{
-  color: #9b9b9b !important;
-  font-weight: 400 !important;
-}
 /* 不被选中时的颜色 */
-// .el-breadcrumb ::v-deep .el-breadcrumb__inner {
-//         color: #d9bb95 !important;
-//         font-weight:400 !important;
+// .el-breadcrumb__inner.is-link {
+//   color: #9b9b9b!important;
 // }
+
 /* 被选中时的颜色 */
-.el-breadcrumb__item:last-child .el-breadcrumb__inner {
-  color: #000000 !important;
-  font-weight: 800 !important;
+.el-breadcrumb__item:last-child /deep/ .el-breadcrumb__inner {
+  color: #35c03e;
+  font-weight: 800;
 }
 </style>
