@@ -8,6 +8,7 @@ import { useAuthStore } from "@/stores/tokenStore"
 import { rules } from "@/utils/formRules"
 import { ElMessage } from "element-plus"
 import { useRouter } from "vue-router"
+
 const router = useRouter()
 const loginForm = ref({
   username: "",
@@ -102,112 +103,110 @@ const canSubmitWithEmail = computed(() => {
 </script>
 
 <template>
-  <div id="building">
-    <div class="login-page">
-      <!-- 整个登录表单 -->
-      <div class="center-container">
-        <!-- 左半部分，存放图片 -->
-        <div class="left-section">
-          <img src="../../assets/loginOrReg/lampBulb.png" alt="Image" />
-        </div>
+  <div class="login-page">
+    <!-- 整个登录表单 -->
+    <div class="center-container">
+      <!-- 左半部分，存放图片 -->
+      <div class="left-section">
+        <img src="../../assets/loginOrReg/lampBulb.png" alt="Image" />
+      </div>
 
-        <!-- 右半部分 -->
-        <div class="right-section">
-          <!-- 右边的上半部分，用于登录表单 -->
+      <!-- 右半部分 -->
+      <div class="right-section">
+        <!-- 右边的上半部分，用于登录表单 -->
 
-          <div class="top-section">
-            <div class="form-container">
-              <!-- 新增的div -->
-              <el-form class="login-form">
-                <div class="form-top">
-                  <div class="title">
-                    统一身份认证
-                  </div>
-                  <div class="right">
-                    <el-link type="info" href="#" style="font-size: 11px"
-                      >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
-                    /></el-link>
-                  </div>
+        <div class="top-section">
+          <div class="form-container">
+            <!-- 新增的div -->
+            <el-form class="login-form">
+              <div class="form-top">
+                <div class="title">
+                  统一身份认证
                 </div>
-                <!-- 分割线 -->
-                <el-divider />
-                <div class="input-container">
-                  <div class="input-group">
-                    <input
-                      type="text"
-                      placeholder=" "
-                      v-model="loginForm.username"
-                      style="margin-bottom: 20px"
-                      prop="username"
-                    />
-                    <label class="placeholder">
-                      用户名/邮箱
-                    </label>
-                  </div>
-
-                  <div class="input-group">
-                    <input
-                      :type="isPasswordVisible ? 'text' : 'password'"
-                      placeholder=" "
-                      v-model="loginForm.password"
-                      style="margin-bottom: 10px"
-                      prop="password"
-                      autocomplete="on"
-                    />
-                    <label class="placeholder">
-                      密码
-                    </label>
-                    <div class="password-toggle">
-                      <el-icon @click="togglePasswordVisibility">
-                        <template v-if="isPasswordVisible">
-                          <View />
-                        </template>
-                        <template v-else>
-                          <Hide />
-                        </template>
-                      </el-icon>
-                    </div>
-                  </div>
+                <div class="right">
+                  <el-link type="info" href="#" style="font-size: 11px"
+                    >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
+                  /></el-link>
                 </div>
-
-                <div class="remember-row">
-                  <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
-                  <router-link to="/stuForgetPassword" class="forgot-password"
-                    >忘记密码
-                  </router-link>
-                </div>
-                <el-button
-                  type="primary"
-                  @click="onSubmitWithName"
-                  class="login-button"
-                  :disabled="!canSubmit"
-                  >登录
-                </el-button>
-                <!-- 分割线 -->
-              </el-form>
-            </div>
-          </div>
-          <!-- 右边的底部栏，用于第三方API -->
-          <div class="bottom-section">
-            <div class="other-login">
-              <p type="default" style="font-size: 15px;">其它登录方式</p>
-              <div class="icon-container">
-                <a href="#"><img src="../../assets/loginOrReg/qq.png"/></a>
-                <a href="#"><img src="../../assets/loginOrReg/wechat.png"/></a>
               </div>
+              <!-- 分割线 -->
+              <el-divider />
+              <div class="input-container">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    placeholder=" "
+                    v-model="loginForm.username"
+                    style="margin-bottom: 20px"
+                    prop="username"
+                  />
+                  <label class="placeholder">
+                    用户名/邮箱
+                  </label>
+                </div>
+
+                <div class="input-group">
+                  <input
+                    :type="isPasswordVisible ? 'text' : 'password'"
+                    placeholder=" "
+                    v-model="loginForm.password"
+                    style="margin-bottom: 10px"
+                    prop="password"
+                    autocomplete="on"
+                  />
+                  <label class="placeholder">
+                    密码
+                  </label>
+                  <div class="password-toggle">
+                    <el-icon @click="togglePasswordVisibility">
+                      <template v-if="isPasswordVisible">
+                        <View />
+                      </template>
+                      <template v-else>
+                        <Hide />
+                      </template>
+                    </el-icon>
+                  </div>
+                </div>
+              </div>
+
+              <div class="remember-row">
+                <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
+                <router-link to="/stuForgetPassword" class="forgot-password"
+                  >忘记密码
+                </router-link>
+              </div>
+              <el-button
+                type="primary"
+                @click="onSubmitWithName"
+                class="login-button"
+                :disabled="!canSubmit"
+                >登录
+              </el-button>
+              <!-- 分割线 -->
+            </el-form>
+          </div>
+        </div>
+        <!-- 右边的底部栏，用于第三方API -->
+        <div class="bottom-section">
+          <div class="other-login">
+            <p type="default" style="font-size: 15px;">其它登录方式</p>
+            <div class="icon-container">
+              <a href="#"><img src="../../assets/loginOrReg/qq.png"/></a>
+              <a href="#"><img src="../../assets/loginOrReg/wechat.png"/></a>
             </div>
           </div>
         </div>
       </div>
-      <div class="signup">
-        还没有账号？
-        <el-link
-          type="primary"
-          href="/signup"
-          style="font-size: 18px ;text-decoration: underline; "
-          >去注册
-        </el-link>
-      </div>
+    </div>
+    <div class="signup">
+      还没有账号？
+      <el-link
+        type="primary"
+        href="/signup"
+        style="font-size: 18px ;text-decoration: underline; "
+        >去注册
+      </el-link>
     </div>
   </div>
 </template>
@@ -235,7 +234,7 @@ const canSubmitWithEmail = computed(() => {
 .center-container {
   display: flex;
   justify-content: center;
-  background-color: #f6f6f6;
+  background-color: var(--login-bg);
   /* align-items: center; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   /* 边框光芒效果 */
@@ -311,7 +310,7 @@ const canSubmitWithEmail = computed(() => {
 }
 
 .form-container {
-  background-color: #ffffff;
+  background-color: var(--login-bg-form);
   /* 登录表单的外层DIV的灰色背景 */
   padding: 15px;
   border-radius: 5px;

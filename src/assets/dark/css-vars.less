@@ -1,5 +1,5 @@
 /**
- * Author: 
+ * Author: LJF
  * Date: 2024年2月26日22点20分
  * File: 
  * Description: for dark theme
@@ -15,7 +15,17 @@ html.dark {
     .el-pagination.is-background .el-pager li.is-active {
         --el-color-primary: #000 --el-color-white:white
     }
+
+    /* 暗色模式下登录背景颜色 */
+    --login-bg: #333333;
 }
+
+html.light {
+    /* 亮色模式下登录背景颜色 */
+    --login-bg: #f6f6f6;
+    --login-bg-form:#ffffff;
+}
+
 
 /* 侧板菜单栏黑色样式设置  开始*/
 
@@ -55,7 +65,7 @@ html.dark .el-menu-item:hover {
 
 /* 顶部的面包屑字体颜色设置 开始 */
 html.dark .bread span {
-    color: #d9bb95 ;
+    color: #d9bb95;
     cursor: pointer !important;
 }
 
@@ -63,4 +73,5 @@ html.dark .el-breadcrumb__item:last-child .el-breadcrumb__inner {
     color: #fc9105 !important;
     font-weight: 800 !important;
 }
+
 /* 顶部的面包屑字体颜色设置 结束 */

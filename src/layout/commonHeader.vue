@@ -37,13 +37,13 @@
     <div class="r-content">
       <div aria-label="toggle dark mode">
         <el-switch
-        :style="{ marginRight: '10px' }"
-        v-model="theme"
-        :active-action-icon="Moon"
-        :inactive-action-icon="Sunny"
-        active-color="#6b6d71"
-        @click="toggleTheme"
-      />
+          :style="{ marginRight: '10px' }"
+          v-model="isDark"
+          :active-action-icon="Moon"
+          :inactive-action-icon="Sunny"
+          active-color="#6b6d71"
+          @click="toggleTheme"
+        />
       </div>
       <el-dropdown>
         <div>
@@ -92,7 +92,7 @@ const props = defineProps({
     default: false,
   },
 })
-
+// localStorage.setItem('vueuse-color-scheme', 'light')
 const useToCollapse = useSidebarStore()
 let handleCollapse = () => {
   useToCollapse.toggleCollapse()
@@ -118,9 +118,22 @@ const routers = computed(() => {
 })
 
 /* start——暗黑模式 */
-const theme = ref()
-const isDark = useDark()
+
+let isDark = useDark({
+  disableTransition: false,
+  valueDark: "dark",
+  valueLight: "light",
+})
+
+const toggleDark = useToggle(isDark)
 const toggleTheme = event => {
+  // 浏览器兼容性检查
+  if (!document.startViewTransition) {
+    isDark.value = !isDark.value
+    toggleDark()
+    return
+  }
+
   const x = event.clientX
   const y = event.clientY
   const endRadius = Math.hypot(
@@ -128,37 +141,33 @@ const toggleTheme = event => {
     Math.max(y, innerHeight - y)
   )
 
-  // 执行切换主题动画
-  const transition = document.startViewTransition(() => {
+  const transition = document.startViewTransition(async () => {
     const root = document.documentElement
     root.classList.add(isDark.value ? "light" : "dark")
     root.classList.remove(isDark.value ? "dark" : "light")
-  })
+    toggleDark()
 
-  // 动画就绪后执行动画效果
-  transition.ready.then(() => {
-    const clipPath = [
-      `circle(0px at ${x}px ${y}px)`,
-      `circle(${endRadius}px at ${x}px ${y}px)`,
-    ]
+    transition.ready.then(() => {
+      const clipPath = [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${endRadius}px at ${x}px ${y}px)`,
+      ]
 
-    // 执行剪辑路径动画
-    document.documentElement.animate(
-      {
-        clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
-      },
-      {
-        duration: 400,
-        easing: "ease-in",
-        pseudoElement: isDark.value
-          ? "::view-transition-old(root)"
-          : "::view-transition-new(root)",
-      }
-    )
-    isDark.value = !isDark.value
+      document.documentElement.animate(
+        {
+          clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
+        },
+        {
+          duration: 400,
+          easing: "ease-in",
+          pseudoElement: isDark.value
+            ? "::view-transition-old(root)"
+            : "::view-transition-new(root)",
+        }
+      )
+    })
   })
-  console.log(theme.value);
-    //theme.value=!theme.value
+  isDark.value = !isDark.value
 }
 
 /* End——暗黑模式 */
@@ -226,7 +235,7 @@ header {
 // }
 
 /* 被选中时的颜色 */
-.el-breadcrumb__item:last-child /deep/ .el-breadcrumb__inner {
+:deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
   color: #35c03e;
   font-weight: 800;
 }
