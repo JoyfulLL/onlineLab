@@ -1,10 +1,9 @@
-import router from "@/router"
 import { useAuthStore } from "@/stores/tokenStore"
 import { errorMessages } from "@/utils/errorMessagesCode"
 import axios from "axios"
 import { ElNotification } from "element-plus"
 const service = axios.create({
-  baseURL: "http://8.219.238.232/api/",
+  baseURL: "https://b.guohaolan.com/api/",
   timeout: 10000,
   headers: { "Content-Type": "application/json" },
 })

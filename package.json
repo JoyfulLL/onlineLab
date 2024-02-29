@@ -13,6 +13,7 @@
     "lint-fix": "eslint --fix --ext .js,.vue src"
   },
   "dependencies": {
+    "@babel/eslint-parser": "^7.23.10",
     "@element-plus/icons-vue": "^2.3.1",
     "@vueuse/core": "^10.8.0",
     "@vueuse/integrations": "^10.7.0",
@@ -64,5 +65,5 @@
   "main": "index.js",
   "repository": "https://gitee.com/abbig/k8s-front-end.git",
   "author": "JoyfulLL <ljf13660117967@163.com>",
-  "license": "MIT"
+  "license": "GPL-3.0-only"
 }
