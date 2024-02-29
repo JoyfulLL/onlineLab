@@ -21,8 +21,8 @@ const frontendContributors = ref([
     commits: 0,
     description: "/login 界面UI设计",
   },
-])
-const backendContributors = ref([
+]),
+ backendContributors = ref([
   {
     id: 4,
     name: "MeteorsLiu",
@@ -47,8 +47,8 @@ const backendContributors = ref([
     commits: 0,
     description: "",
   },
-])
-const getGitHubProfileLink = username => {
+]),
+ getGitHubProfileLink = username => {
   return `https://github.com/${username}`
 }
 </script>

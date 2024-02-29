@@ -12,42 +12,42 @@ const props = defineProps({
   ageSize: {
     type: Number,
   },
-})
+}),
 
-const displayData = computed(() => {
+ displayData = computed(() => {
   const startIndex = (props.currentPage - 1) * props.pageSize
 })
 
 onMounted(() => {
   fetchClassList()
 })
-const useClassList = teacherJoinedClassStore()
-const fetchClassList = () => {
+const useClassList = teacherJoinedClassStore(),
+ fetchClassList = () => {
   useClassList.storeTeacherList()
   // console.log(useClassList.teacherClassList)
-}
+},
 // 创建ref
-const filtersClassData = ref(processClassData(useAllClassInfoList.classList))
+ filtersClassData = ref(processClassData(useAllClassInfoList.classList)),
 
 // 创建computed
-const classFilters = computed(() => {
+ classFilters = computed(() => {
   return filtersClassData.value.map(item => ({
     text: item.classname,
     value: item.classname,
   }))
-})
+}),
 
 // 根据班级筛选出学生
-const filterClasses = (value, row) => {
+ filterClasses = (value, row) => {
   return row.class === value
-}
+},
 // 多选
-const multipleSelection = ref([])
-const isAnyStudentSelected = ref(false)
-const selectStudents = ref([])
+ multipleSelection = ref([]),
+ isAnyStudentSelected = ref(false),
+ selectStudents = ref([]),
 
 // 多选框
-const handleSelectionChange = val => {
+ handleSelectionChange = val => {
   multipleSelection.value = val
   selectStudents.value = multipleSelection.value
   isAnyStudentSelected.value = selectStudents.value.length > 0

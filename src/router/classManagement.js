@@ -8,7 +8,7 @@
  * 用来放置有权限（roles 属性）的路由
  * 必须带有 name 属性
  */
-//每个课程的路由
+// 每个课程的路由
 const courseRoutes = [
   {
     path: "/courseroom/:courseid/",

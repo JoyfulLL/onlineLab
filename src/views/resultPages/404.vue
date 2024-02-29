@@ -1,17 +1,17 @@
 <!--
-* @description 
+* @description
 * @fileName 404.vue
 * @author LJF
 * @date 2024/01/25 22:25:11
 !-->
 <script setup>
-import { useRouter } from "vue-router"
-const router = useRouter()
-const goBackToUserInfo = () => {
+import {useRouter} from "vue-router"
+const router = useRouter(),
+ goBackToUserInfo = () => {
   router.push("/userInfo")
-}
+},
 
-const backTo = () => {
+ backTo = () => {
   router.go(-1)
 }
 </script>

@@ -3,29 +3,29 @@
 
  */
 
-import { login } from "@/api"
-import { useAuthStore } from "@/stores/tokenStore"
-import { rules } from "@/utils/formRules"
-import { ElMessage } from "element-plus"
-import { useRouter } from "vue-router"
+import {login} from "@/api"
+import {useAuthStore} from "@/stores/tokenStore"
+import {rules} from "@/utils/formRules"
+import {ElMessage} from "element-plus"
+import {useRouter} from "vue-router"
 
-const router = useRouter()
-const loginForm = ref({
+const router = useRouter(),
+ loginForm = ref({
   username: "",
   email: "",
   password: "",
-})
-const rememberMe = ref(false)
-const isPasswordVisible = ref(false)
+}),
+ rememberMe = ref(false),
+ isPasswordVisible = ref(false),
 
-const activeName = ref("统一身份认证")
+ activeName = ref("统一身份认证"),
 
-const handleClick = (tab, event) => {
+ handleClick = (tab, event) => {
   console.log(tab, event)
-}
+},
 
 // 因为在登录的API处已经做了传递参数的处理，故不需要在此区分name或者Email
-const onSubmitWithName = () => {
+ onSubmitWithName = () => {
   login(loginForm.value.username, loginForm.value.password)
     .then(res => {
       if (res.data.status === 0) {
@@ -36,10 +36,10 @@ const onSubmitWithName = () => {
         })
         const authStore = useAuthStore()
         authStore.setData(res.data.data)
-        //将token存储到cookies
+        // 将token存储到cookies
         // const token = res.data.data.token
         // document.cookie = `token=${token}; path=/;`
-        router.push({ path: "/" })
+        router.push({path: "/"})
       }
       ElNotification({
         title: "温馨提示",
@@ -59,9 +59,9 @@ const onSubmitWithName = () => {
         })
       }
     })
-}
+},
 
-const onSubmitWithEmail = () => {
+ onSubmitWithEmail = () => {
   login(loginForm.value.email, loginForm.value.password)
     .then(res => {
       if (res.data.status === 0) {
@@ -72,7 +72,7 @@ const onSubmitWithEmail = () => {
         })
         const authStore = useAuthStore()
         authStore.setData(res.data.data)
-        router.push({ path: "/" })
+        router.push({path: "/"})
       }
     })
     .catch(error => {
@@ -86,18 +86,18 @@ const onSubmitWithEmail = () => {
         })
       }
     })
-}
+},
 
-const togglePasswordVisibility = () => {
+ togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value
-}
-const canSubmit = computed(() => {
-  const { username, password } = loginForm.value
+},
+ canSubmit = computed(() => {
+  const {username, password} = loginForm.value
   return Boolean(username && password)
-})
+}),
 
-const canSubmitWithEmail = computed(() => {
-  const { email, password } = loginForm.value
+ canSubmitWithEmail = computed(() => {
+  const {email, password} = loginForm.value
   return Boolean(email && password)
 })
 </script>

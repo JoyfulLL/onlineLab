@@ -17,18 +17,18 @@
  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
 import {
-  removeStudentFromClass,
   deleteStudent,
+  removeStudentFromClass,
 } from "@/api/userManagement/removeUser"
 import addStudentsFromClass from "@/components/addStudentsFromClass.vue"
 import studentRegistration from "@/components/auth/studentRegistration.vue"
-import { basicClassesStore } from "@/stores"
-import { teacherJoinedClassStore } from "@/stores/classData"
-import { useAuthStore } from "@/stores/tokenStore"
-import { useTableDataStore } from "@/stores/userData/storeUserData"
-import { errorMessages } from "@/utils/errorMessagesCode"
-import { ElMessage, ElNotification } from "element-plus"
-import { inject, onMounted, reactive, ref } from "vue"
+import {basicClassesStore} from "@/stores"
+import {teacherJoinedClassStore} from "@/stores/classData"
+import {useAuthStore} from "@/stores/tokenStore"
+import {useTableDataStore} from "@/stores/userData/storeUserData"
+import {errorMessages} from "@/utils/errorMessagesCode"
+import {ElMessage, ElNotification} from "element-plus"
+import {inject, onMounted, reactive, ref} from "vue"
 
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
@@ -38,9 +38,9 @@ onMounted(() => {
 
 // @注入APP.vue提供的刷新方法
 // @用于在新增用户/编辑用户后刷新表格
-const reload = inject("reload")
+const reload = inject("reload"),
 
-const loading = ref(true)
+ loading = ref(true)
 // @注册信息的表单
 let userForm = reactive({
   id: "",
@@ -52,15 +52,15 @@ let userForm = reactive({
   class: "",
   sex: "",
 })
-const useScope = useAuthStore()
+const useScope = useAuthStore(),
 // 读取当前用户的scope角色并存储
-const userScope = useScope.getScope() //获取到的scope
+ userScope = useScope.getScope(), // 获取到的scope
 
-const studentDataTable = useTableDataStore()
-const useAllClassInfoList = basicClassesStore()
+ studentDataTable = useTableDataStore(),
+ useAllClassInfoList = basicClassesStore(),
 
-const useClassList = teacherJoinedClassStore()
-const fetchClassList = () => {
+ useClassList = teacherJoinedClassStore(),
+ fetchClassList = () => {
   if (userScope === "teacher") {
     useClassList.storeTeacherList()
   } else {
@@ -81,23 +81,23 @@ function processClassData(classData) {
 }
 
 // 创建ref
-const filtersClassData = ref(processClassData(useAllClassInfoList.classList))
+const filtersClassData = ref(processClassData(useAllClassInfoList.classList)),
 
 // 创建computed
-const classFilters = computed(() => {
+ classFilters = computed(() => {
   return filtersClassData.value.map(item => ({
     text: item.classname,
     value: item.classname,
   }))
-})
+}),
 
 // 根据班级筛选出学生
-const filterClasses = (value, row) => {
+ filterClasses = (value, row) => {
   return row.class === value
-}
+},
 
 // 数据获取
-const fetchData = async () => {
+ fetchData = async () => {
   await studentDataTable.showStuInfo()
   /**
    * When the data starts to load, loading is displayed
@@ -107,8 +107,8 @@ const fetchData = async () => {
   loading.value = false
 
   // 数据获取完成后，可以执行其他操作或访问Store中的数据
-  //console.log(studentDataTable.stuList.map(student => student?.name))
-}
+  // console.log(studentDataTable.stuList.map(student => student?.name))
+},
 
 // @以下代码用于 学生管理
 // @添加学生按钮——仅用于展示会话框
@@ -116,21 +116,21 @@ const fetchData = async () => {
 // @表单信息的提交动作（注册学生，修改学生）都在handleSubmit
 
 // 用于编辑学生
-const dialogVisibleEditStudent = ref(false)
+ dialogVisibleEditStudent = ref(false),
 // 用于右上角添加学生
-const dialogVisibleSearchStu = ref(false)
-//用于查看学生
-const dialogVisibleViewStu = ref(false)
+ dialogVisibleSearchStu = ref(false),
+// 用于查看学生
+ dialogVisibleViewStu = ref(false),
 
 // @显示密码框与否 编辑模式没有密码框
-const showPassword = ref()
-const MyEditAction = ref("edit")
+ showPassword = ref(),
+ MyEditAction = ref("edit"),
 // @用于在编辑模式禁用相关选项的修改
 // @目前除了realName，email，class外，全都禁用
-const IsDisabled = ref(false)
+ IsDisabled = ref(false),
 
 // @关闭会话框
-const handleClose = done => {
+ handleClose = done => {
   ElMessageBox.confirm("确定关闭？")
     .then(() => {
       done()
@@ -138,51 +138,51 @@ const handleClose = done => {
     .catch(() => {
       // catch error
     })
-}
+},
 
-//此函数仅用于调出会话框，并不是用于提交表单
-//提交表单的函数为handleSubmit
-//用于调出添加学生的界面
-const addStudent = async () => {
+// 此函数仅用于调出会话框，并不是用于提交表单
+// 提交表单的函数为handleSubmit
+// 用于调出添加学生的界面
+ addStudent = async () => {
   dialogVisibleSearchStu.value = true
-}
+},
 
-//@用于”编辑按钮“，函数实际用途为查看用户信息
-//@将用户信息显示在表单中
-//老师只能查看，不能编辑，管理员可以编辑
-const editStudent = row => {
+// @用于”编辑按钮“，函数实际用途为查看用户信息
+// @将用户信息显示在表单中
+// 老师只能查看，不能编辑，管理员可以编辑
+ editStudent = row => {
   dialogVisibleEditStudent.value = true
-  userForm = { ...row }
+  userForm = {...row}
   showPassword.value = false
   IsDisabled.value = false
-}
+},
 
-const viewStudent = row => {
+ viewStudent = row => {
   dialogVisibleViewStu.value = true
-  userForm = { ...row }
+  userForm = {...row}
   showPassword.value = false
   IsDisabled.value = true
-}
+},
 
-const handleButtonClick = row => {
+ handleButtonClick = row => {
   if (userScope === "admin") {
     editStudent(row)
   } else {
     viewStudent(row)
   }
-}
+},
 
 // 用于编辑成功后，关闭会话框并且刷新界面
-const closeEditDialog = value => {
+ closeEditDialog = value => {
   dialogVisibleEditStudent.value = value
   reload()
-}
+},
 
 // @以下代码用于分页
 // 页面显示数据量 默认为20条
-const pageSize = ref(20)
+ pageSize = ref(20),
 // 当前页面，默认为1
-const currentPage = ref(1)
+ currentPage = ref(1)
 
 // 用于更换页面
 function changePage(page) {
@@ -197,19 +197,19 @@ function handleSizeChange(val) {
 }
 
 // 多选
-const multipleSelection = ref([])
-const isAnyStudentSelected = ref(false)
-const selectStudents = ref([])
+const multipleSelection = ref([]),
+ isAnyStudentSelected = ref(false),
+ selectStudents = ref([]),
 
 // 多选框
-const handleSelectionChange = val => {
+ handleSelectionChange = val => {
   multipleSelection.value = val
   selectStudents.value = multipleSelection.value
   isAnyStudentSelected.value = selectStudents.value.length > 0
-}
+},
 
 // 一键移出班级 即批量
-const removeSelectedStudents = async () => {
+ removeSelectedStudents = async () => {
   if (selectStudents.value.length === 0) {
     return // 如果没有选中的学生，直接返回
   }
@@ -240,10 +240,10 @@ const removeSelectedStudents = async () => {
       duration: 3500,
     })
   }
-}
+},
 
 // use to remove students from class
-const handleRemoveClick = () => {
+ handleRemoveClick = () => {
   ElMessageBox.confirm("确定要移出所选学生的班级", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -258,11 +258,11 @@ const handleRemoveClick = () => {
         message: "取消",
       })
     })
-}
+},
 
 // 将一个学生移出班级的按钮方法
-const removeFromClass = async row => {
-  const { id } = row
+ removeFromClass = async row => {
+  const {id} = row
   ElMessageBox.confirm("确定将所选学生移出班级吗？", "Warning", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -283,10 +283,10 @@ const removeFromClass = async row => {
         message: "取消",
       })
     })
-}
+},
 
 // for administrator to delete stundent
-const handleDelete = row => {
+ handleDelete = row => {
   ElMessageBox.confirm(
     "确定要永久删除此学生吗？注意此操作不可逆！！！",
     "警告",
@@ -312,13 +312,13 @@ const handleDelete = row => {
         message: "取消",
       })
     })
-}
+},
 
 // 用于搜索功能
-const queryInfo = ref("")
+ queryInfo = ref(""),
 
 // 表单遍历的数据为划分后且能够检索的数据
-const filteredData = ref(
+ filteredData = ref(
   computed(() => {
     const query = queryInfo.value.toLowerCase().trim()
     let filtered = studentDataTable.stuList
@@ -345,8 +345,8 @@ const filteredData = ref(
       currentPage.value = 1
     }
 
-    const startIndex = (currentPage.value - 1) * pageSize.value
-    const endIndex = startIndex + pageSize.value
+    const startIndex = (currentPage.value - 1) * pageSize.value,
+     endIndex = startIndex + pageSize.value
     return filtered.slice(startIndex, endIndex)
   })
 )
@@ -382,9 +382,9 @@ const filteredData = ref(
       <!-- 查看学生信息用-->
       <div class="form-container">
         <student-registration
-          :showPassword="false"
+          :show-password="false"
           :IsDisabled="true"
-          :userData="userForm"
+          :user-data="userForm"
         />
       </div>
     </el-dialog>
@@ -398,8 +398,8 @@ const filteredData = ref(
     >
       <div class="form-container">
         <student-registration
-          :showPassword="false"
-          :userData="userForm"
+          :show-password="false"
+          :user-data="userForm"
           :action="MyEditAction"
           @edit-success="closeEditDialog"
         />

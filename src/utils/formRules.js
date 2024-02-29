@@ -20,9 +20,9 @@ const userForm = reactive({
 })
 
 export const rules = {
-  name: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  name: [{required: true, message: "请输入用户名", trigger: "blur"}],
   password: [
-    { required: true, message: "请输入密码" },
+    {required: true, message: "请输入密码"},
     {
       validator: (rule, value, callback) => {
         if (!value) {
@@ -46,14 +46,14 @@ export const rules = {
     },
   ],
   email: [
-    { required: true, message: "请输入邮箱", trigger: "blur" },
+    {required: true, message: "请输入邮箱", trigger: "blur"},
     {
       type: "email",
       message: "请输入正确的邮箱地址",
       trigger: ["blur", "change"],
     },
   ],
-  realName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
+  realName: [{required: true, message: "请输入真实姓名", trigger: "blur"}],
   userSchoollD: [
     {
       required: true,
@@ -61,7 +61,7 @@ export const rules = {
         if (!value) {
           return callback(new Error("请输入学生学号"))
         }
-        var pattern = /^[0-9]+$/
+        const pattern = /^[0-9]+$/
         if (!pattern.test(value)) {
           return callback(new Error("学生学号必须全为数字"))
         }
@@ -70,7 +70,7 @@ export const rules = {
       trigger: "blur",
     },
   ],
-  schoolCode: [{ required: true, message: "请输入学校代码", trigger: "blur" }],
-  class: [{ required: true, message: "请输入学生班级", trigger: "blur" }],
-  sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+  schoolCode: [{required: true, message: "请输入学校代码", trigger: "blur"}],
+  class: [{required: true, message: "请输入学生班级", trigger: "blur"}],
+  sex: [{required: true, message: "请选择性别", trigger: "change"}],
 }

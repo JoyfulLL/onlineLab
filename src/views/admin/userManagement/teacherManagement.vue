@@ -6,32 +6,32 @@
  * @date 2024/1/19
  */
 
-import { editTeacherInfo } from "@/api/userManagement/editUserInfo.js"
-import { deleteTeacher } from "@/api/userManagement/removeUser.js"
-import { regTeacher } from "@/api/userManagement/registerUser.js"
-import { useTableDataStore } from "@/stores/userData/storeUserData"
-import { rules } from "@/utils/formRules.js"
-import { ElMessage } from "element-plus"
-import { inject, onMounted, reactive, ref } from "vue"
+import {editTeacherInfo} from "@/api/userManagement/editUserInfo.js"
+import {deleteTeacher} from "@/api/userManagement/removeUser.js"
+import {regTeacher} from "@/api/userManagement/registerUser.js"
+import {useTableDataStore} from "@/stores/userData/storeUserData"
+import {rules} from "@/utils/formRules.js"
+import {ElMessage} from "element-plus"
+import {inject, onMounted, reactive, ref} from "vue"
 
 onMounted(() => {
   fetchData()
 })
 
-const teacherDataTable = useTableDataStore()
-const loading = ref(true)
+const teacherDataTable = useTableDataStore(),
+ loading = ref(true),
 // Fetching data
-const fetchData = async () => {
+ fetchData = async () => {
   teacherDataTable.showTeachersInfo()
   /**
    * When the data starts to load, loading is displayed
    * and the loading animation ends after the loading is completed.
    */
   loading.value = false
-}
+},
 
 // @注册信息的表单
-const userForm = reactive({
+ userForm = reactive({
   id: "",
   name: "",
   password: "",
@@ -41,24 +41,24 @@ const userForm = reactive({
   schoolCode: "",
   class: "",
   sex: "",
-})
+}),
 
 // 用于控制会话框显示
-const dialogVisible = ref(false)
+ dialogVisible = ref(false),
 
 // @用于判断当前动作
 // @区分当前是添加还是编辑
-const action = ref("add")
+ action = ref("add"),
 
 // @显示密码框与否 编辑模式没有密码框
-const showPassword = ref()
+ showPassword = ref(),
 
 // @用于在编辑模式禁用相关选项的修改
 // @目前除了realName，email，class外，全都禁用
-const IsDisabled = ref(false)
+ IsDisabled = ref(false),
 
 // @关闭会话框
-const handleClose = done => {
+ handleClose = done => {
   ElMessageBox.confirm("确定关闭？")
     .then(() => {
       done()
@@ -66,27 +66,27 @@ const handleClose = done => {
     .catch(() => {
       // catch error
     })
-}
+},
 
-//此函数仅用于调出会话框，并不是用于提交表单
-//提交表单的函数为handleSubmit
-const addTeacher = async () => {
+// 此函数仅用于调出会话框，并不是用于提交表单
+// 提交表单的函数为handleSubmit
+ addTeacher = async () => {
   action.value = "add"
   dialogVisible.value = true
   // 清空表单信息
   // @因为先点击编辑按钮，查看的信息会遗留在当前的表单
   // @因为不懂更新DOM的方法（nextTick），所以只能先强制删除表单的信息
   // @删除的仅仅是显示的信息，不波及数据库
-  for (let key in userForm) {
+  for (const key in userForm) {
     delete userForm[key]
   }
   showPassword.value = true
   IsDisabled.value = false
-}
+},
 
-//@用于”编辑按钮“，函数实际用途为查看用户信息
-//@将用户信息显示在表单中
-const editTeacher = row => {
+// @用于”编辑按钮“，函数实际用途为查看用户信息
+// @将用户信息显示在表单中
+ editTeacher = row => {
   action.value = "edit"
   dialogVisible.value = true
   // console.log(row)
@@ -95,14 +95,14 @@ const editTeacher = row => {
   })
   showPassword.value = false
   IsDisabled.value = true
-}
+},
 
-const reload = inject("reload")
+ reload = inject("reload"),
 
 // @此函数用于提交表单
 // @判断动作的值，为add则调用新增用户接口
 // @否则调用的是修改用户的接口
-const handleSubmit = async () => {
+ handleSubmit = async () => {
   if (action.value === "add") {
     await regTeacher(
       userForm.name,
@@ -112,7 +112,7 @@ const handleSubmit = async () => {
       userForm.sex
     ).then(res => {
       if (res.data.status === 0) {
-        //状态码为0，提交成功，关闭当前对话框
+        // 状态码为0，提交成功，关闭当前对话框
         dialogVisible.value = false
         reload()
         ElMessage({
@@ -122,7 +122,7 @@ const handleSubmit = async () => {
       }
     })
   } else {
-    //@ 在此处调用修改学生参数的接口
+    // @ 在此处调用修改学生参数的接口
     // console.log('用户名',(newUserForm.value.name))
     ElMessageBox.confirm("确定要修改吗？", "警告", {
       confirmButtonText: "确定",
@@ -148,7 +148,7 @@ const handleSubmit = async () => {
               type: "success",
             })
           }
-          //console.log(newUserForm.value.id);
+          // console.log(newUserForm.value.id);
         })
       })
       .catch(() => {
@@ -158,10 +158,10 @@ const handleSubmit = async () => {
         })
       })
   }
-}
+},
 
 // for admin to delete teacher
-const handleDeleteTeacher = row => {
+ handleDeleteTeacher = row => {
   ElMessageBox.confirm(
     "确定要永久删除此教师吗？注意此操作不可逆！！！",
     "警告",
@@ -188,12 +188,12 @@ const handleDeleteTeacher = row => {
         message: "取消",
       })
     })
-}
+},
 // @以下代码用于分页
 // 页面显示数据量 默认为10条
-const pageSize = ref(10)
+ pageSize = ref(10),
 // 当前页面，默认为1
-const currentPage = ref(1)
+ currentPage = ref(1)
 
 // 用于更换页面
 function changePage(page) {
@@ -208,10 +208,10 @@ function handleSizeChange(val) {
 }
 
 // 用于搜索功能
-const queryInfo = ref("")
+const queryInfo = ref(""),
 
 // 表单遍历的数据为划分后且能够检索的数据
-const filteredData = computed(() => {
+ filteredData = computed(() => {
   const query = queryInfo.value.toLowerCase().trim()
   let filtered = teacherDataTable.teachersList
 
@@ -224,9 +224,9 @@ const filteredData = computed(() => {
       )
     })
   }
-  //将分页逻辑整合到 filteredData 计算属性中，以确保分页功能和搜索功能可以同时生效
-  const startIndex = (currentPage.value - 1) * pageSize.value
-  const endIndex = startIndex + pageSize.value
+  // 将分页逻辑整合到 filteredData 计算属性中，以确保分页功能和搜索功能可以同时生效
+  const startIndex = (currentPage.value - 1) * pageSize.value,
+   endIndex = startIndex + pageSize.value
   return filtered.slice(startIndex, endIndex)
 })
 </script>

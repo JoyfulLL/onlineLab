@@ -1,34 +1,27 @@
 <script setup>
-import axios from "axios"
-import { onMounted, ref } from "vue"
+import axios from 'axios'
+import { onMounted, ref } from 'vue'
 onMounted(() => {
   updatePagedData()
 })
-const mockStulist = ref([])
-
-const pageSize = ref(18)
-const currentPage = ref(1)
-const total = ref(1000)
-
-const pagedData = ref([])
-
-const handleSizeChange = val => {
-  pageSize.value = val
-  currentPage.value = 1
-  updatePagedData()
-}
-
-const handleCurrentChange = val => {
-  currentPage.value = val
-  updatePagedData()
-}
-
-const updatePagedData = async () => {
-  const response = await axios.get(
-    "https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/admin/students"
-  )
-  mockStulist.value = response.data.data.mocklist
-}
+const mockStulist = ref([]),
+  pageSize = ref(18),
+  currentPage = ref(1),
+  handleSizeChange = val => {
+    pageSize.value = val
+    currentPage.value = 1
+    updatePagedData()
+  },
+  handleCurrentChange = val => {
+    currentPage.value = val
+    updatePagedData()
+  },
+  updatePagedData = async () => {
+    const response = await axios.get(
+      'https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/admin/students'
+    )
+    mockStulist.value = response.data.data.mocklist
+  }
 </script>
 
 <template>

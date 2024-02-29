@@ -1,23 +1,23 @@
 <script setup >
-import { RouterView } from 'vue-router'
-import { provide,nextTick} from "vue";
+import {RouterView} from "vue-router"
+import {nextTick, provide} from "vue"
 
 // @此方法为全局提供，在增删查改后刷新DOM
-const isRouterAlive = ref(true);
-const reload=()=>{
-  isRouterAlive.value=false;
+const isRouterAlive = ref(true),
+ reload = () => {
+  isRouterAlive.value = false
   nextTick(() => {
-    isRouterAlive.value = true;
-  });
+    isRouterAlive.value = true
+  })
 }
-provide('reload', reload);
+provide("reload", reload)
 
 
-const prefersColorScheme = window.matchMedia('(prefers-color-scheme: light)');
+const prefersColorScheme = window.matchMedia("(prefers-color-scheme: light)")
 if (prefersColorScheme.matches) {
-	console.log('浅色模式');
+	console.log("浅色模式")
 } else {
-	console.log('深色模式');
+	console.log("深色模式")
 }
 </script>
 

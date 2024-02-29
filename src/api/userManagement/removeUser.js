@@ -11,11 +11,11 @@ import service from "@/utils/axios"
 export function removeStudentFromClass(studentid, scope) {
   if (scope === "admin") {
     return service.delete("/authrequired/admin/student/class", {
-      data: { studentid: studentid },
+      data: {studentid},
     })
   } else {
     return service.delete("/authrequired/teacher/class/students/leave", {
-      data: { studentid: [studentid] },
+      data: {studentid: [studentid]},
     })
   }
 }
@@ -23,13 +23,13 @@ export function removeStudentFromClass(studentid, scope) {
 // Administrator deletes specified student
 export function deleteStudent(studentid) {
   return service.delete("/authrequired/admin/student", {
-    data: { id: studentid },
+    data: {id: studentid},
   })
 }
 
 // Administrator deletes specified teacher
 export function deleteTeacher(teacherid) {
   return service.delete("/authrequired/admin/teacher", {
-    data: { id: teacherid },
+    data: {id: teacherid},
   })
 }

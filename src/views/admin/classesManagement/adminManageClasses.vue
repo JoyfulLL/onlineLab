@@ -5,36 +5,36 @@
 * @date 2024/02/04 15:34:17
 !-->
 <script setup>
-import { basicClassesStore } from "@/stores"
+import {basicClassesStore} from "@/stores"
 import {
   adminAddStudentToClass,
   adminAddTeacherToClass,
   adminCreatANewClass,
-  adminShowClassStudents,
-  adminShowTeacherOfClass,
-  adminShowTeacherClassStudents,
-  adminModifiesStuClass,
   adminDeleteClass,
+  adminModifiesStuClass,
   adminRemoveTeacherFromClass,
+  adminShowClassStudents,
+  adminShowTeacherClassStudents,
+  adminShowTeacherOfClass,
 } from "@/api/classManagement/admin/index"
 const useAllClassInfoList = basicClassesStore()
 onMounted(() => {})
-const newClassname = ref("")
-const newClass = () => {
+const newClassname = ref(""),
+ newClass = () => {
   adminCreatANewClass(newClassname)
-}
+},
 
-const fetchClassStudents = () => {
+ fetchClassStudents = () => {
   adminShowClassStudents("21网络工程B").then(res => {
     console.log(res.data.data)
   })
-}
-const fetchTeacherClasses = () => {
+},
+ fetchTeacherClasses = () => {
   adminShowTeacherOfClass("5433951652941831").then(res => {
     console.log(res.data.data)
   })
-}
-const fetchTeacherStudents = () => {
+},
+ fetchTeacherStudents = () => {
   adminShowTeacherClassStudents(5433951652941831).then(res => {
     console.log(res.data.data)
   })

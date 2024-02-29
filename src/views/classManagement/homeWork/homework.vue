@@ -1,5 +1,5 @@
 <!--
-* @description 
+* @description
 * @fileName homework.vue
 * @author LJF
 * @date 2024/01/27 21:46:07
@@ -32,8 +32,8 @@ const assignments = ref([
     deadline: "2023-07-27",
     submissionStatus: "已提交",
   },
-])
-const viewDetails = assignment => {
+]),
+ viewDetails = assignment => {
   // 在这里实现跳转到作业详情界面的逻辑，例如使用路由跳转或者弹窗显示详情等。
   console.log("Viewing details of assignment:", assignment)
 }

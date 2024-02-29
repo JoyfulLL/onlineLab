@@ -5,7 +5,7 @@
 * @date 2024/01/27 22:35:28
 !-->
 <script setup>
-import { ref } from "vue"
+import {ref} from "vue"
 
 const activeName = ref("first")
 </script>

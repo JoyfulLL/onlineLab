@@ -1,11 +1,11 @@
-import { useAuthStore } from "@/stores/tokenStore"
-import { errorMessages } from "@/utils/errorMessagesCode"
+import {useAuthStore} from "@/stores/tokenStore"
+import {errorMessages} from "@/utils/errorMessagesCode"
 import axios from "axios"
-import { ElNotification } from "element-plus"
+import {ElNotification} from "element-plus"
 const service = axios.create({
   baseURL: "https://b.guohaolan.com/api/",
   timeout: 10000,
-  headers: { "Content-Type": "application/json" },
+  headers: {"Content-Type": "application/json"},
 })
 
 // 处理错误的函数
@@ -33,8 +33,8 @@ function handleRequestError(error) {
 // 添加请求拦截器
 service.interceptors.request.use(
   config => {
-    const useAuth = useAuthStore()
-    const token = useAuth.data.token
+    const useAuth = useAuthStore(),
+     token = useAuth.data.token
     if (token) config.headers.Authorization = `Bearer ${token}`
     //   checkToken();
     return config
@@ -47,7 +47,7 @@ service.interceptors.request.use(
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    //对响应数据做些事
+    // 对响应数据做些事
     return response
   },
   error => {

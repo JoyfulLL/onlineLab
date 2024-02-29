@@ -1,34 +1,34 @@
 <script setup>
-import { useSidebarStore } from "@/stores/index"
-import { useMenuStore } from "@/stores/menu"
-import { useAuthStore } from "@/stores/tokenStore"
-import { onMounted, ref } from "vue"
-import { useRouter } from "vue-router"
+import {useSidebarStore} from "@/stores/index"
+import {useMenuStore} from "@/stores/menu"
+import {useAuthStore} from "@/stores/tokenStore"
+import {onMounted, ref} from "vue"
+import {useRouter} from "vue-router"
 
-const useScope = useAuthStore()
+const useScope = useAuthStore(),
 // 读取当前用户的scope角色并存储
-const userScope = useScope.getScope() //获取到的scope
+ userScope = useScope.getScope() // 获取到的scope
 console.log(userScope)
 onMounted(() => {})
 // 侧边栏折叠
-const useToCollapse = useSidebarStore()
+const useToCollapse = useSidebarStore(),
 // 菜单
-const menuStore = useMenuStore()
+ menuStore = useMenuStore(),
 
-const router = useRouter()
+ router = useRouter(),
 
-//课程列表
-const courses = ref([
-  { courseid: 1, title: "计算机网络", description: "这是计算机网络" },
-  { courseid: 2, title: "数据结构", description: "这是数据结构的描述" },
-  { courseid: 3, title: "高等数学1", description: "这是一个描述2" },
-  { courseid: 4, title: "高等数学2", description: "这是一个描述2" },
-  { courseid: 5, title: "高等数学3", description: "这是一个描述3" },
-])
+// 课程列表
+ courses = ref([
+  {courseid: 1, title: "计算机网络", description: "这是计算机网络"},
+  {courseid: 2, title: "数据结构", description: "这是数据结构的描述"},
+  {courseid: 3, title: "高等数学1", description: "这是一个描述2"},
+  {courseid: 4, title: "高等数学2", description: "这是一个描述2"},
+  {courseid: 5, title: "高等数学3", description: "这是一个描述3"},
+]),
 
-//一般用户菜单树——学生
-//无用户管理菜单
-const commonMenuTree = ref([
+// 一般用户菜单树——学生
+// 无用户管理菜单
+ commonMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
@@ -71,10 +71,10 @@ const commonMenuTree = ref([
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
-])
+]),
 
 // 教师菜单
-const teacherMenuTree = ref([
+ teacherMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
@@ -124,11 +124,11 @@ const teacherMenuTree = ref([
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
-])
+]),
 
-//管理员独有菜单树
-//拥有所有菜单选项
-const adminMenuTree = ref([
+// 管理员独有菜单树
+// 拥有所有菜单选项
+ adminMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
@@ -217,7 +217,7 @@ const adminMenuTree = ref([
   },
 ])
 
-//依据当前用户身份，获取到对应的menuTree
+// 依据当前用户身份，获取到对应的menuTree
 menuStore.getMenuTreeByUserRole(
   userScope,
   adminMenuTree,
@@ -229,12 +229,12 @@ menuStore.getMenuTreeByUserRole(
 const clickMenu = item => {
   router.push({
     name: item.name,
-    params: { courseid: 1 },
+    params: {courseid: 1},
   })
-}
+},
 
 // 用于页面刷新后保持侧边菜单对应项展开
-const activePath = ref("")
+ activePath = ref("")
 activePath.value = router.currentRoute._value.meta.index
 </script>
 
@@ -247,10 +247,10 @@ activePath.value = router.currentRoute._value.meta.index
         expanded: !useToCollapse.isCollapse,
       }"
     >
-      <!-- 
-      学校的名称以及logo仅能用于项目完成后，不能用于demo中，否则会违反备案！！！    
+      <!--
+      学校的名称以及logo仅能用于项目完成后，不能用于demo中，否则会违反备案！！！
       -->
-      <!-- 
+      <!--
       <div v-if="!useToCollapse.isCollapse">
         <img
           style="max-width: 180px; max-height: 55px"
@@ -264,7 +264,7 @@ activePath.value = router.currentRoute._value.meta.index
           src="@/assets/fav.png"
           alt="Collapsed Logo"
         />
-      </div>  
+      </div>
       -->
 
       <div v-if="!useToCollapse.isCollapse">
@@ -362,7 +362,6 @@ activePath.value = router.currentRoute._value.meta.index
     margin-top: 24px;
   }
 }
-
 
 
 // logo距离顶部的边距

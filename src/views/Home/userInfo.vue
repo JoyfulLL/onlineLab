@@ -7,22 +7,22 @@
 
 <script setup>
 import classesList from "@/components/charts/classesListTable.vue"
-import { ElMessage, ElNotification } from "element-plus"
-import { basicClassesStore } from "@/stores"
-import { teacherJoinedClassStore } from "@/stores/classData.js"
-import { useAuthStore } from "@/stores/tokenStore.js"
-import { onMounted, ref, watch } from "vue"
-import { Edit } from "@element-plus/icons-vue"
+import {ElMessage, ElNotification} from "element-plus"
+import {basicClassesStore} from "@/stores"
+import {teacherJoinedClassStore} from "@/stores/classData.js"
+import {useAuthStore} from "@/stores/tokenStore.js"
+import {onMounted, ref, watch} from "vue"
+import {Edit} from "@element-plus/icons-vue"
 
 import {
-  teacherEditUserInfo,
   stuEditUserInfo,
+  teacherEditUserInfo,
 } from "@/api/userManagement/editUserInfo.js"
-const reload = inject("reload")
-const useAuth = useAuthStore()
-const userScope = useAuth.getScope()
-const classesStore = basicClassesStore()
-const userInfo = ref({
+const reload = inject("reload"),
+ useAuth = useAuthStore(),
+ userScope = useAuth.getScope(),
+ classesStore = basicClassesStore(),
+ userInfo = ref({
   id: "",
   name: "",
   email: "",
@@ -31,8 +31,8 @@ const userInfo = ref({
   schoolCode: "",
   userSchoollD: "",
   studentClass: "",
-})
-const useClassList = teacherJoinedClassStore()
+}),
+ useClassList = teacherJoinedClassStore()
 onMounted(() => {
   getUserInfoData()
   fetchAllClassInfo()
@@ -41,30 +41,30 @@ onMounted(() => {
   } else {
   }
 })
-const loading = ref(true)
+const loading = ref(true),
 
-const initialUserInfo = ref([])
-const getUserInfoData = () => {
+ initialUserInfo = ref([]),
+ getUserInfoData = () => {
   userInfo.value = useAuth.userInfoArray
-  initialUserInfo.value = { ...userInfo.value }
+  initialUserInfo.value = {...userInfo.value}
   loading.value = false
-}
+},
 
-const fetchAllClassInfo = () => {
+ fetchAllClassInfo = () => {
   classesStore.storeClassesList(useAuth.data.scope)
-}
+},
 /**
  * 教师用于加入班级
  */
-const teacherJoinNewClassDia = ref(false)
-const teacherJoinNewClass = () => {
+ teacherJoinNewClassDia = ref(false),
+ teacherJoinNewClass = () => {
   teacherJoinNewClassDia.value = true
-}
+},
 
 // 搜索班级的关键字
-const searchKeyword = ref("")
-const useAllClassInfoList = basicClassesStore()
-const handleClose = done => {
+ searchKeyword = ref(""),
+ useAllClassInfoList = basicClassesStore(),
+ handleClose = done => {
   ElMessageBox.confirm("确定关闭？")
     .then(() => {
       done()
@@ -72,9 +72,9 @@ const handleClose = done => {
     .catch(() => {
       // catch error
     })
-}
+},
 // 虚拟课程列表
-const courses = ref([
+ courses = ref([
   {
     courseid: 1,
     title: "计算机网络",
@@ -110,13 +110,13 @@ const courses = ref([
     membersCount: 30,
     teachername: "肖",
   },
-])
+]),
 
 // edit user info {data function compute}
-const editMode = ref(false)
-const cancelEditMode = () => {
+ editMode = ref(false),
+ cancelEditMode = () => {
   editMode.value = false
-}
+},
 // const toggleEditMode = () => {
 //   editMode.value = !editMode.value
 //   if (!editMode.value) {
@@ -127,23 +127,23 @@ const cancelEditMode = () => {
 //   console.log(initialUserInfo.value)
 // }
 
-const toggleEditMode = () => {
+ toggleEditMode = () => {
   editMode.value = !editMode.value
   if (!editMode.value) {
     if (JSON.stringify(userInfo) !== JSON.stringify(initialUserInfo)) {
       saveUserInfo()
     }
   }
-}
+},
 
-const saveUserInfo = () => {
+ saveUserInfo = () => {
   ElMessageBox.confirm("确定保存修改的信息？", "Warning", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
   })
     .then(() => {
-      const { email, userSchoollD, schoolCode, sex } = userInfo.value
+      const {email, userSchoollD, schoolCode, sex} = userInfo.value
 
       // Determine the appropriate API function based on the user's scope
 
@@ -177,12 +177,12 @@ const saveUserInfo = () => {
 </script>
 
 <template>
-  
+
 
   <el-dialog
     v-model="teacherJoinNewClassDia"
     width="50%"
-    :beforeClose="handleClose"
+    :before-close="handleClose"
     class="search-container"
   >
     <div class="search-title">依据班级名称检索班级</div>
@@ -203,9 +203,9 @@ const saveUserInfo = () => {
     </el-form-item>
     <classes-list
       :keyword="searchKeyword"
-      :classesList="useAllClassInfoList.classList"
-      :showOperation="true"
-      :isUserInfo="true"
+      :classes-list="useAllClassInfoList.classList"
+      :show-operation="true"
+      :is-user-info="true"
     />
   </el-dialog>
   <div class="card-container">
@@ -343,7 +343,7 @@ const saveUserInfo = () => {
         </el-descriptions>
       </el-card>
     </div>
-    <!-- 
+    <!--
       班级列表区域，管理员账号不需要显示，管理员可以在功能区进入班级管理
       学生仅能加入一个班级，因此也不需要显示
      -->
@@ -361,14 +361,14 @@ const saveUserInfo = () => {
           </div>
         </template>
         <classes-list
-          :classesList="useClassList.teacherClassList"
-          :showLeaveButton="true"
+          :classes-list="useClassList.teacherClassList"
+          :show-leave-button="true"
         />
       </el-card>
     </div>
-    <!-- 
+    <!--
         根据平台的作用，功能管理区暂时不对教师开放
-        教师管理学生以及班级，可以在对应的课程下管理 
+        教师管理学生以及班级，可以在对应的课程下管理
       -->
     <div>
       <el-card class="adminOperation" v-if="userScope === 'admin'">

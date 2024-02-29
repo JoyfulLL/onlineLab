@@ -4,7 +4,7 @@
  * @description 此文件用于登录成功后存储token等相关认证信息
  * @date 2024/1/12
  */
-import { defineStore } from "pinia"
+import {defineStore} from "pinia"
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     data: {
@@ -18,7 +18,7 @@ export const useAuthStore = defineStore("auth", {
   actions: {
     setData(data) {
       // this.data = data;
-      const { token, scope, refreshtoken, expiredAt } = data
+      const {token, scope, refreshtoken, expiredAt} = data
       this.data.token = token
       this.data.scope = scope
       this.data.refreshtoken = refreshtoken
@@ -30,9 +30,9 @@ export const useAuthStore = defineStore("auth", {
       // localStorage.setItem("expiredAt", expiredAt.toString())
     },
     setCheckTokenData(userInfo) {
-      //校验成功后，可以获取到用户的基础信息
+      // 校验成功后，可以获取到用户的基础信息
       this.userInfoArray = userInfo
-      //console.log(this.userInfoArray)
+      // console.log(this.userInfoArray)
     },
     getData() {
       return this.data

@@ -5,25 +5,25 @@
 * @date 2024/01/26 20:57:26
 !-->
 <script setup>
-import axios from "axios";
+import axios from "axios"
 
-let _url =
-  "https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/teacher/class/students";
+const _url =
+  "https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/teacher/class/students",
 
-const gteData = () => {
+ gteData = () => {
   axios
     .get(_url)
     .then((res) => {
-      const { data } = res.data;
-      const { classes } = data;
-      const students = classes.flatMap((cls) => cls.students);
-      students.value = students;
+      const {data} = res.data,
+       {classes} = data,
+       students = classes.flatMap((cls) => cls.students)
+      students.value = students
     })
     .catch((error) => {
       // 处理请求错误
-      console.error("Error fetching data:", error);
-    });
-};
+      console.error("Error fetching data:", error)
+    })
+}
 </script>
 
 <template>

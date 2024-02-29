@@ -7,23 +7,23 @@
  * @date 2024/1/22
  * classesList用于父组件传递Object列表
  */
-import { adminAddStudentToClass } from "@/api/classManagement/admin/index.js"
+import {adminAddStudentToClass} from "@/api/classManagement/admin/index.js"
 import {
   addStudentsToClass,
   teacherJoinClass,
   teacherLeaveClass,
 } from "@/api/classManagement/teacher/index.js"
-import { basicClassesStore } from "@/stores"
-import { teacherJoinedClassStore } from "@/stores/classData.js"
-import { useAuthStore } from "@/stores/tokenStore"
-import { ElMessage, ElTableColumn } from "element-plus"
-import { defineProps, inject, ref } from "vue"
+import {basicClassesStore} from "@/stores"
+import {teacherJoinedClassStore} from "@/stores/classData.js"
+import {useAuthStore} from "@/stores/tokenStore"
+import {ElMessage, ElTableColumn} from "element-plus"
+import {defineProps, inject, ref} from "vue"
 
 // 所有班级
-const useAllClassInfoList = basicClassesStore()
+const useAllClassInfoList = basicClassesStore(),
 // 教师加入的班级
-const useClassList = teacherJoinedClassStore()
-const reload = inject("reload")
+ useClassList = teacherJoinedClassStore(),
+ reload = inject("reload"),
 
 /**
  * 参数传递说明
@@ -38,7 +38,7 @@ const reload = inject("reload")
  * studentID：单个学生的id
  * canAddStudens：决定“添加学生”按钮能否使用
  */
-const props = defineProps({
+ props = defineProps({
   keyword: {
     type: String,
   },
@@ -77,26 +77,26 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-})
+}),
 
-const useScope = useAuthStore()
+ useScope = useAuthStore(),
 // 读取当前用户的scope角色并存储
-const userScope = useScope.getScope() //获取到的scope
+ userScope = useScope.getScope(), // 获取到的scope
 
-//单选
-const currentRow = ref()
-const classname = ref()
-const selectClassid = ref()
-const handelSingleSelection = val => {
+// 单选
+ currentRow = ref(),
+ classname = ref(),
+ selectClassid = ref(),
+ handelSingleSelection = val => {
   currentRow.value = val
   // console.log(currentRow.value)
   // console.log(currentRow.value.classname)
   classname.value = currentRow.value.classname
   selectClassid.value = currentRow.value.classid
-}
+},
 
 // props.classesList
-const filteredData = computed(() => {
+ filteredData = computed(() => {
   if (props.keyword && Array.isArray(props.classesList)) {
     const keywordWithoutSpaces = props.keyword.trim()
     return props.classesList.filter(classItem => {
@@ -111,10 +111,10 @@ const filteredData = computed(() => {
   } else {
     return props.classesList
   }
-})
+}),
 
 // 教师自己加入班级
-const onSubMitTeacherJoinClass = async () => {
+ onSubMitTeacherJoinClass = async () => {
   ElMessageBox.confirm("确定要加入班级吗？", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -123,7 +123,7 @@ const onSubMitTeacherJoinClass = async () => {
     .then(async () => {
       await teacherJoinClass(classname.value).then(res => {
         if (res.data.status === 0) {
-          //状态码为0，提交成功，关闭当前对话框
+          // 状态码为0，提交成功，关闭当前对话框
           reload()
           useAllClassInfoList.storeClassesList()
           ElMessage({
@@ -139,10 +139,10 @@ const onSubMitTeacherJoinClass = async () => {
         message: "取消加入",
       })
     })
-}
+},
 
 // 教师将学生加入班级
-const onSubmitStuToClass = async () => {
+ onSubmitStuToClass = async () => {
   ElMessageBox.confirm("确定要将学生加入班级吗？", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -153,7 +153,7 @@ const onSubmitStuToClass = async () => {
         await adminAddStudentToClass(props.studentID, classname.value).then(
           res => {
             if (res.data.status === 0) {
-              //状态码为0，提交成功，关闭当前对话框
+              // 状态码为0，提交成功，关闭当前对话框
               reload()
               ElMessage({
                 message: "操作成功",
@@ -165,7 +165,7 @@ const onSubmitStuToClass = async () => {
       } else {
         await addStudentsToClass(props.studensId, classname.value).then(res => {
           if (res.data.status === 0) {
-            //状态码为0，提交成功，关闭当前对话框
+            // 状态码为0，提交成功，关闭当前对话框
             reload()
             ElMessage({
               message: "操作成功",
@@ -181,10 +181,10 @@ const onSubmitStuToClass = async () => {
         message: "取消操作",
       })
     })
-}
+},
 
-//教师退出班级
-const onSubmitTeacherLeaveClass = async () => {
+// 教师退出班级
+ onSubmitTeacherLeaveClass = async () => {
   ElMessageBox.confirm("确定要退出班级吗？", "提示", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",

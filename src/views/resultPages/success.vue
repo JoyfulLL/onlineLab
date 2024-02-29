@@ -5,9 +5,9 @@
 * @date 2024/01/25 22:23:45
 !-->
 <script setup>
-import { useRouter } from "vue-router"
-const router = useRouter()
-const toLogin = () => {
+import {useRouter} from "vue-router"
+const router = useRouter(),
+ toLogin = () => {
   router.push("/login")
 }
 </script>

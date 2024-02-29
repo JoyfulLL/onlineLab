@@ -1,3 +1,25 @@
+<script setup>
+const props = defineProps({
+  courses: {
+    type: Array,
+    required: true,
+  },
+}),
+// const courseid = ref(props.courses.courseid)
+// console.log(courseid)
+ isCardView = ref(true),
+
+ toggleViewMode = () => {
+  isCardView.value = !isCardView.value // 切换展示模式
+},
+
+ activeName = ref("learning"),
+
+ handleClick = (tab, event) => {
+  console.log(tab, event)
+}
+</script>
+
 <template>
   <el-card>
     <template #header>
@@ -105,28 +127,6 @@
     </el-tabs>
   </el-card>
 </template>
-
-<script setup>
-const props = defineProps({
-  courses: {
-    type: Array,
-    required: true,
-  },
-})
-// const courseid = ref(props.courses.courseid)
-// console.log(courseid)
-const isCardView = ref(true)
-
-const toggleViewMode = () => {
-  isCardView.value = !isCardView.value // 切换展示模式
-}
-
-const activeName = ref("learning")
-
-const handleClick = (tab, event) => {
-  console.log(tab, event)
-}
-</script>
 
 <style scoped>
 .card-header {

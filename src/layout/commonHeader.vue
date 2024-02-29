@@ -78,30 +78,30 @@
 </template>
 
 <script setup>
-import { useSidebarStore } from "@/stores"
-import { useMenuStore } from "@/stores/menu"
-import { useAuthStore } from "@/stores/tokenStore"
-import { ArrowRight, Setting, SwitchButton } from "@element-plus/icons-vue"
-import { useRouter } from "vue-router"
-import { useToggle } from "@vueuse/shared"
-import { useDark } from "@vueuse/core"
-import { Moon, Sunny } from "@element-plus/icons-vue"
+import {useSidebarStore} from "@/stores"
+import {useMenuStore} from "@/stores/menu"
+import {useAuthStore} from "@/stores/tokenStore"
+import {ArrowRight, Moon, Setting, Sunny, SwitchButton} from "@element-plus/icons-vue"
+import {useRouter} from "vue-router"
+import {useToggle} from "@vueuse/shared"
+import {useDark} from "@vueuse/core"
+
 const props = defineProps({
   isHomePgae: {
     type: Boolean,
     default: false,
   },
-})
+}),
 // localStorage.setItem('vueuse-color-scheme', 'light')
-const useToCollapse = useSidebarStore()
-let handleCollapse = () => {
+ useToCollapse = useSidebarStore(),
+ handleCollapse = () => {
   useToCollapse.toggleCollapse()
-}
+},
 
-const router = useRouter()
-const authStore = useAuthStore()
-//登出函数
-const handleLoginOut = () => {
+ router = useRouter(),
+ authStore = useAuthStore(),
+// 登出函数
+ handleLoginOut = () => {
   authStore.deleteToken()
   router.push("/login")
   ElNotification({
@@ -109,24 +109,24 @@ const handleLoginOut = () => {
     message: "账号退出成功",
     duration: 2000,
   })
-}
+},
 
 // 用于面包屑
-const routers = computed(() => {
+ routers = computed(() => {
   // 过滤掉没有meta的
   return router.currentRoute.value.matched.filter(item => item.meta.title)
-})
+}),
 
 /* start——暗黑模式 */
 
-let isDark = useDark({
+ isDark = useDark({
   disableTransition: false,
   valueDark: "dark",
   valueLight: "light",
-})
+}),
 
-const toggleDark = useToggle(isDark)
-const toggleTheme = event => {
+ toggleDark = useToggle(isDark),
+ toggleTheme = event => {
   // 浏览器兼容性检查
   if (!document.startViewTransition) {
     isDark.value = !isDark.value
@@ -134,14 +134,14 @@ const toggleTheme = event => {
     return
   }
 
-  const x = event.clientX
-  const y = event.clientY
-  const endRadius = Math.hypot(
+  const x = event.clientX,
+   y = event.clientY,
+   endRadius = Math.hypot(
     Math.max(x, innerWidth - x),
     Math.max(y, innerHeight - y)
-  )
+  ),
 
-  const transition = document.startViewTransition(async () => {
+   transition = document.startViewTransition(async () => {
     const root = document.documentElement
     root.classList.add(isDark.value ? "light" : "dark")
     root.classList.remove(isDark.value ? "dark" : "light")

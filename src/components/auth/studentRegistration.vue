@@ -5,13 +5,13 @@
  * @description 用于注册学生
  * @date 2024/1/10
  */
-import { regStu } from "@/api/userManagement/registerUser.js"
-import { ElMessage, ElNotification } from "element-plus"
-import { errorMessages } from "@/utils/errorMessagesCode"
-import { rules } from "@/utils/formRules.js"
-import { editStuInfo } from "@/api/userManagement/editUserInfo"
-import { basicClassesStore } from "@/stores"
-import { mapState } from "pinia"
+import {regStu} from "@/api/userManagement/registerUser.js"
+import {ElMessage, ElNotification} from "element-plus"
+import {errorMessages} from "@/utils/errorMessagesCode"
+import {rules} from "@/utils/formRules.js"
+import {editStuInfo} from "@/api/userManagement/editUserInfo"
+import {basicClassesStore} from "@/stores"
+import {mapState} from "pinia"
 
 export default {
   computed: {
@@ -45,11 +45,11 @@ export default {
       editAction: "edit",
     }
   },
-  //用于侦听 编辑 按钮的数据变化
+  // 用于侦听 编辑 按钮的数据变化
   watch: {
     userData: {
       handler(newVal) {
-        this.userForm = { ...newVal } // 使用对象的深拷贝来更新userForm
+        this.userForm = {...newVal} // 使用对象的深拷贝来更新userForm
       },
       immediate: true, // 立即执行一次
     },
@@ -68,13 +68,13 @@ export default {
           this.userForm.sex
         ).then(res => {
           if (res.data.status == 0) {
-            //判断status是否为0
+            // 判断status是否为0
             ElMessage({
               message: "注册成功",
               type: "success",
               duration: 3000,
             })
-            //注册成功，跳转到成功的界面
+            // 注册成功，跳转到成功的界面
             this.$router.push("/success")
           }
         })
@@ -82,7 +82,7 @@ export default {
         const confirmResult = await ElMessageBox.confirm(
           "确定修改吗？",
           "警告",
-          { type: "warning" }
+          {type: "warning"}
         )
         if (confirmResult === "confirm") {
           await editStuInfo(
@@ -112,7 +112,7 @@ export default {
     },
   },
   mounted() {
-    //console.log(this.classList)
+    // console.log(this.classList)
   },
 }
 </script>
@@ -127,7 +127,7 @@ export default {
       class="centered-form"
       @submit="handleSubmit"
     >
-      <el-form-item label="ID" prop="id" v-if="!this.showPassword">
+      <el-form-item label="ID" prop="id" v-if="!showPassword">
         <el-input v-model="userForm.id" disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="name">
@@ -136,41 +136,41 @@ export default {
           disabled="true"
         ></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password" v-if="this.showPassword">
+      <el-form-item label="密码" prop="password" v-if="showPassword">
         <el-input v-model="userForm.password" type="password" show-password />
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input
           v-model="userForm.email"
-          :disabled="this.IsDisabled"
+          :disabled="IsDisabled"
         ></el-input>
       </el-form-item>
       <el-form-item label="真实姓名" prop="realName">
         <el-input
           v-model="userForm.realName"
-          :disabled="this.IsDisabled"
+          :disabled="IsDisabled"
         ></el-input>
       </el-form-item>
       <el-form-item label="学生学号" prop="userSchoollD">
         <el-input
           v-model="userForm.userSchoollD"
-          :disabled="this.IsDisabled"
+          :disabled="IsDisabled"
         ></el-input>
       </el-form-item>
       <el-form-item label="学校代码" prop="schoolCode">
         <el-input
           v-model="userForm.schoolCode"
-          :disabled="this.IsDisabled"
+          :disabled="IsDisabled"
         ></el-input>
       </el-form-item>
       <el-form-item label="学生班级" prop="class">
         <el-select
           v-model="userForm.class"
           placeholder="请选择班级"
-          :disabled="this.IsDisabled"
+          :disabled="IsDisabled"
         >
           <el-option
-            v-for="item in this.classList"
+            v-for="item in classList"
             :key="item.classid"
             :label="item.classname"
             :value="item.classname"
@@ -178,7 +178,7 @@ export default {
         </el-select>
       </el-form-item>
       <el-form-item label="性别" prop="sex">
-        <el-radio-group v-model="userForm.sex" :disabled="this.IsDisabled">
+        <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
           <el-radio label="男">男</el-radio>
           <el-radio label="女">女</el-radio>
         </el-radio-group>
@@ -188,13 +188,13 @@ export default {
           <el-button
             type="primary"
             @click="handleSubmit('userForm')"
-            :disabled="this.IsDisabled"
+            :disabled="IsDisabled"
             >提交
           </el-button>
           <el-button
             @click="resetForm('userForm')"
-            v-if="this.showPassword"
-            :disabled="this.IsDisabled"
+            v-if="showPassword"
+            :disabled="IsDisabled"
             >重置
           </el-button>
         </div>

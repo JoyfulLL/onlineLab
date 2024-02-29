@@ -1,5 +1,5 @@
 <!--
-* @description 
+* @description
 * @fileName 403.vue
 * @author LJF
 * @date 2024/01/25 22:24:47
@@ -9,9 +9,9 @@ import router from "@/router"
 
 const backTo = () => {
   router.go(-1)
-}
+},
 
-const toLogin = () => {
+ toLogin = () => {
   router.push("/login")
 }
 </script>

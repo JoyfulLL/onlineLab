@@ -5,9 +5,9 @@
  * @description
  * @date 2024/1/23
  */
-import { teacherGetStudentInfo } from "@/api/classManagement/teacher/index.js"
+import {teacherGetStudentInfo} from "@/api/classManagement/teacher/index.js"
 import classesList from "@/components/charts/classesListTable.vue"
-import { basicClassesStore } from "@/stores"
+import {basicClassesStore} from "@/stores"
 import {
   ElButton,
   ElInput,
@@ -15,26 +15,26 @@ import {
   ElTable,
   ElTableColumn,
 } from "element-plus"
-import { ref } from "vue"
+import {ref} from "vue"
 
 const form = ref({
   queryRealname: "",
   queryUserSchoollD: "",
   name: "",
   id: "",
-})
+}),
 
-const tableData = ref([])
+ tableData = ref([]),
 
 // 多选
-const multipleSelection = ref([])
-const isAnyStudentSelected = ref(false)
-const selectStudents = ref([])
+ multipleSelection = ref([]),
+ isAnyStudentSelected = ref(false),
+ selectStudents = ref([]),
 
 // 多选框
-const ids = ref([])
-const studentID = ref(0)
-const handleSelectionChange = val => {
+ ids = ref([]),
+ studentID = ref(0),
+ handleSelectionChange = val => {
   multipleSelection.value = val
   selectStudents.value = multipleSelection.value
   ids.value = selectStudents.value.map(student => student.id)
@@ -42,15 +42,15 @@ const handleSelectionChange = val => {
     studentID.value = ids.value[0]
   }
   isAnyStudentSelected.value = selectStudents.value.length > 0
-}
+},
 // 搜索班级的关键字
-const searchKeyword = ref("")
-const useAllClassInfoList = basicClassesStore()
+ searchKeyword = ref(""),
+ useAllClassInfoList = basicClassesStore(),
 // 用于底部的班级列表的样式
-const customStyle = ref({
+ customStyle = ref({
   marginTop: "30px",
-})
-const search = () => {
+}),
+ search = () => {
   // 发送信息给后端并处理返回的数据
   // 假设后端返回的数据是response
   // 将response赋值给tableData
@@ -69,7 +69,7 @@ const search = () => {
   }
 
   teacherGetStudentInfo(params).then(res => {
-    //console.log(res);
+    // console.log(res);
     if (!res.data.data) {
       ElMessage.warning("没有数据")
     } else {
@@ -146,12 +146,12 @@ const search = () => {
     </el-form-item>
     <classes-list
       :keyword="searchKeyword"
-      :classesList="useAllClassInfoList.classList"
-      :customStyle="customStyle"
+      :classes-list="useAllClassInfoList.classList"
+      :custom-style="customStyle"
       :can-add-studens="isAnyStudentSelected"
       :studens-id="ids"
-      :student-ID="studentID"
-      :showOperation="true"
+      :student-i-d="studentID"
+      :show-operation="true"
     />
   </div>
 </template>

@@ -7,8 +7,6 @@
  */
 
 
-
-
 </script>
 
 <template>

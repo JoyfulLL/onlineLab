@@ -37,14 +37,14 @@
 </template>
 
 <script setup>
-import { basicClassesStore } from "@/stores"
-import { teacherJoinedClassStore } from "@/stores/classData"
-import { useAuthStore } from "@/stores/tokenStore.js"
-import { onMounted } from "vue"
-const useClassList = teacherJoinedClassStore()
-const useScope = useAuthStore()
-const userScope = useScope.getScope()
-const classesStore = basicClassesStore()
+import {basicClassesStore} from "@/stores"
+import {teacherJoinedClassStore} from "@/stores/classData"
+import {useAuthStore} from "@/stores/tokenStore.js"
+import {onMounted} from "vue"
+const useClassList = teacherJoinedClassStore(),
+ useScope = useAuthStore(),
+ userScope = useScope.getScope(),
+ classesStore = basicClassesStore()
 onMounted(() => {
   fetchAllClassInfo()
   if (userScope === "teacher") {
@@ -55,9 +55,9 @@ onMounted(() => {
 
 const fetchAllClassInfo = () => {
   classesStore.storeClassesList(useScope.data.scope)
-}
+},
 
-const activities = [
+ activities = [
   {
     content: "Event start",
     timestamp: "2018-04-15",

@@ -1,15 +1,15 @@
 import homeRouter from "@/router/home"
 import userInfoRouter from "@/router/userInfo"
 import userManagementRouters from "@/router/userManagement"
-import { useAuthStore } from "@/stores/tokenStore.js"
+import {useAuthStore} from "@/stores/tokenStore.js"
 import service from "@/utils/axios.js"
 import LoginPage from "@/views/LoginPage.vue"
-import { ElNotification } from "element-plus"
-import { createRouter, createWebHistory } from "vue-router"
+import {ElNotification} from "element-plus"
+import {createRouter, createWebHistory} from "vue-router"
 import classRoutes from "./adminClassesMan"
 import courseRoutes from "./classManagement"
 // 引入全局进度条
-import { close, start } from "../utils/nprogress.js"
+import {close, start} from "../utils/nprogress.js"
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -32,19 +32,19 @@ const router = createRouter({
       path: "/403",
       name: "Forbidden",
       component: () => import("../views/resultPages/403.vue"),
-      meta: { showErrorPage: true },
+      meta: {showErrorPage: true},
     },
     {
       path: "/500",
       name: "ServerError",
       component: () => import("../views/resultPages/500.vue"),
-      meta: { showErrorPage: true },
+      meta: {showErrorPage: true},
     },
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: () => import("../views/resultPages/404.vue"),
-      meta: { showErrorPage: true },
+      meta: {showErrorPage: true},
     },
     {
       path: "/test",
@@ -59,7 +59,7 @@ const router = createRouter({
       name: "userInfo",
       redirect: "/userInfo",
       component: () => import("../layout/homePageLayout.vue"),
-      meta: { requireAuth: true, title: "个人中心" },
+      meta: {requireAuth: true, title: "个人中心"},
       children: [...userInfoRouter],
     },
     {
@@ -69,7 +69,7 @@ const router = createRouter({
       */
       path: "/courseroom",
       component: () => import("../layout/basicLayout.vue"),
-      meta: { requireAuth: true },
+      meta: {requireAuth: true},
       children: [
         ...homeRouter,
         ...courseRoutes,
@@ -79,7 +79,7 @@ const router = createRouter({
           path: "/Contributors",
           name: "Contributors",
           component: () => import("@/views/ContributorsList.vue"),
-          meta: { requireAuth: false, index: "99", title: "项目贡献者" },
+          meta: {requireAuth: false, index: "99", title: "项目贡献者"},
         },
       ],
     },
@@ -96,7 +96,7 @@ const router = createRouter({
   ],
 })
 
-//全局路由守卫
+// 全局路由守卫
 router.beforeEach(async (to, from, next) => {
   start()
   if (to.meta.title) {
@@ -114,11 +114,11 @@ router.beforeEach(async (to, from, next) => {
   ) {
     next() // 如果是登录页面，直接放行 不需要校验
   } else {
-    //为了加快DOM渲染，将token的校验放在解析守卫
-    const useAuth = useAuthStore()
-    const token = useAuth.data.token
+    // 为了加快DOM渲染，将token的校验放在解析守卫
+    const useAuth = useAuthStore(),
+     token = useAuth.data.token
     if (!token) {
-      next({ name: "Login" })
+      next({name: "Login"})
     } else {
       next()
     }
@@ -128,10 +128,10 @@ router.beforeEach(async (to, from, next) => {
 // 解析守卫，如果校验失败，则取消导航
 router.beforeResolve((to, from, next) => {
   if (to.meta.requireAuth) {
-    const useAuth = useAuthStore()
-    const token = useAuth.data.token
+    const useAuth = useAuthStore(),
+     token = useAuth.data.token
     service
-      .get("/isvalid", { Authorization: `Bearer ${token}` })
+      .get("/isvalid", {Authorization: `Bearer ${token}`})
       .then(res => {
         if (res.data.status === 0) {
           useAuth.setCheckTokenData(res.data.data)

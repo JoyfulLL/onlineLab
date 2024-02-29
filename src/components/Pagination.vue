@@ -6,8 +6,8 @@
  * @date 2024/1/19
  */
 
-import { defineComponent, ref, defineProps } from 'vue'
-import { ElPagination } from 'element-plus'
+import {defineComponent, defineProps, ref} from "vue"
+import {ElPagination} from "element-plus"
 
 const props = defineProps({
     total: {
@@ -24,20 +24,20 @@ const props = defineProps({
         default: 1,
         required: true,
     },
-})
+}),
 
-const pageSize = ref(props.pageSize)
-const currentPage = ref(props.currentPage)
+ pageSize = ref(props.pageSize),
+ currentPage = ref(props.currentPage),
 
-const handleSizeChange = val => {
+ handleSizeChange = val => {
     console.log(`${val} items per page`)
     pageSize.value = val
     currentPage.value = 1
-}
-const changePage = val => {
+},
+ changePage = val => {
     console.log(`current page: ${val}`)
-    //currentPage.value=val;
-    emit('page-change', val)
+    // currentPage.value=val;
+    emit("page-change", val)
 }
 </script>
 <template>

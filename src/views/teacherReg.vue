@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import teacherRegistration from "@/components/auth/teacherRegistration.vue";
+import teacherRegistration from "@/components/auth/teacherRegistration.vue"
 </script>
 
 <template>

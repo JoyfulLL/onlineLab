@@ -1,4 +1,4 @@
-import { defineStore } from "pinia"
+import {defineStore} from "pinia"
 
 export const useMenuStore = defineStore({
   id: "menu",
@@ -9,7 +9,7 @@ export const useMenuStore = defineStore({
     setMenuTree(menuTree) {
       this.menuTree = menuTree
     },
-    //依据用户角色返回对应菜单，二级菜单在下面判断
+    // 依据用户角色返回对应菜单，二级菜单在下面判断
     getMenuTreeByUserRole(
       userScope,
       adminMenuTree,
@@ -30,5 +30,5 @@ export const useMenuStore = defineStore({
 export const useElMenuActiveStore = defineStore("elMenuActive", () => {
   const elMenuActive = ref("")
 
-  return { elMenuActive }
+  return {elMenuActive}
 })

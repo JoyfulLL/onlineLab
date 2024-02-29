@@ -3,16 +3,16 @@
  * @description 登录API,token校验API
  * @author LJF
  */
-import { useAuthStore } from "@/stores/tokenStore.js"
+import {useAuthStore} from "@/stores/tokenStore.js"
 import service from "@/utils/axios.js"
 // 登录接口
 export function login(usernameOrEmail, password) {
   let requestData = {}
 
   if (usernameOrEmail.includes("@")) {
-    requestData = { queryemail: usernameOrEmail, password: password }
+    requestData = {queryemail: usernameOrEmail, password}
   } else {
-    requestData = { name: usernameOrEmail, password: password }
+    requestData = {name: usernameOrEmail, password}
   }
 
   return service.post("/login", requestData)

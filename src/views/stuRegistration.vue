@@ -1,18 +1,18 @@
 <script setup>
-import { regStu } from "@/api/userManagement/registerUser.js"
-import { ElMessage, ElNotification } from "element-plus"
-import { rules } from "@/utils/formRules.js"
-import { basicClassesStore } from "@/stores"
-import { useRouter } from "vue-router"
-import { onMounted, ref, onBeforeUnmount, computed } from "vue"
-const router = useRouter()
+import {regStu} from "@/api/userManagement/registerUser.js"
+import {ElMessage, ElNotification} from "element-plus"
+import {rules} from "@/utils/formRules.js"
+import {basicClassesStore} from "@/stores"
+import {useRouter} from "vue-router"
+import {computed, onBeforeUnmount, onMounted, ref} from "vue"
+const router = useRouter(),
 
-//班级列表
-const useClassesList = basicClassesStore()
-const classList = useClassesList.classList
+// 班级列表
+ useClassesList = basicClassesStore(),
+ classList = useClassesList.classList,
 
 // 注册表单
-const userForm = reactive({
+ userForm = reactive({
   name: "",
   password: "",
   email: "",
@@ -21,9 +21,9 @@ const userForm = reactive({
   schoolCode: "",
   class: "",
   sex: "",
-})
+}),
 
-const isDisabled = computed(() => {
+ isDisabled = computed(() => {
   return (
     !userForm.name ||
     !userForm.password ||
@@ -34,10 +34,10 @@ const isDisabled = computed(() => {
     !userForm.class ||
     !userForm.sex
   )
-})
+}),
 // 清空表单
-const form = ref(null)
-const resetForm = () => {
+ form = ref(null),
+ resetForm = () => {
   form.value.resetFields()
 }
 // when user reFocus,clearValidate message
@@ -64,13 +64,13 @@ const handleSubmit = () => {
         userForm.sex
       ).then(res => {
         if (res.data.status == 0) {
-          //判断status是否为0
+          // 判断status是否为0
           ElMessage({
             message: "注册成功",
             type: "success",
             duration: 3000,
           })
-          //注册成功，跳转到成功的界面
+          // 注册成功，跳转到成功的界面
           router.push("/success")
         }
       })
