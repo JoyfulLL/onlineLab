@@ -1,3 +1,4 @@
+import { defineConfig } from "vite"
 import vue from "@vitejs/plugin-vue"
 import vueJsx from "@vitejs/plugin-vue-jsx"
 import { fileURLToPath, URL } from "node:url"
@@ -5,15 +6,13 @@ import path from "path"
 import AutoImport from "unplugin-auto-import/vite"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
+import Components from "unplugin-vue-components/vite"
 import {
   AntDesignVueResolver,
   ElementPlusResolver,
 } from "unplugin-vue-components/resolvers"
-import Components from "unplugin-vue-components/vite"
-import { defineConfig } from "vite"
 import viteCompression from "vite-plugin-compression"
 import Inspect from "vite-plugin-inspect"
-// https://vitejs.dev/config/
 
 const pathSrc = path.resolve(__dirname, "src")
 export default defineConfig({
@@ -37,19 +36,24 @@ export default defineConfig({
           prefix: "Icon",
         }),
       ],
+      eslintrc: {
+        enabled: false, // Default `false`
+        filepath: "./.eslintrc-auto-import.json", // Default `./.eslintrc-auto-import.json`
+        globalsPropValue: true, // Default `true`, (true | false | 'readonly' | 'readable' | 'writable' | 'writeable')
+      },
       dts: path.resolve(pathSrc, "auto-imports.d.ts"),
     }),
 
     Components({
       resolvers: [
         // Auto register icon components
-        // 自动注册图标组件
+
         IconsResolver({
           enabledCollections: ["ep"],
         }),
         // Auto register Element Plus components
-        // 自动导入 Element Plus 组件
         ElementPlusResolver(),
+        // Auto register AntDesign components
         AntDesignVueResolver({
           importStyle: false, // css in js
         }),

@@ -1,45 +1,40 @@
 <script setup>
-import {regStu} from "@/api/userManagement/registerUser.js"
-import {ElMessage, ElNotification} from "element-plus"
-import {rules} from "@/utils/formRules.js"
-import {basicClassesStore} from "@/stores"
-import {useRouter} from "vue-router"
-import {computed, onBeforeUnmount, onMounted, ref} from "vue"
+import { regStu } from "@/api/userManagement/registerUser.js"
+import { rules } from "@/utils/formRules.js"
+import { basicClassesStore } from "@/stores"
+import { useRouter } from "vue-router"
 const router = useRouter(),
-
-// 班级列表
- useClassesList = basicClassesStore(),
- classList = useClassesList.classList,
-
-// 注册表单
- userForm = reactive({
-  name: "",
-  password: "",
-  email: "",
-  realName: "",
-  userSchoollD: "",
-  schoolCode: "",
-  class: "",
-  sex: "",
-}),
-
- isDisabled = computed(() => {
-  return (
-    !userForm.name ||
-    !userForm.password ||
-    !userForm.realName ||
-    !userForm.userSchoollD ||
-    !userForm.email ||
-    !userForm.schoolCode ||
-    !userForm.class ||
-    !userForm.sex
-  )
-}),
-// 清空表单
- form = ref(null),
- resetForm = () => {
-  form.value.resetFields()
-}
+  // 班级列表
+  useClassesList = basicClassesStore(),
+  classList = useClassesList.classList,
+  // 注册表单
+  userForm = reactive({
+    name: "",
+    password: "",
+    email: "",
+    realName: "",
+    userSchoollD: "",
+    schoolCode: "",
+    class: "",
+    sex: "",
+  }),
+  isDisabled = computed(() => {
+    return (
+      !userForm.name ||
+      !userForm.password ||
+      !userForm.realName ||
+      !userForm.userSchoollD ||
+      !userForm.email ||
+      !userForm.schoolCode ||
+      !userForm.class ||
+      !userForm.sex
+    )
+  }),
+  // 清空表单
+  form = ref(null),
+  resetForm = () => {
+    form.value.resetFields()
+  }
 // when user reFocus,clearValidate message
 function handleFocus(field) {
   form.value.clearValidate(field)
@@ -93,9 +88,9 @@ const handleSubmit = () => {
         ></a>
         <h2 class="form-title">学生注册</h2>
         <el-form
+          ref="form"
           :model="userForm"
           label-width="80px"
-          ref="form"
           :rules="rules"
           class="centered-form"
           @submit="handleSubmit"
@@ -160,8 +155,8 @@ const handleSubmit = () => {
             <div class="button-container" style="text-align: center">
               <el-button
                 type="primary"
-                @click="handleSubmit('userForm')"
                 :disabled="isDisabled"
+                @click="handleSubmit('userForm')"
                 >提交
               </el-button>
               <el-button type="warning" @click="resetForm">重置</el-button>

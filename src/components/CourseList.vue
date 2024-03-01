@@ -1,23 +1,20 @@
 <script setup>
 const props = defineProps({
-  courses: {
-    type: Array,
-    required: true,
+    courses: {
+      type: Array,
+      required: true,
+    },
+  }),
+  // const courseid = ref(props.courses.courseid)
+  // console.log(courseid)
+  isCardView = ref(true),
+  toggleViewMode = () => {
+    isCardView.value = !isCardView.value // 切换展示模式
   },
-}),
-// const courseid = ref(props.courses.courseid)
-// console.log(courseid)
- isCardView = ref(true),
-
- toggleViewMode = () => {
-  isCardView.value = !isCardView.value // 切换展示模式
-},
-
- activeName = ref("learning"),
-
- handleClick = (tab, event) => {
-  console.log(tab, event)
-}
+  activeName = ref("learning"),
+  handleClick = (tab, event) => {
+    console.log(tab, event)
+  }
 </script>
 
 <template>
@@ -37,20 +34,20 @@ const props = defineProps({
       @tab-click="handleClick"
     >
       <el-button
-        @click="toggleViewMode"
         type="primary"
         style="margin-bottom: 15px;"
+        @click="toggleViewMode"
         >切换视图</el-button
       >
 
       <el-tab-pane label="进行中" name="learning"
-        ><el-row :gutter="20" v-if="isCardView">
+        ><el-row v-if="isCardView" :gutter="20">
           <el-col
+            v-for="course in courses"
+            :key="course.courseid"
             :xs="24"
             :sm="12"
             :md="6"
-            v-for="course in courses"
-            :key="course.courseid"
           >
             <router-link
               :to="'/courseroom/' + course.courseid + '/home'"

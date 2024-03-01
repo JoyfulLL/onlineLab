@@ -1,6 +1,6 @@
 <script setup>
-import axios from 'axios'
-import { onMounted, ref } from 'vue'
+import axios from "axios"
+import { onMounted, ref } from "vue"
 onMounted(() => {
   updatePagedData()
 })
@@ -18,7 +18,7 @@ const mockStulist = ref([]),
   },
   updatePagedData = async () => {
     const response = await axios.get(
-      'https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/admin/students'
+      "https://www.fastmock.site/mock/2a5ecbdc32432d0c06d1e08c6e250731/api/authrequired/admin/students"
     )
     mockStulist.value = response.data.data.mocklist
   }

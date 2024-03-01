@@ -1,3 +1,37 @@
+<script setup>
+import { basicClassesStore } from "@/stores"
+import { teacherJoinedClassStore } from "@/stores/classData"
+import { useAuthStore } from "@/stores/tokenStore.js"
+const useClassList = teacherJoinedClassStore(),
+  useScope = useAuthStore(),
+  userScope = useScope.getScope(),
+  classesStore = basicClassesStore()
+onMounted(() => {
+  fetchAllClassInfo()
+  if (userScope === "teacher") {
+    useClassList.storeTeacherList()
+  }
+})
+
+const fetchAllClassInfo = () => {
+    classesStore.storeClassesList(useScope.data.scope)
+  },
+  activities = [
+    {
+      content: "Event start",
+      timestamp: "2018-04-15",
+    },
+    {
+      content: "Approved",
+      timestamp: "2018-04-13",
+    },
+    {
+      content: "Success",
+      timestamp: "2018-04-11",
+    },
+  ]
+</script>
+
 <template>
   <div class="demo-progress">
     <el-progress type="circle" :percentage="0" />
@@ -20,6 +54,7 @@
     </div>
   </el-card>
   <el-progress type="circle" :percentage="100" status="success">
+    <!-- eslint-disable-next-line vue/no-unused-vars -->
     <template #default="{ percentage }">
       <span><el-button type="success" :icon="Check" circle/></span>
       <span class="percentage-label">出勤</span>
@@ -35,43 +70,6 @@
     </el-timeline-item>
   </el-timeline>
 </template>
-
-<script setup>
-import {basicClassesStore} from "@/stores"
-import {teacherJoinedClassStore} from "@/stores/classData"
-import {useAuthStore} from "@/stores/tokenStore.js"
-import {onMounted} from "vue"
-const useClassList = teacherJoinedClassStore(),
- useScope = useAuthStore(),
- userScope = useScope.getScope(),
- classesStore = basicClassesStore()
-onMounted(() => {
-  fetchAllClassInfo()
-  if (userScope === "teacher") {
-    useClassList.storeTeacherList()
-  } else {
-  }
-})
-
-const fetchAllClassInfo = () => {
-  classesStore.storeClassesList(useScope.data.scope)
-},
-
- activities = [
-  {
-    content: "Event start",
-    timestamp: "2018-04-15",
-  },
-  {
-    content: "Approved",
-    timestamp: "2018-04-13",
-  },
-  {
-    content: "Success",
-    timestamp: "2018-04-11",
-  },
-]
-</script>
 
 <style scoped lang="less">
 .percentage-label {

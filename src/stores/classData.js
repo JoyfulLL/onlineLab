@@ -6,7 +6,7 @@
  */
 
 // 用于教师获取已经加入的班级
-import {defineStore} from "pinia"
+import { defineStore } from "pinia"
 import service from "@/utils/axios"
 
 export const teacherJoinedClassStore = defineStore({
@@ -16,10 +16,10 @@ export const teacherJoinedClassStore = defineStore({
     classesName: [],
   }),
   actions: {
-    async storeTeacherList(scope) {
+    async storeTeacherList() {
       const res = await service.get("/authrequired/teacher/class")
       this.teacherClassList = res.data.data
-      this.classesName = this.teacherClassList.map((item) => item.classname)
+      this.classesName = this.teacherClassList.map(item => item.classname)
     },
   },
   persist: true,

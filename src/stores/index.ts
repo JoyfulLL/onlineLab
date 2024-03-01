@@ -26,7 +26,7 @@ export const basicClassesStore = defineStore({
     classList: [] as Class[],
   }),
   actions: {
-    async storeClassesList(scope: string) {
+    async storeClassesList() {
       try {
         const response = await service.get("/authrequired/classes")
         this.classList = response.data.data // 将获取的班级列表存储在 classList 中

@@ -22,13 +22,11 @@ import {
 } from "@/api/userManagement/removeUser"
 import addStudentsFromClass from "@/components/addStudentsFromClass.vue"
 import studentRegistration from "@/components/auth/studentRegistration.vue"
-import {basicClassesStore} from "@/stores"
-import {teacherJoinedClassStore} from "@/stores/classData"
-import {useAuthStore} from "@/stores/tokenStore"
-import {useTableDataStore} from "@/stores/userData/storeUserData"
-import {errorMessages} from "@/utils/errorMessagesCode"
-import {ElMessage, ElNotification} from "element-plus"
-import {inject, onMounted, reactive, ref} from "vue"
+import { basicClassesStore } from "@/stores"
+import { teacherJoinedClassStore } from "@/stores/classData"
+import { useAuthStore } from "@/stores/tokenStore"
+import { useTableDataStore } from "@/stores/userData/storeUserData"
+import { errorMessages } from "@/utils/errorMessagesCode"
 
 // @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
@@ -39,8 +37,7 @@ onMounted(() => {
 // @注入APP.vue提供的刷新方法
 // @用于在新增用户/编辑用户后刷新表格
 const reload = inject("reload"),
-
- loading = ref(true)
+  loading = ref(true)
 // @注册信息的表单
 let userForm = reactive({
   id: "",
@@ -53,20 +50,17 @@ let userForm = reactive({
   sex: "",
 })
 const useScope = useAuthStore(),
-// 读取当前用户的scope角色并存储
- userScope = useScope.getScope(), // 获取到的scope
-
- studentDataTable = useTableDataStore(),
- useAllClassInfoList = basicClassesStore(),
-
- useClassList = teacherJoinedClassStore(),
- fetchClassList = () => {
-  if (userScope === "teacher") {
-    useClassList.storeTeacherList()
-  } else {
+  // 读取当前用户的scope角色并存储
+  userScope = useScope.getScope(), // 获取到的scope
+  studentDataTable = useTableDataStore(),
+  useAllClassInfoList = basicClassesStore(),
+  useClassList = teacherJoinedClassStore(),
+  fetchClassList = () => {
+    if (userScope === "teacher") {
+      useClassList.storeTeacherList()
+    }
+    // console.log(useClassList.teacherClassList)
   }
-  // console.log(useClassList.teacherClassList)
-}
 
 /**
  *
@@ -82,107 +76,95 @@ function processClassData(classData) {
 
 // 创建ref
 const filtersClassData = ref(processClassData(useAllClassInfoList.classList)),
+  // 创建computed
+  classFilters = computed(() => {
+    return filtersClassData.value.map(item => ({
+      text: item.classname,
+      value: item.classname,
+    }))
+  }),
+  // 根据班级筛选出学生
+  filterClasses = (value, row) => {
+    return row.class === value
+  },
+  // 数据获取
+  fetchData = async () => {
+    await studentDataTable.showStuInfo()
+    /**
+     * When the data starts to load, loading is displayed
+     * and the loading animation ends after the loading is completed.
+     */
+    // Loading should be closed asynchronously
+    loading.value = false
 
-// 创建computed
- classFilters = computed(() => {
-  return filtersClassData.value.map(item => ({
-    text: item.classname,
-    value: item.classname,
-  }))
-}),
+    // 数据获取完成后，可以执行其他操作或访问Store中的数据
+    //console.log(studentDataTable.stuList.map(student => student?.name))
+  },
+  // @以下代码用于 学生管理
+  // @添加学生按钮——仅用于展示会话框
+  // @编辑学生按钮——展示会话框以及获取到的表单数据
+  // @表单信息的提交动作（注册学生，修改学生）都在handleSubmit
 
-// 根据班级筛选出学生
- filterClasses = (value, row) => {
-  return row.class === value
-},
-
-// 数据获取
- fetchData = async () => {
-  await studentDataTable.showStuInfo()
-  /**
-   * When the data starts to load, loading is displayed
-   * and the loading animation ends after the loading is completed.
-   */
-  // Loading should be closed asynchronously
-  loading.value = false
-
-  // 数据获取完成后，可以执行其他操作或访问Store中的数据
-  // console.log(studentDataTable.stuList.map(student => student?.name))
-},
-
-// @以下代码用于 学生管理
-// @添加学生按钮——仅用于展示会话框
-// @编辑学生按钮——展示会话框以及获取到的表单数据
-// @表单信息的提交动作（注册学生，修改学生）都在handleSubmit
-
-// 用于编辑学生
- dialogVisibleEditStudent = ref(false),
-// 用于右上角添加学生
- dialogVisibleSearchStu = ref(false),
-// 用于查看学生
- dialogVisibleViewStu = ref(false),
-
-// @显示密码框与否 编辑模式没有密码框
- showPassword = ref(),
- MyEditAction = ref("edit"),
-// @用于在编辑模式禁用相关选项的修改
-// @目前除了realName，email，class外，全都禁用
- IsDisabled = ref(false),
-
-// @关闭会话框
- handleClose = done => {
-  ElMessageBox.confirm("确定关闭？")
-    .then(() => {
-      done()
-    })
-    .catch(() => {
-      // catch error
-    })
-},
-
-// 此函数仅用于调出会话框，并不是用于提交表单
-// 提交表单的函数为handleSubmit
-// 用于调出添加学生的界面
- addStudent = async () => {
-  dialogVisibleSearchStu.value = true
-},
-
-// @用于”编辑按钮“，函数实际用途为查看用户信息
-// @将用户信息显示在表单中
-// 老师只能查看，不能编辑，管理员可以编辑
- editStudent = row => {
-  dialogVisibleEditStudent.value = true
-  userForm = {...row}
-  showPassword.value = false
-  IsDisabled.value = false
-},
-
- viewStudent = row => {
-  dialogVisibleViewStu.value = true
-  userForm = {...row}
-  showPassword.value = false
-  IsDisabled.value = true
-},
-
- handleButtonClick = row => {
-  if (userScope === "admin") {
-    editStudent(row)
-  } else {
-    viewStudent(row)
-  }
-},
-
-// 用于编辑成功后，关闭会话框并且刷新界面
- closeEditDialog = value => {
-  dialogVisibleEditStudent.value = value
-  reload()
-},
-
-// @以下代码用于分页
-// 页面显示数据量 默认为20条
- pageSize = ref(20),
-// 当前页面，默认为1
- currentPage = ref(1)
+  // 用于编辑学生
+  dialogVisibleEditStudent = ref(false),
+  // 用于右上角添加学生
+  dialogVisibleSearchStu = ref(false),
+  // 用于查看学生
+  dialogVisibleViewStu = ref(false),
+  // @显示密码框与否 编辑模式没有密码框
+  showPassword = ref(),
+  MyEditAction = ref("edit"),
+  // @用于在编辑模式禁用相关选项的修改
+  // @目前除了realName，email，class外，全都禁用
+  IsDisabled = ref(false),
+  // @关闭会话框
+  handleClose = done => {
+    ElMessageBox.confirm("确定关闭？")
+      .then(() => {
+        done()
+      })
+      .catch(() => {
+        // catch error
+      })
+  },
+  // 此函数仅用于调出会话框，并不是用于提交表单
+  // 提交表单的函数为handleSubmit
+  // 用于调出添加学生的界面
+  addStudent = async () => {
+    dialogVisibleSearchStu.value = true
+  },
+  // @用于”编辑按钮“，函数实际用途为查看用户信息
+  // @将用户信息显示在表单中
+  // 老师只能查看，不能编辑，管理员可以编辑
+  editStudent = row => {
+    dialogVisibleEditStudent.value = true
+    userForm = { ...row }
+    showPassword.value = false
+    IsDisabled.value = false
+  },
+  viewStudent = row => {
+    dialogVisibleViewStu.value = true
+    userForm = { ...row }
+    showPassword.value = false
+    IsDisabled.value = true
+  },
+  handleButtonClick = row => {
+    if (userScope === "admin") {
+      editStudent(row)
+    } else {
+      viewStudent(row)
+    }
+  },
+  // 用于编辑成功后，关闭会话框并且刷新界面
+  closeEditDialog = value => {
+    dialogVisibleEditStudent.value = value
+    reload()
+  },
+  // @以下代码用于分页
+  // 页面显示数据量 默认为20条
+  pageSize = ref(20),
+  // 当前页面，默认为1
+  currentPage = ref(1)
 
 // 用于更换页面
 function changePage(page) {
@@ -198,158 +180,151 @@ function handleSizeChange(val) {
 
 // 多选
 const multipleSelection = ref([]),
- isAnyStudentSelected = ref(false),
- selectStudents = ref([]),
-
-// 多选框
- handleSelectionChange = val => {
-  multipleSelection.value = val
-  selectStudents.value = multipleSelection.value
-  isAnyStudentSelected.value = selectStudents.value.length > 0
-},
-
-// 一键移出班级 即批量
- removeSelectedStudents = async () => {
-  if (selectStudents.value.length === 0) {
-    return // 如果没有选中的学生，直接返回
-  }
-  const student = selectStudents.value.pop() // 从选中的学生数组中取出最后一个学生
-  try {
-    await removeStudentFromClass(student.id, userScope) // 删除这个学生
-    if (selectStudents.value.length > 0) {
-      // 如果还有选中的学生，继续递归删除下一个学生
-      await removeSelectedStudents()
-    } else {
-      reload() // 如果所有学生都被删除了，进行页面刷新
-      ElMessage({
-        message: "批量移出成功",
-        type: "success",
-      })
+  isAnyStudentSelected = ref(false),
+  selectStudents = ref([]),
+  // 多选框
+  handleSelectionChange = val => {
+    multipleSelection.value = val
+    selectStudents.value = multipleSelection.value
+    isAnyStudentSelected.value = selectStudents.value.length > 0
+  },
+  // 一键移出班级 即批量
+  removeSelectedStudents = async () => {
+    if (selectStudents.value.length === 0) {
+      return // 如果没有选中的学生，直接返回
     }
-  } catch (e) {
-    let errorMessage = "失败"
-    if (e.response && e.response.data && e.response.data.status) {
-      errorMessage = errorMessages[e.response.data.status] || "未知错误"
-    } else {
-      errorMessage = "未知错误"
-    }
-    ElNotification({
-      title: "错误",
-      message: errorMessage,
-      type: "error",
-      duration: 3500,
-    })
-  }
-},
-
-// use to remove students from class
- handleRemoveClick = () => {
-  ElMessageBox.confirm("确定要移出所选学生的班级", "提示", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "error",
-  })
-    .then(async () => {
-      await removeSelectedStudents()
-    })
-    .catch(() => {
-      ElMessage({
-        type: "info",
-        message: "取消",
-      })
-    })
-},
-
-// 将一个学生移出班级的按钮方法
- removeFromClass = async row => {
-  const {id} = row
-  ElMessageBox.confirm("确定将所选学生移出班级吗？", "Warning", {
-    confirmButtonText: "确定",
-    cancelButtonText: "取消",
-    type: "warning",
-  })
-    .then(async () => {
-      await removeStudentFromClass(id, userScope).then(() => {
+    const student = selectStudents.value.pop() // 从选中的学生数组中取出最后一个学生
+    try {
+      await removeStudentFromClass(student.id, userScope) // 删除这个学生
+      if (selectStudents.value.length > 0) {
+        // 如果还有选中的学生，继续递归删除下一个学生
+        await removeSelectedStudents()
+      } else {
+        reload() // 如果所有学生都被删除了，进行页面刷新
         ElMessage({
-          message: "移出成功",
+          message: "批量移出成功",
           type: "success",
         })
+      }
+    } catch (e) {
+      let errorMessage = "失败"
+      if (e.response && e.response.data && e.response.data.status) {
+        errorMessage = errorMessages[e.response.data.status] || "未知错误"
+      } else {
+        errorMessage = "未知错误"
+      }
+      ElNotification({
+        title: "错误",
+        message: errorMessage,
+        type: "error",
+        duration: 3500,
       })
-      reload()
-    })
-    .catch(() => {
-      ElMessage({
-        type: "info",
-        message: "取消",
-      })
-    })
-},
-
-// for administrator to delete stundent
- handleDelete = row => {
-  ElMessageBox.confirm(
-    "确定要永久删除此学生吗？注意此操作不可逆！！！",
-    "警告",
-    {
-      confirmButtonText: "确定删除",
+    }
+  },
+  // use to remove students from class
+  handleRemoveClick = () => {
+    ElMessageBox.confirm("确定要移出所选学生的班级", "提示", {
+      confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "error",
-    }
-  )
-    .then(async () => {
-      await deleteStudent(row.id).then(() => {
-        reload()
+    })
+      .then(async () => {
+        await removeSelectedStudents()
+      })
+      .catch(() => {
         ElMessage({
-          message: "删除成功",
-          type: "success",
-          duration: 3500,
+          type: "info",
+          message: "取消",
         })
       })
+  },
+  // 将一个学生移出班级的按钮方法
+  removeFromClass = async row => {
+    const { id } = row
+    ElMessageBox.confirm("确定将所选学生移出班级吗？", "Warning", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
     })
-    .catch(() => {
-      ElMessage({
-        type: "info",
-        message: "取消",
+      .then(async () => {
+        await removeStudentFromClass(id, userScope).then(() => {
+          ElMessage({
+            message: "移出成功",
+            type: "success",
+          })
+        })
+        reload()
       })
+      .catch(() => {
+        ElMessage({
+          type: "info",
+          message: "取消",
+        })
+      })
+  },
+  // for administrator to delete stundent
+  handleDelete = row => {
+    ElMessageBox.confirm(
+      "确定要永久删除此学生吗？注意此操作不可逆！！！",
+      "警告",
+      {
+        confirmButtonText: "确定删除",
+        cancelButtonText: "取消",
+        type: "error",
+      }
+    )
+      .then(async () => {
+        await deleteStudent(row.id).then(() => {
+          reload()
+          ElMessage({
+            message: "删除成功",
+            type: "success",
+            duration: 3500,
+          })
+        })
+      })
+      .catch(() => {
+        ElMessage({
+          type: "info",
+          message: "取消",
+        })
+      })
+  },
+  // 用于搜索功能
+  queryInfo = ref(""),
+  // 表单遍历的数据为划分后且能够检索的数据
+  filteredData = ref(
+    computed(() => {
+      const query = queryInfo.value.toLowerCase().trim()
+      let filtered = studentDataTable.stuList
+      if (query) {
+        filtered = filtered.filter(item => {
+          return (
+            (item?.name &&
+              typeof item.name === "string" &&
+              item.name.toLowerCase().includes(query)) ||
+            (item?.realName &&
+              typeof item.realName === "string" &&
+              item.realName.toLowerCase().includes(query)) ||
+            (item?.class &&
+              typeof item.class === "string" &&
+              item.class.toLowerCase().includes(query))
+          )
+        })
+        totalData.value = Math.ceil(filtered.length / pageSize.value)
+      } else {
+        totalData.value = studentDataTable.studentsDataCount // 恢复原始总页数
+      }
+      // 当用户检索完成后，将当前页码重置为1
+      if (query && currentPage.value !== 1) {
+        currentPage.value = 1
+      }
+
+      const startIndex = (currentPage.value - 1) * pageSize.value,
+        endIndex = startIndex + pageSize.value
+      return filtered.slice(startIndex, endIndex)
     })
-},
-
-// 用于搜索功能
- queryInfo = ref(""),
-
-// 表单遍历的数据为划分后且能够检索的数据
- filteredData = ref(
-  computed(() => {
-    const query = queryInfo.value.toLowerCase().trim()
-    let filtered = studentDataTable.stuList
-    if (query) {
-      filtered = filtered.filter(item => {
-        return (
-          (item?.name &&
-            typeof item.name === "string" &&
-            item.name.toLowerCase().includes(query)) ||
-          (item?.realName &&
-            typeof item.realName === "string" &&
-            item.realName.toLowerCase().includes(query)) ||
-          (item?.class &&
-            typeof item.class === "string" &&
-            item.class.toLowerCase().includes(query))
-        )
-      })
-      totalData.value = Math.ceil(filtered.length / pageSize.value)
-    } else {
-      totalData.value = studentDataTable.studentsDataCount // 恢复原始总页数
-    }
-    // 当用户检索完成后，将当前页码重置为1
-    if (query && currentPage.value !== 1) {
-      currentPage.value = 1
-    }
-
-    const startIndex = (currentPage.value - 1) * pageSize.value,
-     endIndex = startIndex + pageSize.value
-    return filtered.slice(startIndex, endIndex)
-  })
-)
+  )
 </script>
 
 <template>
@@ -360,8 +335,8 @@ const multipleSelection = ref([]),
         <el-button
           type="danger"
           size="default"
-          @click="handleRemoveClick"
           :disabled="!isAnyStudentSelected"
+          @click="handleRemoveClick"
         >
           批量移出班级
         </el-button>
@@ -383,7 +358,7 @@ const multipleSelection = ref([]),
       <div class="form-container">
         <student-registration
           :show-password="false"
-          :IsDisabled="true"
+          :is-disabled="true"
           :user-data="userForm"
         />
       </div>
@@ -410,9 +385,9 @@ const multipleSelection = ref([]),
     <el-form :inline="true">
       <el-form-item>
         <el-input
+          v-model="queryInfo"
           class="w-50 m-2"
           placeholder="搜索学生姓名/班级"
-          v-model="queryInfo"
           clearable
         >
           <template #prefix>
@@ -429,14 +404,14 @@ const multipleSelection = ref([]),
   </div>
   <div class="table">
     <el-table
+      v-loading="loading"
       :data="filteredData"
       style="width: 100%"
       border
       stripe
       max-height="650"
-      @selection-change="handleSelectionChange"
-      v-loading="loading"
       element-loading-text="数据加载中"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column fixed type="selection" width="50" />
       <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
@@ -469,10 +444,10 @@ const multipleSelection = ref([]),
             >移出班级
           </el-button>
           <el-button
-            @click="handleDelete(scope.row)"
+            v-if="userScope === 'admin'"
             type="danger"
             size="default"
-            v-if="userScope === 'admin'"
+            @click="handleDelete(scope.row)"
           >
             删除
           </el-button>

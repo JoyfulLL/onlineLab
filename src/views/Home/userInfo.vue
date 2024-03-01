@@ -1,3 +1,4 @@
+<!-- eslint-disable import/no-unresolved -->
 <!--
 * @description This is the first page when user login
 * @fileName userInfo.vue
@@ -7,22 +8,22 @@
 
 <script setup>
 import classesList from "@/components/charts/classesListTable.vue"
-import {ElMessage, ElNotification} from "element-plus"
-import {basicClassesStore} from "@/stores"
-import {teacherJoinedClassStore} from "@/stores/classData.js"
-import {useAuthStore} from "@/stores/tokenStore.js"
-import {onMounted, ref, watch} from "vue"
-import {Edit} from "@element-plus/icons-vue"
+import { ElMessage, ElMessageBox } from "element-plus"
+import { basicClassesStore } from "@/stores"
+import { teacherJoinedClassStore } from "@/stores/classData.js"
+import { useAuthStore } from "@/stores/tokenStore.js"
+import { onMounted, ref } from "vue"
+import { Edit } from "@element-plus/icons-vue"
 
 import {
   stuEditUserInfo,
   teacherEditUserInfo,
 } from "@/api/userManagement/editUserInfo.js"
-const reload = inject("reload"),
- useAuth = useAuthStore(),
- userScope = useAuth.getScope(),
- classesStore = basicClassesStore(),
- userInfo = ref({
+const reload = inject("reload")
+const useAuth = useAuthStore()
+const userScope = useAuth.getScope()
+const classesStore = basicClassesStore()
+const userInfo = ref({
   id: "",
   name: "",
   email: "",
@@ -31,40 +32,39 @@ const reload = inject("reload"),
   schoolCode: "",
   userSchoollD: "",
   studentClass: "",
-}),
- useClassList = teacherJoinedClassStore()
+})
+const useClassList = teacherJoinedClassStore()
 onMounted(() => {
   getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {
     useClassList.storeTeacherList()
-  } else {
   }
 })
-const loading = ref(true),
+const loading = ref(true)
 
- initialUserInfo = ref([]),
- getUserInfoData = () => {
+const initialUserInfo = ref([])
+const getUserInfoData = () => {
   userInfo.value = useAuth.userInfoArray
-  initialUserInfo.value = {...userInfo.value}
+  initialUserInfo.value = { ...userInfo.value }
   loading.value = false
-},
+}
 
- fetchAllClassInfo = () => {
+const fetchAllClassInfo = () => {
   classesStore.storeClassesList(useAuth.data.scope)
-},
+}
 /**
  * 教师用于加入班级
  */
- teacherJoinNewClassDia = ref(false),
- teacherJoinNewClass = () => {
+const teacherJoinNewClassDia = ref(false)
+const teacherJoinNewClass = () => {
   teacherJoinNewClassDia.value = true
-},
+}
 
 // 搜索班级的关键字
- searchKeyword = ref(""),
- useAllClassInfoList = basicClassesStore(),
- handleClose = done => {
+const searchKeyword = ref("")
+const useAllClassInfoList = basicClassesStore()
+const handleClose = done => {
   ElMessageBox.confirm("确定关闭？")
     .then(() => {
       done()
@@ -72,9 +72,9 @@ const loading = ref(true),
     .catch(() => {
       // catch error
     })
-},
+}
 // 虚拟课程列表
- courses = ref([
+const courses = ref([
   {
     courseid: 1,
     title: "计算机网络",
@@ -110,13 +110,13 @@ const loading = ref(true),
     membersCount: 30,
     teachername: "肖",
   },
-]),
+])
 
 // edit user info {data function compute}
- editMode = ref(false),
- cancelEditMode = () => {
+const editMode = ref(false)
+const cancelEditMode = () => {
   editMode.value = false
-},
+}
 // const toggleEditMode = () => {
 //   editMode.value = !editMode.value
 //   if (!editMode.value) {
@@ -127,38 +127,34 @@ const loading = ref(true),
 //   console.log(initialUserInfo.value)
 // }
 
- toggleEditMode = () => {
+const toggleEditMode = () => {
   editMode.value = !editMode.value
   if (!editMode.value) {
     if (JSON.stringify(userInfo) !== JSON.stringify(initialUserInfo)) {
       saveUserInfo()
     }
   }
-},
+}
 
- saveUserInfo = () => {
+const saveUserInfo = () => {
   ElMessageBox.confirm("确定保存修改的信息？", "Warning", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
     type: "warning",
   })
     .then(() => {
-      const {email, userSchoollD, schoolCode, sex} = userInfo.value
+      const { email, userSchoollD, schoolCode, sex } = userInfo.value
 
       // Determine the appropriate API function based on the user's scope
 
       if (userScope === "teacher") {
         teacherEditUserInfo(email, schoolCode, sex)
-          .then(res => {
-            reload()
-          })
+          .then(reload())
           .catch(error => {
             console.error(error)
           })
       } else {
-        stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(res => {
-          reload()
-        })
+        stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(reload())
       }
 
       ElMessage({
@@ -173,12 +169,9 @@ const loading = ref(true),
       })
     })
 }
-
 </script>
 
 <template>
-
-
   <el-dialog
     v-model="teacherJoinNewClassDia"
     width="50%"
@@ -188,11 +181,11 @@ const loading = ref(true),
     <div class="search-title">依据班级名称检索班级</div>
     <el-form-item>
       <el-input
+        v-model="searchKeyword"
         class="search-input"
         :style="{ width: '200px' }"
         placeholder="搜索班级列表"
         clearable
-        v-model="searchKeyword"
       >
         <template #prefix>
           <el-icon class="el-input__icon">
@@ -210,15 +203,15 @@ const loading = ref(true),
   </el-dialog>
   <div class="card-container">
     <div>
-      <el-card class="box-card" v-loading="loading">
+      <el-card v-loading="loading" class="box-card">
         <template #header>
           <div class="card-header">
             <span>个人信息</span>
             <el-button
+              v-show="editMode"
               class="button"
               type="warning"
               @click="cancelEditMode"
-              v-show="editMode"
             >
               取消
             </el-button>
@@ -226,8 +219,8 @@ const loading = ref(true),
               v-if="userScope !== 'admin'"
               class="button"
               type="primary"
-              @click="toggleEditMode"
               :icon="Edit"
+              @click="toggleEditMode"
             >
               <template v-if="loading">
                 <i class="el-icon-loading"></i> 正在提交...
@@ -371,7 +364,7 @@ const loading = ref(true),
         教师管理学生以及班级，可以在对应的课程下管理
       -->
     <div>
-      <el-card class="adminOperation" v-if="userScope === 'admin'">
+      <el-card v-if="userScope === 'admin'" class="adminOperation">
         <template #header>
           <div class="card-header">
             <span>功能区</span>
