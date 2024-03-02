@@ -296,9 +296,9 @@ const multipleSelection = ref([]),
         })
       })
   }
-// 用于搜索功能
+// Used for search function
 const queryInfo = ref(""),
-  // 表单遍历的数据为划分后且能够检索的数据
+  // The data traversed by the form is the data that can be divided and retrieved
   filteredData = ref(
     computed(() => {
       const query = queryInfo.value.toLowerCase().trim()
@@ -331,7 +331,7 @@ const queryInfo = ref(""),
       return filtered.slice(startIndex, endIndex)
     })
   )
-// 用于控制会话框宽度
+// Used to control the width of the conversation box
 const state = reactive({
   dialogWidth: "", // 存储对话框宽度
 })

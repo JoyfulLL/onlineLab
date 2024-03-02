@@ -17,6 +17,19 @@ export function login(usernameOrEmail, password) {
   return service.post("/login", requestData)
 }
 
+// 用于刷新token
+export function toRefreshToken(refreshToken) {
+  return service.post(
+    "/refresh",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${refreshToken}`,
+      },
+    }
+  )
+}
+
 // token校验，如果用户的token过期，则将用户导航到登陆界面
 
 // export function checkToken() {

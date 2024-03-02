@@ -5,95 +5,98 @@
 
 import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
-import { rules } from "@/utils/formRules"
 import { ElMessage } from "element-plus"
 import { useRouter } from "vue-router"
 
-const router = useRouter(),
-  loginForm = ref({
-    username: "",
-    email: "",
-    password: "",
-  }),
-  rememberMe = ref(false),
-  isPasswordVisible = ref(false),
-  activeName = ref("统一身份认证"),
-  handleClick = (tab, event) => {
-    console.log(tab, event)
-  },
-  // 因为在登录的API处已经做了传递参数的处理，故不需要在此区分name或者Email
-  onSubmitWithName = () => {
-    login(loginForm.value.username, loginForm.value.password)
-      .then(res => {
-        if (res.data.status === 0) {
-          ElMessage({
-            message: "登录成功",
-            type: "success",
-            duration: 3000,
-          })
-          const authStore = useAuthStore()
-          authStore.setData(res.data.data)
-          // 将token存储到cookies
-          // const token = res.data.data.token
-          // document.cookie = `token=${token}; path=/;`
-          router.push({ path: "/" })
-        }
-        ElNotification({
-          title: "温馨提示",
-          message: "此网站处于测试阶段，并非最终效果；所有数据仅用于测试",
-          type: "warning",
-          duration: 4500,
+const router = useRouter()
+const loginForm = ref({
+  username: "",
+  email: "",
+  password: "",
+})
+const rememberMe = ref(false)
+const isPasswordVisible = ref(false)
+// const activeName = ref("统一身份认证")
+// const handleClick = (tab, event) => {
+//   console.log(tab, event)
+// }
+// 因为在登录的API处已经做了传递参数的处理，故不需要在此区分name或者Email
+const onSubmitWithName = () => {
+  login(loginForm.value.username, loginForm.value.password)
+    .then(res => {
+      if (res.data.status === 0) {
+        ElMessage({
+          message: "登录成功",
+          type: "success",
+          duration: 3000,
         })
-      })
-      .catch(error => {
-        console.error(error.response.data.reason)
-        if (error.response.data.status === 1) {
-          ElNotification({
-            title: "错误",
-            message: error.response.data.reason,
-            type: "error",
-            duration: 3000,
-          })
+        // 如果用户选择了7天免登录，则设置定时任务在expiredAt到期之前刷新token
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", rememberMe.value)
         }
+        const authStore = useAuthStore()
+        authStore.setData(res.data.data)
+        // 将token存储到cookies
+        // const token = res.data.data.token
+        // document.cookie = `token=${token}; path=/;`
+        router.push({ path: "/" })
+      }
+      ElNotification({
+        title: "温馨提示",
+        message: "此网站处于测试阶段，并非最终效果；所有数据仅用于测试",
+        type: "warning",
+        duration: 3500,
       })
-  },
-  onSubmitWithEmail = () => {
-    login(loginForm.value.email, loginForm.value.password)
-      .then(res => {
-        if (res.data.status === 0) {
-          ElMessage({
-            message: "登录成功",
-            type: "success",
-            duration: 3000,
-          })
-          const authStore = useAuthStore()
-          authStore.setData(res.data.data)
-          router.push({ path: "/" })
-        }
-      })
-      .catch(error => {
-        console.error(error.response.data.reason)
-        if (error.response.data.status === 1) {
-          ElNotification({
-            title: "错误",
-            message: error.response.data.reason,
-            type: "error",
-            duration: 3000,
-          })
-        }
-      })
-  },
-  togglePasswordVisibility = () => {
-    isPasswordVisible.value = !isPasswordVisible.value
-  },
-  canSubmit = computed(() => {
-    const { username, password } = loginForm.value
-    return Boolean(username && password)
-  }),
-  canSubmitWithEmail = computed(() => {
-    const { email, password } = loginForm.value
-    return Boolean(email && password)
-  })
+    })
+    .catch(error => {
+      console.error(error.response.data.reason)
+      if (error.response.data.status === 1) {
+        ElNotification({
+          title: "错误",
+          message: error.response.data.reason,
+          type: "error",
+          duration: 3000,
+        })
+      }
+    })
+}
+const onSubmitWithEmail = () => {
+  login(loginForm.value.email, loginForm.value.password)
+    .then(res => {
+      if (res.data.status === 0) {
+        ElMessage({
+          message: "登录成功",
+          type: "success",
+          duration: 3000,
+        })
+        const authStore = useAuthStore()
+        authStore.setData(res.data.data)
+        router.push({ path: "/" })
+      }
+    })
+    .catch(error => {
+      console.error(error.response.data.reason)
+      if (error.response.data.status === 1) {
+        ElNotification({
+          title: "错误",
+          message: error.response.data.reason,
+          type: "error",
+          duration: 3000,
+        })
+      }
+    })
+}
+const togglePasswordVisibility = () => {
+  isPasswordVisible.value = !isPasswordVisible.value
+}
+const canSubmit = computed(() => {
+  const { username, password } = loginForm.value
+  return Boolean(username && password)
+})
+const canSubmitWithEmail = computed(() => {
+  const { email, password } = loginForm.value
+  return Boolean(email && password)
+})
 </script>
 
 <template>

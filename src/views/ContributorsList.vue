@@ -6,51 +6,51 @@
 !-->
 <script setup>
 const frontendContributors = ref([
-  {
-    id: 1,
-    name: "JoyfulLL",
-    realName: "梁俊枫",
-    linesOfCode: 14515,
-    commits: 72,
-    description: "前端负责人，所有前端",
-  },
-  {
-    id: 2,
-    realName: "陈雅婷",
-    linesOfCode: 0,
-    commits: 0,
-    description: "/login 界面UI设计",
-  },
-]),
- backendContributors = ref([
-  {
-    id: 4,
-    name: "MeteorsLiu",
-    realName: "郭浩蓝",
-    linesOfCode: 6203,
-    commits: 33,
-    description: "项目负责人，后端负责人",
-  },
-  {
-    id: 5,
-    name: "xzzzjy",
-    realName: "许君耀",
-    linesOfCode: 273,
-    commits: 1,
-    description: "",
-  },
-  {
-    id: 6,
-    name: "Jaynxe",
-    realName: "谢家勇",
-    linesOfCode: 0,
-    commits: 0,
-    description: "",
-  },
-]),
- getGitHubProfileLink = username => {
-  return `https://github.com/${username}`
-}
+    {
+      id: 1,
+      name: "JoyfulLL",
+      realName: "梁俊枫",
+      linesOfCode: 40455,
+      commits: 78,
+      description: "所有前端",
+    },
+    {
+      id: 2,
+      realName: "陈雅婷",
+      linesOfCode: 0,
+      commits: 0,
+      description: "/login 界面UI设计",
+    },
+  ]),
+  backendContributors = ref([
+    {
+      id: 4,
+      name: "MeteorsLiu",
+      realName: "郭浩蓝",
+      linesOfCode: 6203,
+      commits: 33,
+      description: "项目负责人，后端负责人",
+    },
+    {
+      id: 5,
+      name: "xzzzjy",
+      realName: "许君耀",
+      linesOfCode: 273,
+      commits: 1,
+      description: "",
+    },
+    {
+      id: 6,
+      name: "Jaynxe",
+      realName: "谢家勇",
+      linesOfCode: 0,
+      commits: 0,
+      description: "",
+    },
+  ]),
+  getGitHubProfileLink = username => {
+    return `https://github.com/${username}`
+  }
 </script>
 
 <template>
@@ -135,7 +135,7 @@ const frontendContributors = ref([
     </div>
   </div>
   <div class="footerCon">
-    数据更新于：2024年2月26日
+    数据更新于：2024年3月1日 数据来源：GitHub
   </div>
 </template>
 
