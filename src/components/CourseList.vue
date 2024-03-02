@@ -142,9 +142,9 @@ const props = defineProps({
   display: flex;
   flex-direction: row;
 }
-:deep(.el-tabs__item:hover) {
+/* :deep(.el-tabs__item:hover) {
   color: #00177f;
-}
+} */
 :deep(.el-tabs__item.is-active) {
   color: #ffffff;
   background-color: #79bbff;

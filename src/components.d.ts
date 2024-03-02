@@ -14,6 +14,7 @@ declare module 'vue' {
     CourseList: typeof import('./components/CourseList.vue')['default']
     DataTable: typeof import('./components/charts/dataTable.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
+    ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
     ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']

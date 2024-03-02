@@ -32,6 +32,12 @@ import { errorMessages } from "@/utils/errorMessagesCode"
 onMounted(() => {
   fetchData()
   fetchClassList()
+  calculateDialogWidth() // 初始化计算一次
+  window.addEventListener("resize", calculateDialogWidth) // 监听窗口大小变化，实时更新宽度
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", calculateDialogWidth) // 移除窗口大小变化的事件监听器
 })
 
 // @注入APP.vue提供的刷新方法
@@ -289,9 +295,9 @@ const multipleSelection = ref([]),
           message: "取消",
         })
       })
-  },
-  // 用于搜索功能
-  queryInfo = ref(""),
+  }
+// 用于搜索功能
+const queryInfo = ref(""),
   // 表单遍历的数据为划分后且能够检索的数据
   filteredData = ref(
     computed(() => {
@@ -325,6 +331,23 @@ const multipleSelection = ref([]),
       return filtered.slice(startIndex, endIndex)
     })
   )
+// 用于控制会话框宽度
+const state = reactive({
+  dialogWidth: "", // 存储对话框宽度
+})
+const calculateDialogWidth = () => {
+  const deviceWidth = window.innerWidth // 获取窗口宽度
+  let width
+
+  // 根据设备宽度设置对话框宽度
+  if (deviceWidth <= 500) {
+    width = "60%"
+  } else {
+    width = "40%"
+  }
+
+  state.dialogWidth = width // 更新对话框宽度
+}
 </script>
 
 <template>
@@ -344,41 +367,44 @@ const multipleSelection = ref([]),
     </el-form>
 
     <!--    老师：用于搜索学生 并且将学生拉入班级-->
-    <el-dialog v-model="dialogVisibleSearchStu" :before-close="handleClose">
+    <el-dialog
+      v-model="dialogVisibleSearchStu"
+      :before-close="handleClose"
+      align-center
+    >
       <add-students-from-class />
     </el-dialog>
     <!--    用于老师查看学生的信息 教师无权限编辑-->
     <el-dialog
       v-model="dialogVisibleViewStu"
       title="查看学生"
-      width="30%"
+      :width="state.dialogWidth"
       :before-close="handleClose"
+      draggable
     >
       <!-- 查看学生信息用-->
-      <div class="form-container">
-        <student-registration
-          :show-password="false"
-          :is-disabled="true"
-          :user-data="userForm"
-        />
-      </div>
+      <student-registration
+        :show-password="false"
+        :is-disabled="true"
+        :user-data="userForm"
+      />
     </el-dialog>
 
     <!--    用于管理员编辑学生信息-->
     <el-dialog
       v-model="dialogVisibleEditStudent"
+      align-center
       title="编辑学生"
-      width="30%"
+      :width="state.dialogWidth"
       :before-close="handleClose"
+      draggable
     >
-      <div class="form-container">
-        <student-registration
-          :show-password="false"
-          :user-data="userForm"
-          :action="MyEditAction"
-          @edit-success="closeEditDialog"
-        />
-      </div>
+      <student-registration
+        :show-password="false"
+        :user-data="userForm"
+        :action="MyEditAction"
+        @edit-success="closeEditDialog"
+      />
     </el-dialog>
 
     <!--    搜索框-->
@@ -469,17 +495,7 @@ const multipleSelection = ref([]),
 </template>
 
 <style scoped lang="less">
-.form-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.centered-form {
-  width: 300px;
-}
-
-.button-container {
+\ .button-container {
   text-align: center;
 
   .el-button {

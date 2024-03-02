@@ -3,41 +3,87 @@ import { regStu } from "@/api/userManagement/registerUser.js"
 import { rules } from "@/utils/formRules.js"
 import { basicClassesStore } from "@/stores"
 import { useRouter } from "vue-router"
-const router = useRouter(),
-  // 班级列表
-  useClassesList = basicClassesStore(),
-  classList = useClassesList.classList,
-  // 注册表单
-  userForm = reactive({
-    name: "",
-    password: "",
-    email: "",
-    realName: "",
-    userSchoollD: "",
-    schoolCode: "",
-    class: "",
-    sex: "",
-  }),
-  isDisabled = computed(() => {
-    return (
-      !userForm.name ||
-      !userForm.password ||
-      !userForm.realName ||
-      !userForm.userSchoollD ||
-      !userForm.email ||
-      !userForm.schoolCode ||
-      !userForm.class ||
-      !userForm.sex
-    )
-  }),
-  // 清空表单
-  form = ref(null),
-  resetForm = () => {
-    form.value.resetFields()
-  }
+import universitiesList from "@/assets/static/schoolLists.json"
+onMounted(() => {
+  restaurants.value = universitiesList.map(item => {
+    return {
+      value: item["学校名称"],
+    }
+  })
+  restaurantsClass.value = classList.map(item => {
+    return {
+      value: item["classname"],
+    }
+  })
+})
+
+const router = useRouter()
+// 班级列表
+const useClassesList = basicClassesStore()
+const classList = useClassesList.classList
+// 注册表单
+const userForm = reactive({
+  name: "",
+  password: "",
+  email: "",
+  realName: "",
+  userSchoollD: "",
+  schoolCode: "",
+  class: "",
+  sex: "",
+})
+
+const isDisabled = computed(() => {
+  return (
+    !userForm.name ||
+    !userForm.password ||
+    !userForm.realName ||
+    !userForm.userSchoollD ||
+    !userForm.email ||
+    !userForm.schoolCode ||
+    !userForm.class ||
+    !userForm.sex
+  )
+})
+// 清空表单
+const form = ref(null)
+const resetForm = () => {
+  form.value.resetFields()
+}
 // when user reFocus,clearValidate message
 function handleFocus(field) {
   form.value.clearValidate(field)
+}
+
+const restaurants = ref([])
+const restaurantsClass = ref([])
+const querySearch = (queryString, cb) => {
+  const results = queryString
+    ? restaurants.value.filter(createFilter(queryString))
+    : restaurants.value
+  // call callback function to return suggestions
+  cb(results)
+}
+
+const querySearchClass = (queryClassString, cb) => {
+  const results = queryClassString
+    ? restaurantsClass.value.filter(createClassFilter(queryClassString))
+    : restaurantsClass.value
+  // call callback function to return suggestions
+  cb(results)
+}
+
+const createFilter = queryString => {
+  return restaurant => {
+    const value = restaurant.value || "" // 获取对象的值
+    return value.toLowerCase().indexOf(queryString.toLowerCase()) === 0
+  }
+}
+const createClassFilter = queryClassString => {
+  return restaurantsClass => {
+    const value = restaurantsClass.value || "" // 获取对象的值
+    return value.toLowerCase().indexOf(queryClassString.toLowerCase()) === 0
+  }
 }
 // 学生注册提交
 const handleSubmit = () => {
@@ -127,21 +173,27 @@ const handleSubmit = () => {
               @focus="handleFocus('email')"
             ></el-input>
           </el-form-item>
-          <el-form-item label="学校代码" prop="schoolCode">
-            <el-input
+          <el-form-item label="学校" prop="schoolCode">
+            <el-autocomplete
               v-model="userForm.schoolCode"
+              :fetch-suggestions="querySearch"
+              :trigger-on-focus="false"
+              clearable
+              style="width:280px;"
+              placeholder="输入学校名称"
               @focus="handleFocus('schoolCode')"
-            ></el-input>
+            />
           </el-form-item>
           <el-form-item label="班级" prop="class">
-            <el-select v-model="userForm.class" placeholder="请选择班级">
-              <el-option
-                v-for="item in classList"
-                :key="item.classid"
-                :label="item.classname"
-                :value="item.classname"
-              ></el-option>
-            </el-select>
+            <el-autocomplete
+              v-model="userForm.class"
+              :fetch-suggestions="querySearchClass"
+              :trigger-on-focus="false"
+              clearable
+              style="width:280px;"
+              placeholder="输入班级"
+              @focus="handleFocus('schoolCode')"
+            />
           </el-form-item>
           <el-form-item label="性别" prop="sex">
             <div class="centered-radio">
@@ -178,7 +230,7 @@ const handleSubmit = () => {
   </div>
 </template>
 
-<style scoped lang="less">
+<style scoped>
 #building {
   background: url("/src/assets/img/BackgroundImg/SignupBg-min.png");
   width: 100%;
@@ -220,11 +272,6 @@ const handleSubmit = () => {
 .el-select {
   width: 100%;
 }
-
-// .el-radio-group {
-//   display: flex;
-//   flex-direction: row;
-// }
 
 .centered-radio {
   display: flex;

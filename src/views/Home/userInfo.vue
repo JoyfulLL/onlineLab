@@ -362,7 +362,7 @@ const saveUserInfo = () => {
     <!--
         根据平台的作用，功能管理区暂时不对教师开放
         教师管理学生以及班级，可以在对应的课程下管理
-      -->
+    -->
     <div>
       <el-card v-if="userScope === 'admin'" class="adminOperation">
         <template #header>

@@ -1,7 +1,6 @@
 import { useAuthStore } from "@/stores/tokenStore"
 import { errorMessages } from "@/utils/errorMessagesCode"
 import axios from "axios"
-import { ElNotification } from "element-plus"
 const service = axios.create({
   baseURL: "https://b.guohaolan.com/api/",
   timeout: 10000,
