@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
 * @description 成功后跳转的界面
 * @fileName success.vue
@@ -5,11 +6,11 @@
 * @date 2024/01/25 22:23:45
 !-->
 <script setup>
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router"
 const router = useRouter(),
- toLogin = () => {
-  router.push("/login")
-}
+  toLogin = () => {
+    router.push("/login")
+  }
 </script>
 
 <template>

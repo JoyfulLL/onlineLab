@@ -3,10 +3,10 @@
     <div class="l-content">
       <!-- 图标的展示 -->
       <div
+        v-if="!props.isHomePgae"
         class="icons"
         style="width: 30px; height: 30px"
         @click="handleCollapse"
-        v-if="!props.isHomePgae"
       >
         <component :is="useToCollapse.isCollapse ? 'Expand' : 'Fold'" />
       </div>
@@ -14,15 +14,15 @@
       <!-- 测试阶段，使用vuelogo代替学校logo -->
       <!-- 学校logo地址：src="@/assets/logo.png" -->
       <img
+        v-if="props.isHomePgae"
         style="max-width: 180px; max-height: 60px"
         src="@/assets/demoLogo/favicon.ico"
-        v-if="props.isHomePgae"
       />
       <el-breadcrumb
-        :separator-icon="ArrowRight"
-        class="bread"
         v-if="!props.isHomePgae"
         id="breadcrumb"
+        :separator-icon="ArrowRight"
+        class="bread"
       >
         <!-- 首页是一定存在的所以直接写死 -->
         <el-breadcrumb-item
@@ -37,14 +37,20 @@
     <div class="r-content">
       <div aria-label="toggle dark mode">
         <el-switch
-          :style="{ marginRight: '10px' }"
           v-model="isDark"
+          :style="{ marginRight: '10px' }"
           :active-action-icon="Moon"
           :inactive-action-icon="Sunny"
           active-color="#6b6d71"
           @click="toggleTheme"
         />
       </div>
+      <a :href="githubFrontEndUrl" target="_blank" class="github-link">
+        <img :src="githubLogoSrc" alt="GitHub Logo" class="github-logo-front" />
+      </a>
+      <a :href="githubBackEndUrl" target="_blank" class="github-link">
+        <img :src="githubLogoSrc" alt="GitHub Logo" class="github-logo" />
+      </a>
       <el-dropdown>
         <div>
           <unicon
@@ -78,99 +84,106 @@
 </template>
 
 <script setup>
-import {useSidebarStore} from "@/stores"
-import {useMenuStore} from "@/stores/menu"
-import {useAuthStore} from "@/stores/tokenStore"
-import {ArrowRight, Moon, Setting, Sunny, SwitchButton} from "@element-plus/icons-vue"
-import {useRouter} from "vue-router"
-import {useToggle} from "@vueuse/shared"
-import {useDark} from "@vueuse/core"
+import { useSidebarStore } from "@/stores"
+import { useAuthStore } from "@/stores/tokenStore"
+import {
+  ArrowRight,
+  Moon,
+  Setting,
+  Sunny,
+  SwitchButton,
+} from "@element-plus/icons-vue"
+import { useRouter } from "vue-router"
+import { useToggle } from "@vueuse/shared"
+import { useDark } from "@vueuse/core"
 
 const props = defineProps({
-  isHomePgae: {
-    type: Boolean,
-    default: false,
+    isHomePgae: {
+      type: Boolean,
+      default: false,
+    },
+  }),
+  // localStorage.setItem('vueuse-color-scheme', 'light')
+  useToCollapse = useSidebarStore(),
+  handleCollapse = () => {
+    useToCollapse.toggleCollapse()
   },
-}),
-// localStorage.setItem('vueuse-color-scheme', 'light')
- useToCollapse = useSidebarStore(),
- handleCollapse = () => {
-  useToCollapse.toggleCollapse()
-},
-
- router = useRouter(),
- authStore = useAuthStore(),
-// 登出函数
- handleLoginOut = () => {
-  authStore.deleteToken()
-  router.push("/login")
-  ElNotification({
-    title: "退出成功",
-    message: "账号退出成功",
-    duration: 2000,
-  })
-},
-
-// 用于面包屑
- routers = computed(() => {
-  // 过滤掉没有meta的
-  return router.currentRoute.value.matched.filter(item => item.meta.title)
-}),
-
-/* start——暗黑模式 */
-
- isDark = useDark({
-  disableTransition: false,
-  valueDark: "dark",
-  valueLight: "light",
-}),
-
- toggleDark = useToggle(isDark),
- toggleTheme = event => {
-  // 浏览器兼容性检查
-  if (!document.startViewTransition) {
-    isDark.value = !isDark.value
-    toggleDark()
-    return
-  }
-
-  const x = event.clientX,
-   y = event.clientY,
-   endRadius = Math.hypot(
-    Math.max(x, innerWidth - x),
-    Math.max(y, innerHeight - y)
-  ),
-
-   transition = document.startViewTransition(async () => {
-    const root = document.documentElement
-    root.classList.add(isDark.value ? "light" : "dark")
-    root.classList.remove(isDark.value ? "dark" : "light")
-    toggleDark()
-
-    transition.ready.then(() => {
-      const clipPath = [
-        `circle(0px at ${x}px ${y}px)`,
-        `circle(${endRadius}px at ${x}px ${y}px)`,
-      ]
-
-      document.documentElement.animate(
-        {
-          clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
-        },
-        {
-          duration: 400,
-          easing: "ease-in",
-          pseudoElement: isDark.value
-            ? "::view-transition-old(root)"
-            : "::view-transition-new(root)",
-        }
-      )
+  router = useRouter(),
+  authStore = useAuthStore(),
+  // 登出函数
+  handleLoginOut = () => {
+    authStore.deleteToken()
+    router.push("/login")
+    ElNotification({
+      title: "退出成功",
+      message: "账号退出成功",
+      duration: 2000,
     })
-  })
-  isDark.value = !isDark.value
-}
+  },
+  // 用于面包屑
+  routers = computed(() => {
+    // 过滤掉没有meta的
+    return router.currentRoute.value.matched.filter(item => item.meta.title)
+  }),
+  /* start——暗黑模式 */
 
+  isDark = useDark({
+    disableTransition: false,
+    valueDark: "dark",
+    valueLight: "light",
+  }),
+  toggleDark = useToggle(isDark),
+  toggleTheme = event => {
+    // 浏览器兼容性检查
+    if (!document.startViewTransition) {
+      isDark.value = !isDark.value
+      toggleDark()
+      return
+    }
+
+    const x = event.clientX,
+      y = event.clientY,
+      endRadius = Math.hypot(
+        Math.max(x, innerWidth - x),
+        Math.max(y, innerHeight - y)
+      ),
+      transition = document.startViewTransition(async () => {
+        const root = document.documentElement
+        root.classList.add(isDark.value ? "light" : "dark")
+        root.classList.remove(isDark.value ? "dark" : "light")
+        toggleDark()
+
+        transition.ready.then(() => {
+          const clipPath = [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ]
+
+          document.documentElement.animate(
+            {
+              clipPath: isDark.value ? [...clipPath].reverse() : clipPath,
+            },
+            {
+              duration: 400,
+              easing: "ease-in",
+              pseudoElement: isDark.value
+                ? "::view-transition-old(root)"
+                : "::view-transition-new(root)",
+            }
+          )
+        })
+      })
+    isDark.value = !isDark.value
+  }
 /* End——暗黑模式 */
+
+const githubFrontEndUrl = "https://github.com/GDEIDevelopers/K8Sfrontend"
+const githubBackEndUrl = "https://github.com/GDEIDevelopers/K8Sbackend"
+const githubLogoSrc = computed(() => {
+  return isDark.value
+    ? "src/assets/img/github-mark/github-mark-white.png "
+    : "src/assets/img/github-mark/github-mark.png"
+})
 </script>
 
 <style lang="less" scoped>
@@ -238,5 +251,17 @@ header {
 :deep(.el-breadcrumb__item:last-child .el-breadcrumb__inner) {
   color: #35c03e;
   font-weight: 800;
+}
+
+.github-logo-front {
+  width: 27px;
+  height: 27px;
+}
+
+.github-logo {
+  width: 27px;
+  height: 27px;
+  margin-left: 10px;
+  // margin-right: 5px;
 }
 </style>

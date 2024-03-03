@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <!--
 * @description
 * @fileName 403.vue
@@ -8,12 +9,11 @@
 import router from "@/router"
 
 const backTo = () => {
-  router.go(-1)
-},
-
- toLogin = () => {
-  router.push("/login")
-}
+    router.go(-1)
+  },
+  toLogin = () => {
+    router.push("/login")
+  }
 </script>
 
 <template>
@@ -24,13 +24,13 @@ const backTo = () => {
   >
     <template #extra>
       <div class="button-container">
-        <a-button type="primary" @click="backTo" class="custom-button"
+        <a-button type="primary" class="custom-button" @click="backTo"
           >返回上一级</a-button
         >
         <a-button
-          @click="toLogin"
           style="color: rgb(58, 127, 6);"
           class="custom-button"
+          @click="toLogin"
           >登录</a-button
         >
       </div>

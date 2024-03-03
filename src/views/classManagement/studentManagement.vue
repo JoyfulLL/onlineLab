@@ -13,7 +13,7 @@
  @当前已有功能：✔获取所有学生信息，✔新增学生，✔修改指定学生信息，
  @待做功能：
  @ 1、✔将指定学生移出班级
- @ 2、依据信息获取对应的学生
+ @ 2、✔依据信息获取对应的学生
  @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
 import {
@@ -28,7 +28,6 @@ import { useAuthStore } from "@/stores/tokenStore"
 import { useTableDataStore } from "@/stores/userData/storeUserData"
 import { errorMessages } from "@/utils/errorMessagesCode"
 
-// @界面初始化，校验token合法后，再获取用户数据
 onMounted(() => {
   fetchData()
   fetchClassList()
@@ -495,7 +494,7 @@ const calculateDialogWidth = () => {
 </template>
 
 <style scoped lang="less">
-\ .button-container {
+.button-container {
   text-align: center;
 
   .el-button {

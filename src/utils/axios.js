@@ -1,5 +1,6 @@
 import { useAuthStore } from "@/stores/tokenStore"
 import { errorMessages } from "@/utils/errorMessagesCode"
+import router from "@/router/index.js"
 import axios from "axios"
 const service = axios.create({
   baseURL: "https://b.guohaolan.com/api/",
@@ -13,14 +14,13 @@ function handleRequestError(error) {
   if (error.response && error.response.data && error.response.data.status) {
     const statusCode = error.response.data.status
     errorMessage = errorMessages[statusCode] || "未知错误"
-    // if (statusCode === 7) {
-    //   // 状态码为7，没有权限访问此网站，返回上一级
-    //   // 跳转到上一页
-    //   router.go(-1)
-    //   return // 终止函数继续执行
-    // }
+    if (statusCode === 7) {
+      // 状态码为7，没有权限访问此网站
+      // 跳转到403，用户自行选择返回上一级或者登录
+      router.push({ name: "Forbidden" })
+      return // 终止函数继续执行
+    }
   }
-
   ElNotification({
     title: "错误",
     message: errorMessage,
@@ -31,21 +31,21 @@ function handleRequestError(error) {
 
 // 添加请求拦截器
 service.interceptors.request.use(config => {
-  const useAuth = useAuthStore(),
-    token = useAuth.data.token
+  const useAuth = useAuthStore()
+  const token = useAuth.data.token
+  console.log(`output->`, token)
   if (token) config.headers.Authorization = `Bearer ${token}`
-  //   checkToken();
   return config
 })
 
 // 响应拦截器
 service.interceptors.response.use(
   response => {
-    // 对响应数据做些事
+    // 响应数据，不做处理
     return response
   },
   error => {
-    // 对响应错误做些事
+    // 响应错误，交给错误函数处理
     handleRequestError(error)
     return Promise.reject(error)
   }
