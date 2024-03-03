@@ -8,13 +8,11 @@
 
 <script setup>
 import classesList from "@/components/charts/classesListTable.vue"
-import { ElMessage, ElMessageBox } from "element-plus"
 import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
-import { onMounted, ref } from "vue"
 import { Edit } from "@element-plus/icons-vue"
-
+import { checkToken } from "@/api/index.js"
 import {
   stuEditUserInfo,
   teacherEditUserInfo,
@@ -35,6 +33,7 @@ const userInfo = ref({
 })
 const useClassList = teacherJoinedClassStore()
 onMounted(() => {
+  checkToken()
   getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {

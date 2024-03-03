@@ -45,11 +45,33 @@
           @click="toggleTheme"
         />
       </div>
-      <a :href="githubFrontEndUrl" target="_blank" class="github-link">
-        <img :src="githubLogoSrc" alt="GitHub Logo" class="github-logo-front" />
+      <a v-if="isDark" :href="githubFrontEndUrl" target="_blank">
+        <img
+          src="../assets/img/github-mark/github-mark-white.png"
+          alt="GitHub Logo"
+          class="github-logo-front"
+        />
       </a>
-      <a :href="githubBackEndUrl" target="_blank" class="github-link">
-        <img :src="githubLogoSrc" alt="GitHub Logo" class="github-logo" />
+      <a v-else :href="githubFrontEndUrl" target="_blank">
+        <img
+          src="../assets/img/github-mark/github-mark.png"
+          alt="GitHub Logo"
+          class="github-logo-front"
+        />
+      </a>
+      <a v-if="isDark" :href="githubBackEndUrl" target="_blank">
+        <img
+          src="../assets/img/github-mark/github-mark-white.png"
+          alt="GitHub Logo"
+          class="github-logo"
+        />
+      </a>
+      <a v-else :href="githubBackEndUrl" target="_blank">
+        <img
+          src="../assets/img/github-mark/github-mark.png"
+          alt="GitHub Logo"
+          class="github-logo"
+        />
       </a>
       <el-dropdown>
         <div>
@@ -181,8 +203,8 @@ const githubFrontEndUrl = "https://github.com/GDEIDevelopers/K8Sfrontend"
 const githubBackEndUrl = "https://github.com/GDEIDevelopers/K8Sbackend"
 const githubLogoSrc = computed(() => {
   return isDark.value
-    ? "src/assets/img/github-mark/github-mark-white.png "
-    : "src/assets/img/github-mark/github-mark.png"
+    ? "../assets/img/github-mark/github-mark-white.png"
+    : "../assets/img/github-mark/github-mark.png"
 })
 </script>
 
