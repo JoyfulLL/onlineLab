@@ -11,7 +11,7 @@ const frontendContributors = ref([
       name: "JoyfulLL",
       realName: "梁俊枫",
       linesOfCode: 40455,
-      commits: 78,
+      commits: 80,
       description: "所有前端",
     },
     {
@@ -88,7 +88,7 @@ const frontendContributors = ref([
             </div>
           </template>
           <p class="card-text">提交数：{{ contributor.commits }}</p>
-          <p class="card-text">代码行数：{{ contributor.linesOfCode }}</p>
+          <!-- <p class="card-text">代码行数：{{ contributor.linesOfCode }}</p> -->
           <p class="card-description">贡献：{{ contributor.description }}</p>
         </el-card>
       </el-card>
@@ -135,7 +135,10 @@ const frontendContributors = ref([
     </div>
   </div>
   <div class="footerCon">
-    数据更新于：2024年3月1日 数据来源：GitHub
+    数据更新于：2024年3月3日
+  </div>
+  <div style="margin-top: 10px;">
+    数据来源：GitHub
   </div>
 </template>
 

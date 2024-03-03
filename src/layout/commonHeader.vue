@@ -199,13 +199,8 @@ const props = defineProps({
   }
 /* End——暗黑模式 */
 
-const githubFrontEndUrl = "https://github.com/GDEIDevelopers/K8Sfrontend"
+const githubFrontEndUrl = "https://github.com/JoyfulLL/onlineLab"
 const githubBackEndUrl = "https://github.com/GDEIDevelopers/K8Sbackend"
-const githubLogoSrc = computed(() => {
-  return isDark.value
-    ? "../assets/img/github-mark/github-mark-white.png"
-    : "../assets/img/github-mark/github-mark.png"
-})
 </script>
 
 <style lang="less" scoped>
