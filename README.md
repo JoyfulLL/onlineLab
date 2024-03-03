@@ -1,10 +1,36 @@
-## 需要安装nodejs ，版本为版本20.10.0
 
+[![Node.js Version](https://img.shields.io/badge/Node.js-%3E%3D16-brightgreen.svg?logo=node.js)](https://nodejs.org/)
+[![Yarn Version](https://img.shields.io/badge/Yarn-%3E%3D1.22-blue.svg?logo=yarn)](https://yarnpkg.com/)
+[![Vue.js](https://img.shields.io/badge/Vue.js-3.3-brightgreen.svg?logo=vue.js)](https://vuejs.org/)
+[![Vite Version](https://img.shields.io/badge/Vite-^4.4.11-blueviolet.svg?logo=vite)](https://vitejs.dev/)
+[![GPLv3 License](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## 还需要安装yarn安装方法自行百度
+## 学生在线实验平台
 
+这是一个使用 Vue.js、Go 和 Kubernetes（K8S）构建的学生在线实验平台，旨在为计算机课程提供实验支持。
 
-# k8s-ex
+该平台具有以下特点和功能：
+
+- **技术栈**：
+  - **前端**：使用 Vue.js 构建交互界面，提供优秀的用户体验。
+  - **后端**：采用 Go 语言编写，调用 Kubernetes (K8S) 的 API 进行虚拟化和管理。
+  - **部署**：利用 Nginx 进行反向代理和负载均衡，确保高性能和可靠性。
+- **平台功能**：
+  - **用户管理**：
+    - 管理员和教师都具有用户管理权限，包括创建、编辑和删除用户账号（教师不具备删除用户的权限）。
+  - **班级管理**：
+    - 创建班级：管理员和教师都可以创建新的班级。
+    - 离开班级：学生、教师都可以离开班级。
+    - 删除班级：管理员可以删除班级。
+  - **实验功能**：
+    - 发布实验：管理员和教师都可以发布新的实验任务，设置截止日期和其他要求。
+    - 销毁实验：管理员和教师都有权删除不再需要的实验任务。
+  - **课程功能**：
+    - 创建课程：管理员和教师都可以创建新的课程。
+  - **学生端**：
+    - 完成实验：学生可以完成教师发布的实验任务。
+    - 查看实验结果：学生可以查看自己的实验成绩和教师的反馈。
+    - 提交实验：学生可以提交实验结果供教师评阅。
 
 ## 项目初始化
 
@@ -18,52 +44,3 @@ yarn
 yarn dev
 ```
 
-
-      目录结构如下
-├── README.md
-
-├── package.json
-
-├── index.html
-
-├── src
-
-│   ├── api  # 请求接口
-
-│   ├── assets  # 静态资源
-
-
-│   ├── components  # 通用业务组件
-
-│   ├── config  # 全局配置(包含echarts主题)
-
-│   ├── layout  # 布局
-
-│   ├── views  # 页面模板
-
-│   ├── router # 路由配置
-
-│   ├── store  # 状态管理中心
-
-│   └── services  # 工具库
-
-│   └── App.vue  # 视图入口
-
-│   └── main.ts  # 入口文件
-
-└── tsconfig.json
-
-使用 JavaScript 语法，支持TypeScript语法
-
-启用 JSX 支持
-
-引入 Vue Router 进行单页面应用开发
-
-引入 Pinia 用于状态管理
-
-使用 element-plus UI
-
-使用 axios
-
-node 版本为 v20.9.0
-npm 版本为 v10.1.0
