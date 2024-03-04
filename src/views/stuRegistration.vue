@@ -3,6 +3,8 @@ import { regStu } from "@/api/userManagement/registerUser.js"
 import { rules } from "@/utils/formRules.js"
 import { basicClassesStore } from "@/stores"
 import { useRouter } from "vue-router"
+import { useToggle } from "@vueuse/shared"
+import { useDark } from "@vueuse/core"
 import universitiesList from "@/assets/static/schoolLists.json"
 onMounted(() => {
   restaurants.value = universitiesList.map(item => {
@@ -16,7 +18,13 @@ onMounted(() => {
     }
   })
 })
-
+const isDark = useDark({
+  disableTransition: false,
+  valueDark: "dark",
+  valueLight: "light",
+})
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const toggleDark = useToggle(isDark)
 const router = useRouter()
 // 班级列表
 const useClassesList = basicClassesStore()
@@ -87,7 +95,7 @@ const createClassFilter = queryClassString => {
 }
 // 学生注册提交
 const handleSubmit = () => {
-  ElMessageBox.confirm("注册之后，班级不可以修改。确定提交吗？", "Warning", {
+  ElMessageBox.confirm("注册之后，用户名不可更改。确定提交吗？", "info", {
     confirmButtonText: "确定",
     confirmButtonClass: "btnConfirm",
     cancelButtonText: "取消",
@@ -144,12 +152,15 @@ const handleSubmit = () => {
           <el-form-item label="用户名" prop="name">
             <el-input
               v-model="userForm.name"
+              placeholder="输入用户名"
+              clearable
               @focus="handleFocus('name')"
             ></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password">
             <el-input
               v-model="userForm.password"
+              placeholder="输入密码"
               type="password"
               show-password
               @focus="handleFocus('password')"
@@ -158,18 +169,24 @@ const handleSubmit = () => {
           <el-form-item label="真实姓名" prop="realName">
             <el-input
               v-model="userForm.realName"
+              placeholder="输入真实姓名"
+              clearable
               @focus="handleFocus('realName')"
             ></el-input>
           </el-form-item>
           <el-form-item label="学生学号" prop="userSchoollD">
             <el-input
               v-model="userForm.userSchoollD"
+              placeholder="输入学号"
+              clearable
               @focus="handleFocus('userSchoollD')"
             ></el-input>
           </el-form-item>
           <el-form-item label="邮箱" prop="email">
             <el-input
               v-model="userForm.email"
+              clearable
+              placeholder="输入邮箱"
               @focus="handleFocus('email')"
             ></el-input>
           </el-form-item>
@@ -230,19 +247,13 @@ const handleSubmit = () => {
   </div>
 </template>
 
-<style scoped>
-#building {
-  background: url("/src/assets/img/BackgroundImg/SignupBg-min.png");
-  width: 100%;
-  height: 100%;
-  position: fixed;
-  background-size: 100% 100%;
-}
+<style scoped lang="less">
 .card-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh; /* 将容器高度设置为视口高度 */
+  background-color: var(--primary-bg);
 }
 
 .form-card {

@@ -1,34 +1,31 @@
 <script setup>
-import {useSidebarStore} from "@/stores/index"
-import {useMenuStore} from "@/stores/menu"
-import {useAuthStore} from "@/stores/tokenStore"
-import {onMounted, ref} from "vue"
-import {useRouter} from "vue-router"
+import { useSidebarStore } from "@/stores/index"
+import { useMenuStore } from "@/stores/menu"
+import { useAuthStore } from "@/stores/tokenStore"
+import { onMounted, ref } from "vue"
+import { useRouter } from "vue-router"
 
-const useScope = useAuthStore(),
+const useScope = useAuthStore()
 // 读取当前用户的scope角色并存储
- userScope = useScope.getScope() // 获取到的scope
-console.log(userScope)
+const userScope = useScope.getScope() // 获取到的scope
 onMounted(() => {})
 // 侧边栏折叠
-const useToCollapse = useSidebarStore(),
+const useToCollapse = useSidebarStore()
 // 菜单
- menuStore = useMenuStore(),
-
- router = useRouter(),
-
+const menuStore = useMenuStore()
+const router = useRouter()
 // 课程列表
- courses = ref([
-  {courseid: 1, title: "计算机网络", description: "这是计算机网络"},
-  {courseid: 2, title: "数据结构", description: "这是数据结构的描述"},
-  {courseid: 3, title: "高等数学1", description: "这是一个描述2"},
-  {courseid: 4, title: "高等数学2", description: "这是一个描述2"},
-  {courseid: 5, title: "高等数学3", description: "这是一个描述3"},
-]),
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const courses = ref([
+  { courseid: 1, title: "计算机网络", description: "这是计算机网络" },
+  { courseid: 2, title: "数据结构", description: "这是数据结构的描述" },
+  { courseid: 3, title: "高等数学1", description: "这是一个描述2" },
+  { courseid: 4, title: "高等数学2", description: "这是一个描述2" },
+  { courseid: 5, title: "高等数学3", description: "这是一个描述3" },
+])
 // 一般用户菜单树——学生
 // 无用户管理菜单
- commonMenuTree = ref([
+const commonMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
@@ -71,10 +68,9 @@ const useToCollapse = useSidebarStore(),
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
-]),
-
+])
 // 教师菜单
- teacherMenuTree = ref([
+const teacherMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
@@ -124,11 +120,10 @@ const useToCollapse = useSidebarStore(),
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
-]),
-
+])
 // 管理员独有菜单树
 // 拥有所有菜单选项
- adminMenuTree = ref([
+const adminMenuTree = ref([
   {
     index: "1",
     icon: "PieChart",
@@ -227,14 +222,13 @@ menuStore.getMenuTreeByUserRole(
 
 // 用于路由跳转
 const clickMenu = item => {
-  router.push({
-    name: item.name,
-    params: {courseid: 1},
-  })
-},
-
-// 用于页面刷新后保持侧边菜单对应项展开
- activePath = ref("")
+    router.push({
+      name: item.name,
+      params: { courseid: 1 },
+    })
+  },
+  // 用于页面刷新后保持侧边菜单对应项展开
+  activePath = ref("")
 activePath.value = router.currentRoute._value.meta.index
 </script>
 
@@ -292,30 +286,32 @@ activePath.value = router.currentRoute._value.meta.index
         <!--        如果不存在二级菜单，则运行下面的代码-->
         <!--        当subMenu不存在时，下方的v-if为真，运行-->
         <el-menu-item
-          :index="item.index"
           v-if="item.scope.includes(userScope) && !item.subMenu"
           :key="item.index"
+          :index="item.index"
           @click="clickMenu(item)"
         >
-          <component class="icons" :is="item.icon"></component>
+          <component :is="item.icon" class="icons"></component>
           <template #title>{{ item.title }}</template>
         </el-menu-item>
         <!--        如果为假，即存在二级菜单-->
-        <el-sub-menu :index="item.index" v-else>
+        <!-- eslint-disable-next-line vue/valid-v-for -->
+        <el-sub-menu v-else :index="item.index">
           <template #title>
             <!--            二级菜单的 图标与标题-->
-            <component class="icons" :is="item.icon"></component>
+            <component :is="item.icon" class="icons"></component>
             <span>{{ item.title }}</span>
           </template>
+
           <template v-for="subItem in item.subMenu">
             <el-menu-item
               v-if="subItem.subScope && subItem.subScope.includes(userScope)"
-              :index="subItem.subIndex"
               :key="subItem.subIndex"
+              :index="subItem.subIndex"
               @click="clickMenu(subItem)"
             >
               <!-- 二级菜单列表 -->
-              <component class="icons" :is="subItem.subIcon"></component>
+              <component :is="subItem.subIcon" class="icons"></component>
               <template #title>{{ subItem.title }}</template>
             </el-menu-item>
           </template>
@@ -330,9 +326,11 @@ activePath.value = router.currentRoute._value.meta.index
   width: 16px;
   height: 16px;
 }
-.icons.is-active{
+
+.icons.is-active {
   color: #409eff;
 }
+
 .centered {
   text-align: center;
 }
@@ -355,51 +353,69 @@ activePath.value = router.currentRoute._value.meta.index
   display: flex;
   justify-content: center;
   align-items: center;
+
   &.collapsed {
     margin-top: 22px;
   }
+
   &.expanded {
     margin-top: 24px;
   }
 }
 
-
 // logo距离顶部的边距
 .el-menu-vertical-demo {
   margin-top: 22px;
 }
+
 .el-sub-menu.is-active {
-  background-color: #d9ecff !important; /* 背景使用淡蓝色 */
+  background-color: #d9ecff !important;
+  /* 背景使用淡蓝色 */
   border-radius: 8px;
+
   span {
     color: #409eff;
   }
-  .icons{
+
+  .icons {
     color: #409eff;
   }
 }
+
 .el-menu-item.is-active {
-  position: relative; /* 设置相对定位 */
+  position: relative;
+
+  /* 设置相对定位 */
   &::after {
     content: "";
     position: absolute;
     top: 0;
-    right: 0; /* 将竖线位置设置在右边 */
-    width: 3px; /* 设置竖线宽度 */
-    height: 100%; /* 设置竖线高度 */
-    background-color: #409eff; /* 设置竖线颜色为蓝色 */
-    border-radius: 2px; /* 设置竖线的圆角 */
+    right: 0;
+    /* 将竖线位置设置在右边 */
+    width: 3px;
+    /* 设置竖线宽度 */
+    height: 100%;
+    /* 设置竖线高度 */
+    background-color: #409eff;
+    /* 设置竖线颜色为蓝色 */
+    border-radius: 2px;
+    /* 设置竖线的圆角 */
   }
+
   background-color: #f5f7fa !important;
-  color: #409eff; /* 字体颜色蓝色 */
-  border-radius: 8px; /* 添加圆角 */
+  color: #409eff;
+  /* 字体颜色蓝色 */
+  border-radius: 8px;
+  /* 添加圆角 */
   overflow: hidden;
 }
 
 .el-menu-item {
   &:hover {
-    background-color: #eeeeee; /* 鼠标悬停时的背景颜色为浅灰色 */
-    border-radius: 8px; /* 添加圆角 */
+    background-color: #eeeeee;
+    /* 鼠标悬停时的背景颜色为浅灰色 */
+    border-radius: 8px;
+    /* 添加圆角 */
   }
 }
 </style>

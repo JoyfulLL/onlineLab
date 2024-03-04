@@ -59,6 +59,6 @@ export const rules = {
     },
   ],
   schoolCode: [{ required: true, message: "请输入学校代码", trigger: "blur" }],
-  class: [{ required: true, message: "请输入学生班级", trigger: "blur" }],
+  class: [{ required: false, message: "请输入学生班级", trigger: "blur" }],
   sex: [{ required: true, message: "请选择性别", trigger: "change" }],
 }

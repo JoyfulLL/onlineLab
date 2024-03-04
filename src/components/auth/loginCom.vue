@@ -1,11 +1,12 @@
 <script setup>
 /**
-
+ * @fileName loginCom.vue
+ * @description 登录组件
+ * @author LJF
  */
 
 import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
-import { ElMessage } from "element-plus"
 import { useRouter } from "vue-router"
 
 const router = useRouter()
@@ -60,42 +61,13 @@ const onSubmitWithName = () => {
       }
     })
 }
-const onSubmitWithEmail = () => {
-  login(loginForm.value.email, loginForm.value.password)
-    .then(res => {
-      if (res.data.status === 0) {
-        ElMessage({
-          message: "登录成功",
-          type: "success",
-          duration: 3000,
-        })
-        const authStore = useAuthStore()
-        authStore.setData(res.data.data)
-        router.push({ path: "/" })
-      }
-    })
-    .catch(error => {
-      console.error(error.response.data.reason)
-      if (error.response.data.status === 1) {
-        ElNotification({
-          title: "错误",
-          message: error.response.data.reason,
-          type: "error",
-          duration: 3000,
-        })
-      }
-    })
-}
+
 const togglePasswordVisibility = () => {
   isPasswordVisible.value = !isPasswordVisible.value
 }
 const canSubmit = computed(() => {
   const { username, password } = loginForm.value
   return Boolean(username && password)
-})
-const canSubmitWithEmail = computed(() => {
-  const { email, password } = loginForm.value
-  return Boolean(email && password)
 })
 </script>
 
@@ -231,7 +203,7 @@ const canSubmitWithEmail = computed(() => {
 .center-container {
   display: flex;
   justify-content: center;
-  background-color: var(--login-bg);
+  background-color: var(--primary-bg);
   /* align-items: center; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   /* 边框光芒效果 */

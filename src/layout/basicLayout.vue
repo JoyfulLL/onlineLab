@@ -53,5 +53,4 @@ import CommonHeader from "@/layout/commonHeader.vue"
 html:not(.dark) .right-main {
   background-color: #f6f6f6; /* 设置亮色模式下 el-main 的背景色为灰色 */
 }
-
 </style>

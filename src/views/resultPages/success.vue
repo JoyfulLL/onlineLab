@@ -7,10 +7,18 @@
 !-->
 <script setup>
 import { useRouter } from "vue-router"
+import { useDark } from "@vueuse/core"
 const router = useRouter(),
   toLogin = () => {
     router.push("/login")
   }
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const isDark = useDark({
+  disableTransition: false,
+  valueDark: "dark",
+  valueLight: "light",
+})
 </script>
 
 <template>

@@ -33,7 +33,6 @@ function handleRequestError(error) {
 service.interceptors.request.use(config => {
   const useAuth = useAuthStore()
   const token = useAuth.data.token
-  console.log(`output->`, token)
   if (token) config.headers.Authorization = `Bearer ${token}`
   return config
 })

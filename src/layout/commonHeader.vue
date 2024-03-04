@@ -135,6 +135,11 @@ const props = defineProps({
   // 登出函数
   handleLoginOut = () => {
     authStore.deleteToken()
+    if (localStorage.getItem("rememberMe") === "true") {
+      localStorage.removeItem("rememberMe")
+    }
+    localStorage.removeItem("TableData")
+    localStorage.removeItem("classesList")
     router.push("/login")
     ElNotification({
       title: "退出成功",
