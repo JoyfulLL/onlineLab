@@ -5,8 +5,7 @@
  */
 import service from "@/utils/axios.js"
 import { useAuthStore } from "@/stores/tokenStore"
-import { useRouter } from "vue-router"
-const router = useRouter()
+import router from "@/router/index.js"
 // 登录接口
 export function login(usernameOrEmail, password) {
   let requestData = {}

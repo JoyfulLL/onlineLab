@@ -1,5 +1,6 @@
 <!--
 * @description 基础的页面布局
+* 几乎所有界面都继承basicLayout的样式
 * @fileName basicLayout.vue
 * @author LJF
 !-->

@@ -6,22 +6,25 @@
 * @date 2024/02/05 14:06:44
 !-->
 
-<script setup>
+<script setup lang="ts">
 import classesList from "@/components/charts/classesListTable.vue"
 import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
 import { Edit } from "@element-plus/icons-vue"
-import { checkToken } from "@/api/index.js"
+//import { checkToken } from "@/api/index.js"
+import UserInfo from "@/views/Home/home.ts"
 import {
   stuEditUserInfo,
   teacherEditUserInfo,
 } from "@/api/userManagement/editUserInfo.js"
+
 const reload = inject("reload")
 const useAuth = useAuthStore()
 const userScope = useAuth.getScope()
 const classesStore = basicClassesStore()
-const userInfo = ref({
+
+const userInfo = ref<UserInfo>({
   id: "",
   name: "",
   email: "",
@@ -32,8 +35,9 @@ const userInfo = ref({
   studentClass: "",
 })
 const useClassList = teacherJoinedClassStore()
+
 onMounted(() => {
-  checkToken()
+  // checkToken()
   getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {
@@ -61,7 +65,7 @@ const teacherJoinNewClass = () => {
 }
 
 // 搜索班级的关键字
-const searchKeyword = ref("")
+const searchKeyword = ref<string>("")
 const useAllClassInfoList = basicClassesStore()
 const handleClose = done => {
   ElMessageBox.confirm("确定关闭？")

@@ -24,7 +24,7 @@
  *   <forget-password :editPasswordApi="editStunPasswd" />
  * </template>
  */
-import { ref, defineProps } from 'vue'
+import { ref, defineProps } from "vue"
 
 interface UserFormData {
   id: string
@@ -39,18 +39,22 @@ const props = defineProps({
   },
 })
 const formData = ref<UserFormData>({
-  id: '',
-  name: '',
-  password: '',
+  id: "",
+  name: "",
+  password: "",
 })
 
 const submitForm = () => {
-  props.editPasswordApi(formData.value.id, formData.value.name, formData.value.password)
+  props.editPasswordApi(
+    formData.value.id,
+    formData.value.name,
+    formData.value.password
+  )
 }
 </script>
 
 <template>
-  <el-form :model="formData" label-width="80px" @submit.native.prevent="submitForm">
+  <el-form :model="formData" label-width="80px" @click="submitForm">
     <el-form-item label="ID">
       <el-input v-model="formData.id"></el-input>
     </el-form-item>
@@ -58,7 +62,7 @@ const submitForm = () => {
       <el-input v-model="formData.name" required></el-input>
     </el-form-item>
     <el-form-item label="Password" prop="password">
-      <el-input type="password" v-model="formData.password" required></el-input>
+      <el-input v-model="formData.password" type="password" required></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" native-type="submit">Submit</el-button>

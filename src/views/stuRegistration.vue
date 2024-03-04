@@ -2,7 +2,7 @@
 import { regStu } from "@/api/userManagement/registerUser.js"
 import { rules } from "@/utils/formRules.js"
 import { basicClassesStore } from "@/stores"
-import { useRouter } from "vue-router"
+import router from "@/router/index.js"
 import { useToggle } from "@vueuse/shared"
 import { useDark } from "@vueuse/core"
 import universitiesList from "@/assets/static/schoolLists.json"
@@ -25,7 +25,7 @@ const isDark = useDark({
 })
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const toggleDark = useToggle(isDark)
-const router = useRouter()
+
 // 班级列表
 const useClassesList = basicClassesStore()
 const classList = useClassesList.classList

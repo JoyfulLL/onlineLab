@@ -7,9 +7,8 @@
 
 import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
-import { useRouter } from "vue-router"
-
-const router = useRouter()
+import router from "@/router/index.js"
+import { checkToken } from "@/api/index.js"
 const loginForm = ref({
   username: "",
   email: "",
@@ -22,8 +21,8 @@ const isPasswordVisible = ref(false)
 //   console.log(tab, event)
 // }
 // 因为在登录的API处已经做了传递参数的处理，故不需要在此区分name或者Email
-const onSubmitWithName = () => {
-  login(loginForm.value.username, loginForm.value.password)
+const onSubmitWithName = async () => {
+  await login(loginForm.value.username, loginForm.value.password)
     .then(res => {
       if (res.data.status === 0) {
         ElMessage({
@@ -40,6 +39,7 @@ const onSubmitWithName = () => {
         // 将token存储到cookies
         // const token = res.data.data.token
         // document.cookie = `token=${token}; path=/;`
+        checkToken()
         router.push({ path: "/" })
       }
       ElNotification({
@@ -93,7 +93,8 @@ const canSubmit = computed(() => {
                   统一身份认证
                 </div>
                 <div class="right">
-                  <el-link type="info" href="#" style="font-size: 11px"
+                  <!-- 扫码登录暂未开发  -->
+                  <el-link type="info" href="#" style="font-size: 11px" disabled
                     >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
                   /></el-link>
                 </div>
@@ -141,9 +142,13 @@ const canSubmit = computed(() => {
 
               <div class="remember-row">
                 <el-checkbox v-model="rememberMe">一周内免登录</el-checkbox>
-                <router-link to="/stuForgetPassword" class="forgot-password"
+                <!-- 学生找回密码暂未开发 -->
+                <el-link
+                  href="/stuForgetPassword"
+                  class="forgot-password"
+                  disabled
                   >忘记密码
-                </router-link>
+                </el-link>
               </div>
               <el-button
                 type="primary"
