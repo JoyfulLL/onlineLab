@@ -124,7 +124,8 @@ const handleSubmit = () => {
         }
       })
     })
-    .catch(() => {
+    .catch(error => {
+      console.log(error)
       ElMessage({
         type: "info",
         message: "取消",

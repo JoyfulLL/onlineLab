@@ -39,14 +39,14 @@ const frontendContributors = ref([
       commits: 1,
       description: "",
     },
-    {
-      id: 6,
-      name: "Jaynxe",
-      realName: "谢家勇",
-      linesOfCode: 0,
-      commits: 0,
-      description: "",
-    },
+    //{
+    //  id: 6,
+    //  name: "Jaynxe",
+    //  realName: "谢家勇",
+    //  linesOfCode: 0,
+    //  commits: 0,
+    //  description: "",
+    // },
   ]),
   getGitHubProfileLink = username => {
     return `https://github.com/${username}`
@@ -88,7 +88,7 @@ const frontendContributors = ref([
             </div>
           </template>
           <p class="card-text">提交数：{{ contributor.commits }}</p>
-          <!-- <p class="card-text">代码行数：{{ contributor.linesOfCode }}</p> -->
+          <p class="card-text">代码行数：{{ contributor.linesOfCode }}</p>
           <p class="card-description">贡献：{{ contributor.description }}</p>
         </el-card>
       </el-card>

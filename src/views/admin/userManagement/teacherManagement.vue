@@ -6,162 +6,151 @@
  * @date 2024/1/19
  */
 
-import {editTeacherInfo} from "@/api/userManagement/editUserInfo.js"
-import {deleteTeacher} from "@/api/userManagement/removeUser.js"
-import {regTeacher} from "@/api/userManagement/registerUser.js"
-import {useTableDataStore} from "@/stores/userData/storeUserData"
-import {rules} from "@/utils/formRules.js"
-import {ElMessage} from "element-plus"
-import {inject, onMounted, reactive, ref} from "vue"
+import { editTeacherInfo } from "@/api/userManagement/editUserInfo.js"
+import { deleteTeacher } from "@/api/userManagement/removeUser.js"
+import { regTeacher } from "@/api/userManagement/registerUser.js"
+import { useTableDataStore } from "@/stores/userData/storeUserData"
+import { rules } from "@/utils/formRules.js"
+import { ElMessage } from "element-plus"
+import { inject, onMounted, reactive, ref } from "vue"
 
 onMounted(() => {
   fetchData()
 })
 
 const teacherDataTable = useTableDataStore(),
- loading = ref(true),
-// Fetching data
- fetchData = async () => {
-  teacherDataTable.showTeachersInfo()
-  /**
-   * When the data starts to load, loading is displayed
-   * and the loading animation ends after the loading is completed.
-   */
-  loading.value = false
-},
-
-// @注册信息的表单
- userForm = reactive({
-  id: "",
-  name: "",
-  password: "",
-  email: "",
-  realName: "",
-  userSchoollD: "",
-  schoolCode: "",
-  class: "",
-  sex: "",
-}),
-
-// 用于控制会话框显示
- dialogVisible = ref(false),
-
-// @用于判断当前动作
-// @区分当前是添加还是编辑
- action = ref("add"),
-
-// @显示密码框与否 编辑模式没有密码框
- showPassword = ref(),
-
-// @用于在编辑模式禁用相关选项的修改
-// @目前除了realName，email，class外，全都禁用
- IsDisabled = ref(false),
-
-// @关闭会话框
- handleClose = done => {
-  ElMessageBox.confirm("确定关闭？")
-    .then(() => {
-      done()
-    })
-    .catch(() => {
-      // catch error
-    })
-},
-
-// 此函数仅用于调出会话框，并不是用于提交表单
-// 提交表单的函数为handleSubmit
- addTeacher = async () => {
-  action.value = "add"
-  dialogVisible.value = true
-  // 清空表单信息
-  // @因为先点击编辑按钮，查看的信息会遗留在当前的表单
-  // @因为不懂更新DOM的方法（nextTick），所以只能先强制删除表单的信息
-  // @删除的仅仅是显示的信息，不波及数据库
-  for (const key in userForm) {
-    delete userForm[key]
-  }
-  showPassword.value = true
-  IsDisabled.value = false
-},
-
-// @用于”编辑按钮“，函数实际用途为查看用户信息
-// @将用户信息显示在表单中
- editTeacher = row => {
-  action.value = "edit"
-  dialogVisible.value = true
-  // console.log(row)
-  nextTick(() => {
-    Object.assign(userForm, row)
-  })
-  showPassword.value = false
-  IsDisabled.value = true
-},
-
- reload = inject("reload"),
-
-// @此函数用于提交表单
-// @判断动作的值，为add则调用新增用户接口
-// @否则调用的是修改用户的接口
- handleSubmit = async () => {
-  if (action.value === "add") {
-    await regTeacher(
-      userForm.name,
-      userForm.email,
-      userForm.realName,
-      userForm.password,
-      userForm.sex
-    ).then(res => {
-      if (res.data.status === 0) {
-        // 状态码为0，提交成功，关闭当前对话框
-        dialogVisible.value = false
-        reload()
-        ElMessage({
-          message: "用户添加完毕",
-          type: "success",
-        })
-      }
-    })
-  } else {
-    // @ 在此处调用修改学生参数的接口
-    // console.log('用户名',(newUserForm.value.name))
-    ElMessageBox.confirm("确定要修改吗？", "警告", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      confirmButtonClass: "btnConfirm",
-    })
-      .then(async () => {
-        await editTeacherInfo(
-          userForm.id,
-          userForm.name,
-          userForm.email,
-          userForm.realName,
-          userForm.userSchoollD,
-          userForm.schoolCode,
-          userForm.class,
-          userForm.sex
-        ).then(res => {
-          if (res.data.status == 0) {
-            dialogVisible.value = false
-            reload()
-            ElMessage({
-              message: "编辑成功",
-              type: "success",
-            })
-          }
-          // console.log(newUserForm.value.id);
-        })
+  loading = ref(true),
+  // Fetching data
+  fetchData = async () => {
+    teacherDataTable.showTeachersInfo()
+    /**
+     * When the data starts to load, loading is displayed
+     * and the loading animation ends after the loading is completed.
+     */
+    loading.value = false
+  },
+  // @注册信息的表单
+  userForm = reactive({
+    id: "",
+    name: "",
+    password: "",
+    email: "",
+    realName: "",
+    userSchoollD: "",
+    schoolCode: "",
+    class: "",
+    sex: "",
+  }),
+  // 用于控制会话框显示
+  dialogVisible = ref(false),
+  // @用于判断当前动作
+  // @区分当前是添加还是编辑
+  action = ref("add"),
+  // @显示密码框与否 编辑模式没有密码框
+  showPassword = ref(),
+  // @用于在编辑模式禁用相关选项的修改
+  // @目前除了realName，email，class外，全都禁用
+  IsDisabled = ref(false),
+  // @关闭会话框
+  handleClose = done => {
+    ElMessageBox.confirm("确定关闭？")
+      .then(() => {
+        done()
       })
       .catch(() => {
-        ElMessage({
-          type: "info",
-          message: "取消",
-        })
+        // catch error
       })
+  },
+  // 此函数仅用于调出会话框，并不是用于提交表单
+  // 提交表单的函数为handleSubmit
+  addTeacher = async () => {
+    action.value = "add"
+    dialogVisible.value = true
+    // 清空表单信息
+    // @因为先点击编辑按钮，查看的信息会遗留在当前的表单
+    // @因为不懂更新DOM的方法（nextTick），所以只能先强制删除表单的信息
+    // @删除的仅仅是显示的信息，不波及数据库
+    for (const key in userForm) {
+      delete userForm[key]
+    }
+    showPassword.value = true
+    IsDisabled.value = false
+  },
+  // @用于”编辑按钮“，函数实际用途为查看用户信息
+  // @将用户信息显示在表单中
+  editTeacher = row => {
+    action.value = "edit"
+    dialogVisible.value = true
+    // console.log(row)
+    nextTick(() => {
+      Object.assign(userForm, row)
+    })
+    showPassword.value = false
+    IsDisabled.value = true
+  },
+  reload = inject("reload"),
+  // @此函数用于提交表单
+  // @判断动作的值，为add则调用新增用户接口
+  // @否则调用的是修改用户的接口
+  handleSubmit = async () => {
+    if (action.value === "add") {
+      await regTeacher(
+        userForm.name,
+        userForm.email,
+        userForm.realName,
+        userForm.password,
+        userForm.sex
+      ).then(res => {
+        if (res.data.status === 0) {
+          // 状态码为0，提交成功，关闭当前对话框
+          dialogVisible.value = false
+          reload()
+          ElMessage({
+            message: "用户添加完毕",
+            type: "success",
+          })
+        }
+      })
+    } else {
+      // @ 在此处调用修改学生参数的接口
+      // console.log('用户名',(newUserForm.value.name))
+      ElMessageBox.confirm("确定要修改吗？", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        confirmButtonClass: "btnConfirm",
+      })
+        .then(async () => {
+          await editTeacherInfo(
+            userForm.id,
+            userForm.name,
+            userForm.email,
+            userForm.realName,
+            userForm.userSchoollD,
+            userForm.schoolCode,
+            userForm.class,
+            userForm.sex
+          ).then(res => {
+            if (res.data.status == 0) {
+              dialogVisible.value = false
+              reload()
+              ElMessage({
+                message: "编辑成功",
+                type: "success",
+              })
+            }
+            // console.log(newUserForm.value.id);
+          })
+        })
+        .catch(() => {
+          ElMessage({
+            type: "info",
+            message: "取消",
+          })
+        })
+    }
   }
-},
-
 // for admin to delete teacher
- handleDeleteTeacher = row => {
+const handleDeleteTeacher = row => {
   ElMessageBox.confirm(
     "确定要永久删除此教师吗？注意此操作不可逆！！！",
     "警告",
@@ -188,12 +177,13 @@ const teacherDataTable = useTableDataStore(),
         message: "取消",
       })
     })
-},
+}
+
 // @以下代码用于分页
-// 页面显示数据量 默认为10条
- pageSize = ref(10),
+// 页面显示数据量 默认为20条
+const pageSize = ref(20)
 // 当前页面，默认为1
- currentPage = ref(1)
+const currentPage = ref(1)
 
 // 用于更换页面
 function changePage(page) {
@@ -207,28 +197,49 @@ function handleSizeChange(val) {
   currentPage.value = 1 // 切换每页显示个数时，回到第一页
 }
 
-// 用于搜索功能
-const queryInfo = ref(""),
+/**
+ * author: LJF
+ * description: This function is used for implementing search functionality and pagination.
+ * lastUpdated: 2024/3/10
+ */
+const queryInfo = ref("")
+const totalData = ref(teacherDataTable.teachersDataCount)
+const filteredData = ref(
+  computed(() => {
+    const query = queryInfo.value.toLowerCase().trim()
+    let filtered = teacherDataTable.teachersList
 
-// 表单遍历的数据为划分后且能够检索的数据
- filteredData = computed(() => {
-  const query = queryInfo.value.toLowerCase().trim()
-  let filtered = teacherDataTable.teachersList
-
-  if (query) {
-    filtered = filtered.filter(item => {
-      return (
-        (item.name && item.name.toLowerCase().includes(query)) ||
-        (item.realName && item.realName.toLowerCase().includes(query)) ||
-        (item.class && item.class.toLowerCase().includes(query))
-      )
-    })
-  }
-  // 将分页逻辑整合到 filteredData 计算属性中，以确保分页功能和搜索功能可以同时生效
-  const startIndex = (currentPage.value - 1) * pageSize.value,
-   endIndex = startIndex + pageSize.value
-  return filtered.slice(startIndex, endIndex)
-})
+    if (query) {
+      filtered = filtered.filter(item => {
+        /**
+         * User can search the table by using these fields
+         * "name"
+         * "realName"
+         * "class"
+         */
+        return (
+          (item?.name &&
+            typeof item.name === "string" &&
+            item.name.toLowerCase().includes(query)) ||
+          (item?.realName &&
+            typeof item.realName === "string" &&
+            item.realName.toLowerCase().includes(query)) ||
+          (item?.class &&
+            typeof item.class === "string" &&
+            item.class.toLowerCase().includes(query))
+        )
+      })
+      totalData.value = Math.ceil(filtered.length)
+    } else {
+      // If the query is empty, it also means the user cleared the input.
+      totalData.value = teacherDataTable.teachersDataCount // 恢复原始总页数
+    }
+    // Calculate startIndex and endIndex based on currentPage and pageSize
+    const startIndex = (currentPage.value - 1) * pageSize.value
+    const endIndex = startIndex + pageSize.value
+    return filtered.slice(startIndex, endIndex)
+  })
+)
 </script>
 
 <template>
@@ -249,13 +260,13 @@ const queryInfo = ref(""),
           label-width="80px"
           :rules="rules"
         >
-          <el-form-item label="ID号" prop="id" v-if="!showPassword">
+          <el-form-item v-if="!showPassword" label="ID号" prop="id">
             <el-input v-model="userForm.id" :disabled="IsDisabled"></el-input>
           </el-form-item>
           <el-form-item label="用户名" prop="name">
             <el-input v-model="userForm.name" :disabled="IsDisabled"></el-input>
           </el-form-item>
-          <el-form-item label="密码" prop="password" v-if="showPassword">
+          <el-form-item v-if="showPassword" label="密码" prop="password">
             <el-input
               v-model="userForm.password"
               type="password"
@@ -290,9 +301,9 @@ const queryInfo = ref(""),
     <el-form :inline="true">
       <el-form-item>
         <el-input
+          v-model="queryInfo"
           class="w-50 m-2"
           placeholder="输入姓名"
-          v-model="queryInfo"
           clearable
         >
           <template #prefix>
@@ -302,18 +313,15 @@ const queryInfo = ref(""),
           </template>
         </el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary">搜索</el-button>
-      </el-form-item>
     </el-form>
   </div>
   <div class="table">
     <el-table
+      v-loading="loading"
       :data="filteredData"
       style="width: 100%"
       border
       max-height="600"
-      v-loading="loading"
       element-loading-text="数据加载中"
     >
       <el-table-column fixed prop="id" label="ID号" width="180" />
@@ -340,11 +348,11 @@ const queryInfo = ref(""),
   </div>
   <el-pagination
     :page-size="pageSize"
-    :page-sizes="[10, 20, 30]"
+    :page-sizes="[20, 50, 100]"
     background
     default
     layout="total,prev, pager, next, sizes"
-    :total="teacherDataTable.teachersDataCount"
+    :total="totalData"
     @current-change="changePage"
     @size-change="handleSizeChange"
   />

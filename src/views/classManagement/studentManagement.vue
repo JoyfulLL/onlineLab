@@ -1,20 +1,15 @@
 <script setup>
 /**
- * @此页面数据表的增删查改功能已完成
+ * @此页面数据表的增删查改功能已全部完成
  * @file  studentManagement
- * @author ljf13
- * @description 用于学生管理——展示学生信息，注册新学生，修改学生信息
+ * @author junfengLiang
+ * @description 用于学生管理——展示学生信息，添加学生至指定班级，修改学生信息，模糊检索；
+                学生管理页面没有“注册学生”的功能
  * @date 2024/1/8
- @@@ 代码结构
+ * @代码结构
  数据段data 建议新增数据都放在新增的方法前面
  @避免出现无法找到数据的错误
  方法段method
-
- @当前已有功能：✔获取所有学生信息，✔新增学生，✔修改指定学生信息，
- @待做功能：
- @ 1、✔将指定学生移出班级
- @ 2、✔依据信息获取对应的学生
- @ 3、✔页面的数据用pinia做状态管理，实现数据无感更新
  */
 import {
   deleteStudent,
@@ -164,24 +159,7 @@ const filtersClassData = ref(processClassData(useAllClassInfoList.classList)),
   closeEditDialog = value => {
     dialogVisibleEditStudent.value = value
     reload()
-  },
-  // @以下代码用于分页
-  // 页面显示数据量 默认为20条
-  pageSize = ref(20),
-  // 当前页面，默认为1
-  currentPage = ref(1)
-
-// 用于更换页面
-function changePage(page) {
-  currentPage.value = page
-}
-const totalData = ref(studentDataTable.studentsDataCount)
-
-// 用于更换页大小
-function handleSizeChange(val) {
-  pageSize.value = val // 更新每页显示个数
-  currentPage.value = 1 // 切换每页显示个数时，回到第一页
-}
+  }
 
 // 多选
 const multipleSelection = ref([]),
@@ -295,41 +273,77 @@ const multipleSelection = ref([]),
         })
       })
   }
-// Used for search function
-const queryInfo = ref(""),
-  // The data traversed by the form is the data that can be divided and retrieved
-  filteredData = ref(
-    computed(() => {
-      const query = queryInfo.value.toLowerCase().trim()
-      let filtered = studentDataTable.stuList
-      if (query) {
-        filtered = filtered.filter(item => {
-          return (
-            (item?.name &&
-              typeof item.name === "string" &&
-              item.name.toLowerCase().includes(query)) ||
-            (item?.realName &&
-              typeof item.realName === "string" &&
-              item.realName.toLowerCase().includes(query)) ||
-            (item?.class &&
-              typeof item.class === "string" &&
-              item.class.toLowerCase().includes(query))
-          )
-        })
-        totalData.value = Math.ceil(filtered.length / pageSize.value)
-      } else {
-        totalData.value = studentDataTable.studentsDataCount // 恢复原始总页数
-      }
-      // 当用户检索完成后，将当前页码重置为1
-      if (query && currentPage.value !== 1) {
-        currentPage.value = 1
-      }
+/**
+ * author: LJF
+ * description: The following code is used for pagination
+ * lastUpdated: 2024/3/10
+ */
+// Page display data quantity, default are 20 items
+const pageSize = ref(20)
+// Current page, default is page one
+const currentPage = ref(1)
 
-      const startIndex = (currentPage.value - 1) * pageSize.value,
-        endIndex = startIndex + pageSize.value
-      return filtered.slice(startIndex, endIndex)
-    })
-  )
+// Used for changing pages view
+function changePage(page) {
+  currentPage.value = page
+}
+const totalData = ref(studentDataTable.studentsDataCount)
+
+// Used for changing page size
+function handleSizeChange(val) {
+  /**
+   * Update the number of items displayed per page
+   * When changing the number of items displayed per page, return to the first page
+   */
+  pageSize.value = val
+  currentPage.value = 1
+}
+/**
+ * author: LJF
+ * description: This function is used for implementing search functionality and pagination.
+ * lastUpdated: 2024/3/10
+ */
+const queryInfo = ref("")
+// The data traversed by the form is the data that can be divided and retrieved
+const filteredData = ref(
+  // Use computed to create a computed property. When the filteredData changes, it will be recomputed
+  computed(() => {
+    const query = queryInfo.value.toLowerCase().trim() //format the query words ;remove blank
+    let filtered = studentDataTable.stuList // original data
+    // If the query isn't empty, use the filter function
+    if (query) {
+      filtered = filtered.filter(item => {
+        /**
+         * User can search the table by using these fields
+         * "name"
+         * "realName"
+         * "class"
+         */
+        return (
+          (item?.name &&
+            typeof item.name === "string" &&
+            item.name.toLowerCase().includes(query)) ||
+          (item?.realName &&
+            typeof item.realName === "string" &&
+            item.realName.toLowerCase().includes(query)) ||
+          (item?.class &&
+            typeof item.class === "string" &&
+            item.class.toLowerCase().includes(query))
+        )
+      })
+      // Update the total number of searched data
+      totalData.value = Math.ceil(filtered.length)
+    } else {
+      // If the query is empty, it also means the user cleared the input.
+      totalData.value = studentDataTable.studentsDataCount // Reset the original totalCount
+    }
+
+    // Calculate startIndex and endIndex based on currentPage and pageSize
+    const startIndex = (currentPage.value - 1) * pageSize.value
+    const endIndex = startIndex + pageSize.value
+    return filtered.slice(startIndex, endIndex)
+  })
+)
 // Used to control the width of the conversation box
 const state = reactive({
   dialogWidth: "", // 存储对话框宽度
@@ -412,7 +426,7 @@ const calculateDialogWidth = () => {
         <el-input
           v-model="queryInfo"
           class="w-50 m-2"
-          placeholder="搜索学生姓名/班级"
+          placeholder="输入姓名或班级"
           clearable
         >
           <template #prefix>
@@ -483,7 +497,7 @@ const calculateDialogWidth = () => {
   <!-- 分页 -->
   <el-pagination
     :page-size="pageSize"
-    :page-sizes="[20, 30, 50, 100, 200]"
+    :page-sizes="[20, 50, 100, 200]"
     background
     default
     layout="total,prev, pager, next, sizes"
