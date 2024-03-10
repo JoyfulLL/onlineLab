@@ -4,7 +4,7 @@
 [![Vite Version](https://img.shields.io/badge/Vite-^4.4.11-blueviolet.svg?logo=vite)](https://vitejs.dev/)
 [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-yellow.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-## 学生在线实验平台
+## 学生在线实验平台（前端部分）
 
 这是一个使用 Vue.js、Go 和 Kubernetes（K8S）构建的学生在线实验平台，旨在为计算机课程提供实验支持。
 
@@ -36,6 +36,8 @@
     - 提交实验：学生可以提交实验结果供教师评阅。
 
 更多功能待开发......
+
+当前已知问题： 1.在 localstorage 里更改 auth 中的 scope 值，可获取对应身份的侧边菜单。解决：后端返回菜单？
 
 ## 项目初始化
 
