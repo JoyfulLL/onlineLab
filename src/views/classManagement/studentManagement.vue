@@ -36,8 +36,8 @@ onBeforeUnmount(() => {
 
 // @注入APP.vue提供的刷新方法
 // @用于在新增用户/编辑用户后刷新表格
-const reload = inject("reload"),
-  loading = ref(true)
+const reload = inject("reload")
+const loading = ref(true)
 // @注册信息的表单
 let userForm = reactive({
   id: "",
@@ -89,13 +89,14 @@ const filtersClassData = ref(processClassData(useAllClassInfoList.classList)),
   },
   // 数据获取
   fetchData = async () => {
-    await studentDataTable.showStuInfo()
+    // Loading should be closed asynchronously
+    await studentDataTable.showStuInfo().then(() => {
+      loading.value = false
+    })
     /**
      * When the data starts to load, loading is displayed
      * and the loading animation ends after the loading is completed.
      */
-    // Loading should be closed asynchronously
-    loading.value = false
 
     // 数据获取完成后，可以执行其他操作或访问Store中的数据
     //console.log(studentDataTable.stuList.map(student => student?.name))
@@ -235,6 +236,7 @@ const multipleSelection = ref([]),
             message: "移出成功",
             type: "success",
           })
+          fetchData()
         })
         reload()
       })
@@ -264,6 +266,7 @@ const multipleSelection = ref([]),
             type: "success",
             duration: 3500,
           })
+          fetchData()
         })
       })
       .catch(() => {
@@ -449,7 +452,7 @@ const calculateDialogWidth = () => {
       border
       stripe
       max-height="650"
-      element-loading-text="数据加载中"
+      element-loading-text="获取数据中... ..."
       @selection-change="handleSelectionChange"
     >
       <el-table-column fixed type="selection" width="50" />

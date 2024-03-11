@@ -4,8 +4,38 @@ import router from "@/router/index.js"
 import axios from "axios"
 const service = axios.create({
   baseURL: "https://b.guohaolan.com/api/",
-  timeout: 10000,
+  timeout: 120000, // 2 min
   headers: { "Content-Type": "application/json" },
+})
+
+//设置全局的请求次数，请求的间隙
+service.defaults.retry = 4
+service.defaults.retryDelay = 1000
+service.interceptors.response.use(undefined, function axiosRetryInterceptor(
+  err
+) {
+  var config = err.config
+  // If config does not exist or the retry option is not set, reject
+  if (!config || !config.retry) return Promise.reject(err)
+  // Set the variable for keeping track of the retry count
+  config.__retryCount = config.__retryCount || 0
+  // Check if we've maxed out the total number of retries
+  if (config.__retryCount >= config.retry) {
+    // Reject with the error
+    return Promise.reject(err)
+  }
+  // Increase the retry count
+  config.__retryCount += 1
+  // Create new promise to handle exponential backoff
+  var backoff = new Promise(function(resolve) {
+    setTimeout(function() {
+      resolve()
+    }, config.retryDelay || 1)
+  })
+  // Return the promise in which recalls axios to retry the request
+  return backoff.then(function() {
+    return axios(config)
+  })
 })
 
 // 处理错误的函数
