@@ -9,45 +9,81 @@
  * @如果空数组在其他位置则无影响
  * @date 2024/1/11
  */
-import {defineStore} from "pinia"
-
-import {getStuInfo, getTeachersInfo} from "@/api/userManagement/getUserData.js"
-import {useAuthStore} from "@/stores/tokenStore"
+import { defineStore } from "pinia"
+import { openDB } from "idb"
+import {
+  getStuInfo,
+  getTeachersInfo,
+} from "@/api/userManagement/getUserData.js"
+import { useAuthStore } from "@/stores/tokenStore"
 
 export const useTableDataStore = defineStore("TableData", {
-    state: () => ({
-        studentsDataCount: 0,
-        stuList: [],
-        teachersDataCount: 0,
-        teachersList: [],
-    }),
-    getters: {},
-    actions: {
-        async showStuInfo() {
-            // this.stuList = [];
-            const useScope = useAuthStore(),
-            // 读取当前用户的scope角色并存储
-             userScope = useScope.getScope(), // 获取到的scope
-             res = await getStuInfo(userScope)
-            if (userScope === "teacher") {
-                let students = []
-                res.data.data.classes.forEach(classItem => {
-                    students = students.concat(classItem.students)
-                })
-                this.stuList = students
-                this.studentsDataCount = this.stuList.length
-            } else {
-                this.stuList = res.data.data
-                this.studentsDataCount = this.stuList.length
-            }
-        },
-        async showTeachersInfo() {
-            const res = await getTeachersInfo()
-            this.teachersList = res.data.data
-            this.teachersDataCount = this.teachersList.length
-        },
+  state: () => ({
+    studentsDataCount: 0,
+    stuList: [],
+    teachersDataCount: 0,
+    teachersList: [],
+  }),
+  getters: {},
+  actions: {
+    async showStuInfo() {
+      const useScope = useAuthStore()
+      const userScope = useScope.getScope()
+      const res = await getStuInfo(userScope)
+
+      if (userScope === "teacher") {
+        let students = []
+        res.data.data.classes.forEach(classItem => {
+          students = students.concat(classItem.students)
+        })
+        this.stuList = students
+        this.studentsDataCount = this.stuList.length
+      } else {
+        this.stuList = res.data.data
+        this.studentsDataCount = this.stuList.length
+      }
+
+      // 存储到 IndexedDB
+      try {
+        const db = await openDB("UserManagement", 1, {
+          upgrade(db) {
+            db.createObjectStore("students", {
+              keyPath: "id",
+            })
+          },
+        })
+
+        const tx = db.transaction("students", "readwrite")
+        const store = tx.objectStore("students")
+
+        // 清除旧数据
+        await store.clear()
+
+        // 将新数据存储到 IndexedDB
+        this.stuList.forEach(async item => {
+          // 确保存储的对象是可以序列化的
+          const serializableItem = { ...item }
+
+          try {
+            await store.add(serializableItem)
+          } catch (error) {
+            console.error("Failed ", error)
+          }
+        })
+
+        await tx.done
+        console.log("Data stored successfully in IndexedDB!")
+      } catch (error) {
+        console.error("Failed  IndexedDB:", error)
+      }
     },
-    persist: {
-        enable: true,
+    async showTeachersInfo() {
+      const res = await getTeachersInfo()
+      this.teachersList = res.data.data
+      this.teachersDataCount = this.teachersList.length
     },
+  },
+  //   persist: {
+  //     enable: false,
+  //   },
 })

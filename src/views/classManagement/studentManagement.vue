@@ -453,8 +453,9 @@ const calculateDialogWidth = () => {
       @selection-change="handleSelectionChange"
     >
       <el-table-column fixed type="selection" width="50" />
-      <el-table-column fixed prop="userSchoollD" label="学号" width="180" />
-      <el-table-column prop="realName" label="姓名" width="150" />
+      <el-table-column fixed prop="realName" label="姓名" width="150" />
+      <el-table-column prop="userSchoollD" label="学号" width="180" />
+
       <el-table-column
         prop="class"
         label="班级"

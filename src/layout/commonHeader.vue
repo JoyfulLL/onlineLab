@@ -204,7 +204,8 @@ const props = defineProps({
   }
 /* End——暗黑模式 */
 
-const githubFrontEndUrl = "https://github.com/JoyfulLL/onlineLab"
+const githubFrontEndUrl =
+  "https://github.com/JoyfulLL/onlineLab?tab=readme-ov-file#readme"
 const githubBackEndUrl = "https://github.com/GDEIDevelopers/K8Sbackend"
 </script>
 

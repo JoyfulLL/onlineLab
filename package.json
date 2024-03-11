@@ -24,6 +24,7 @@
     "element-plus": "^2.4.2",
     "eslint-plugin-eslint-comments": "^3.2.0",
     "eslint-plugin-import": "^2.29.1",
+    "idb": "^8.0.0",
     "lint": "^0.8.19",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
