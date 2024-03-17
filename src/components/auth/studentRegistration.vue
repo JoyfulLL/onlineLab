@@ -1,4 +1,4 @@
-<script>
+<script setup>
 /**
  * @file  studentRegistration
  * @author ljf13
@@ -9,108 +9,94 @@ import { regStu } from "@/api/userManagement/registerUser.js"
 import { rules } from "@/utils/formRules.js"
 import { editStuInfo } from "@/api/userManagement/editUserInfo"
 import { basicClassesStore } from "@/stores"
-import { mapState } from "pinia"
 
-export default {
-  props: {
-    action: {
-      type: String,
-      default: "edit",
-    },
-    userData: {
-      type: Object,
-      default: () => ({}),
-    },
-    // eslint-disable-next-line vue/prop-name-casing
-    IsDisabled: {
-      type: Boolean,
-      default: false,
-    },
-    showPassword: {
-      type: Boolean,
-      default: true,
-    },
+const props = defineProps({
+  action: {
+    type: String,
+    default: "edit",
   },
-  data() {
-    return {
-      userForm: {},
-      regAction: "reg",
-      editAction: "edit",
+  userData: {
+    type: Object,
+    default: () => ({}),
+  },
+  isDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  showPassword: {
+    type: Boolean,
+    default: true,
+  },
+})
+
+const userForm = reactive({})
+const regAction = "reg"
+const editAction = "edit"
+const useAllClassInfoList = basicClassesStore()
+
+// 用于侦听 编辑 按钮的数据变化
+watch(
+  () => props.userData,
+  newVal => {
+    for (const key in newVal) {
+      userForm[key] = newVal[key]
     }
   },
-  computed: {
-    rules() {
-      return rules
-    },
-    ...mapState(basicClassesStore, ["classList"]),
-  },
-
-  // 用于侦听 编辑 按钮的数据变化
-  watch: {
-    userData: {
-      handler(newVal) {
-        this.userForm = { ...newVal } // 使用对象的深拷贝来更新userForm
-      },
-      immediate: true, // 立即执行一次
-    },
-  },
-  methods: {
-    async handleSubmit() {
-      if (this.regAction === this.action) {
-        regStu(
-          this.userForm.name,
-          this.userForm.password,
-          this.userForm.email,
-          this.userForm.realName,
-          this.userForm.userSchoollD,
-          this.userForm.schoolCode,
-          this.userForm.class,
-          this.userForm.sex
-        ).then(res => {
-          if (res.data.status == 0) {
-            // 判断status是否为0
-            ElMessage({
-              message: "注册成功",
-              type: "success",
-              duration: 3000,
-            })
-            // 注册成功，跳转到成功的界面
-            this.$router.push("/success")
-          }
+  { immediate: true }
+) // 立即执行一次
+const emit = defineEmits(["edit-success"])
+const handleSubmit = async () => {
+  if (regAction === props.action) {
+    regStu(
+      userForm.name,
+      userForm.password,
+      userForm.email,
+      userForm.realName,
+      userForm.userSchoollD,
+      userForm.schoolCode,
+      userForm.class,
+      userForm.sex
+    ).then(res => {
+      if (res.data.status == 0) {
+        // 判断status是否为0
+        ElMessage({
+          message: "注册成功",
+          type: "success",
+          duration: 3000,
         })
-      } else if (this.editAction === this.action) {
-        const confirmResult = await ElMessageBox.confirm(
-          "确定修改吗？",
-          "警告",
-          { type: "warning" }
-        )
-        if (confirmResult === "confirm") {
-          await editStuInfo(
-            this.userForm.id,
-            this.userForm.name,
-            this.userForm.email,
-            this.userForm.realName,
-            this.userForm.userSchoollD,
-            this.userForm.schoolCode,
-            this.userForm.class,
-            this.userForm.sex
-          ).then(res => {
-            if (res.data.status === 0) {
-              // eslint-disable-next-line vue/require-explicit-emits
-              this.$emit("edit-success", false)
-              ElMessage({
-                message: "编辑成功",
-                type: "success",
-              })
-            }
+        // 注册成功，跳转到成功的界面
+        this.$router.push("/success")
+      }
+    })
+  } else if (editAction === props.action) {
+    const confirmResult = await ElMessageBox.confirm("确定修改吗？", "警告", {
+      type: "warning",
+    })
+    if (confirmResult === "confirm") {
+      await editStuInfo(
+        userForm.id,
+        userForm.name,
+        userForm.email,
+        userForm.realName,
+        userForm.userSchoollD,
+        userForm.schoolCode,
+        userForm.class,
+        userForm.sex
+      ).then(res => {
+        if (res.data.status === 0) {
+          emit("edit-success", false)
+          ElMessage({
+            message: "编辑成功",
+            type: "success",
           })
         }
-      }
-    },
-    resetForm(form) {
-      this.$refs[form].resetFields()
-    },
-  },
+      })
+    }
+  }
+}
+
+const resetForm = form => {
+  form.reset()
 }
 </script>
 
@@ -133,19 +119,19 @@ export default {
       <el-input v-model="userForm.password" type="password" show-password />
     </el-form-item>
     <el-form-item label="邮箱" prop="email">
-      <el-input v-model="userForm.email" :disabled="IsDisabled" />
+      <el-input v-model="userForm.email" :disabled="props.isDisabled" />
     </el-form-item>
     <el-form-item label="真实姓名" prop="realName">
-      <el-input v-model="userForm.realName" :disabled="IsDisabled" />
+      <el-input v-model="userForm.realName" :disabled="props.isDisabled" />
     </el-form-item>
     <el-form-item label="学生学号" prop="userSchoollD">
-      <el-input v-model="userForm.userSchoollD" :disabled="IsDisabled" />
+      <el-input v-model="userForm.userSchoollD" :disabled="props.isDisabled" />
     </el-form-item>
     <el-form-item label="学校" prop="schoolCode">
       <el-input
         v-model="userForm.schoolCode"
         style="width: 100%"
-        :disabled="IsDisabled"
+        :disabled="props.isDisabled"
       />
     </el-form-item>
     <el-form-item label="学生班级" prop="class">
@@ -153,10 +139,10 @@ export default {
         v-model="userForm.class"
         style="width: 100%"
         placeholder="请选择班级"
-        :disabled="IsDisabled"
+        :disabled="props.isDisabled"
       >
         <el-option
-          v-for="item in classList"
+          v-for="item in useAllClassInfoList.classList"
           :key="item.classid"
           :label="item.classname"
           :value="item.classname"
@@ -164,7 +150,7 @@ export default {
       </el-select>
     </el-form-item>
     <el-form-item label="性别" prop="sex">
-      <el-radio-group v-model="userForm.sex" :disabled="IsDisabled">
+      <el-radio-group v-model="userForm.sex" :disabled="props.isDisabled">
         <el-radio label="男">男</el-radio>
         <el-radio label="女">女</el-radio>
       </el-radio-group>
@@ -173,13 +159,13 @@ export default {
   <div class="button-container">
     <el-button
       type="primary"
-      :disabled="IsDisabled"
+      :disabled="props.isDisabled"
       @click="handleSubmit('userForm')"
       >提交
     </el-button>
     <el-button
       v-if="showPassword"
-      :disabled="IsDisabled"
+      :disabled="props.isDisabled"
       @click="resetForm('userForm')"
       >重置
     </el-button>
@@ -201,6 +187,7 @@ export default {
   align-items: center;
   width: 100%;
 }
+
 .button-container {
   display: flex;
   justify-content: center;

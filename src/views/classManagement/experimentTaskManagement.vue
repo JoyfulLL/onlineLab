@@ -5,6 +5,6 @@ onMounted(() => {
 })
 </script>
 
-<template>实验任务</template>
+<template>待开发</template>
 
 <style scoped lang="less"></style>

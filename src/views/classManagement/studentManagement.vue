@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/attribute-hyphenation -->
 <script setup>
 /**
  * @此页面数据表的增删查改功能已全部完成
@@ -281,8 +282,8 @@ const multipleSelection = ref([]),
  * description: The following code is used for pagination
  * lastUpdated: 2024/3/10
  */
-// Page display data quantity, default are 20 items
-const pageSize = ref(20)
+// Page display data quantity, default are 50 items
+const pageSize = ref(50)
 // Current page, default is page one
 const currentPage = ref(1)
 
@@ -451,7 +452,7 @@ const calculateDialogWidth = () => {
       style="width: 100%"
       border
       stripe
-      max-height="650"
+      max-height="700"
       element-loading-text="获取数据中... ..."
       @selection-change="handleSelectionChange"
     >
@@ -501,7 +502,7 @@ const calculateDialogWidth = () => {
   <!-- 分页 -->
   <el-pagination
     :page-size="pageSize"
-    :page-sizes="[20, 50, 100, 200]"
+    :page-sizes="[30, 50, 100, 200]"
     background
     default
     layout="total,prev, pager, next, sizes"

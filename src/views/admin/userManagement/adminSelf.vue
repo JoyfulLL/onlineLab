@@ -1,11 +1,7 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-  这是管理员账号列表
+  暂不开发
 </template>
 
-<style scoped lang="less">
-
-</style>
+<style scoped lang="less"></style>

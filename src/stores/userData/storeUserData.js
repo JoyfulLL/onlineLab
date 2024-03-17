@@ -56,23 +56,27 @@ export const useTableDataStore = defineStore("TableData", {
         const tx = db.transaction("students", "readwrite")
         const store = tx.objectStore("students")
 
-        // 清除旧数据
-        await store.clear()
+        // 检查是否已经存在数据
+        const existingData = await store.getAll()
+        if (!existingData.length) {
+          // 将新数据存储到 IndexedDB
+          for (const item of this.stuList) {
+            // 确保存储的对象是可以序列化的
+            const serializableItem = { ...item }
 
-        // 将新数据存储到 IndexedDB
-        this.stuList.forEach(async item => {
-          // 确保存储的对象是可以序列化的
-          const serializableItem = { ...item }
-
-          try {
-            await store.add(serializableItem)
-          } catch (error) {
-            console.error("Failed ", error)
+            try {
+              await store.add(serializableItem)
+            } catch (error) {
+              console.error("Failed ", error)
+            }
           }
-        })
+
+          console.log("Data stored successfully in IndexedDB!")
+        } else {
+          console.log("Data already exists in IndexedDB.")
+        }
 
         await tx.done
-        console.log("Data stored successfully in IndexedDB!")
       } catch (error) {
         console.error("Failed  IndexedDB:", error)
       }

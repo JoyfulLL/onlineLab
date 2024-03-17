@@ -9,6 +9,8 @@ import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
 import router from "@/router/index.js"
 import { checkToken } from "@/api/index.js"
+
+import { ElLoading } from "element-plus"
 const loginForm = ref({
   username: "",
   email: "",
@@ -16,50 +18,78 @@ const loginForm = ref({
 })
 const rememberMe = ref(false)
 const isPasswordVisible = ref(false)
-// const activeName = ref("统一身份认证")
-// const handleClick = (tab, event) => {
-//   console.log(tab, event)
-// }
+
+/**
+ * For full screen loading indicator.
+ */
+
+let loadingInstance = null
+const openFullScreen = () => {
+  const themeBackground = getComputedStyle(
+    document.documentElement
+  ).getPropertyValue("--loading-bg")
+  loadingInstance = ElLoading.service({
+    lock: true,
+    text: "登录中...",
+    background: themeBackground,
+  })
+}
+/**
+ * Close full screen loading indicator.
+ */
+const closeFullScreen = () => {
+  if (loadingInstance) {
+    loadingInstance.close()
+  }
+}
+
 // 因为在登录的API处已经做了传递参数的处理，故不需要在此区分name或者Email
 const onSubmitWithName = async () => {
-  await login(loginForm.value.username, loginForm.value.password)
-    .then(res => {
-      if (res.data.status === 0) {
-        ElMessage({
-          message: "登录成功",
-          type: "success",
-          duration: 3000,
-        })
-        // 如果用户选择了7天免登录，则设置定时任务在expiredAt到期之前刷新token
-        if (rememberMe) {
-          localStorage.setItem("rememberMe", rememberMe.value)
-        }
-        const authStore = useAuthStore()
-        authStore.setData(res.data.data)
-        // 将token存储到cookies
-        // const token = res.data.data.token
-        // document.cookie = `token=${token}; path=/;`
-        checkToken()
-        router.push({ path: "/" })
+  // 开启 loading
+  openFullScreen()
+
+  try {
+    const res = await login(loginForm.value.username, loginForm.value.password)
+
+    if (res.data.status === 0) {
+      ElMessage({
+        message: "登录成功",
+        type: "success",
+        duration: 3000,
+      })
+      // 如果用户选择了7天免登录，则设置定时任务在expiredAt到期之前刷新token
+      if (rememberMe) {
+        localStorage.setItem("rememberMe", rememberMe.value)
       }
+      const authStore = useAuthStore()
+      authStore.setData(res.data.data)
+      // 将token存储到cookies
+      // const token = res.data.data.token
+      // document.cookie = `token=${token}; path=/;`
+      checkToken()
+      router.push({ path: "/" })
+    } else {
       ElNotification({
         title: "温馨提示",
         message: "此网站处于测试阶段，并非最终效果；所有数据仅用于测试",
         type: "warning",
         duration: 3500,
       })
-    })
-    .catch(error => {
-      console.error(error.response.data.reason)
-      if (error.response.data.status === 1) {
-        ElNotification({
-          title: "错误",
-          message: error.response.data.reason,
-          type: "error",
-          duration: 3000,
-        })
-      }
-    })
+    }
+  } catch (error) {
+    console.error(error.response.data.reason)
+    if (error.response.data.status === 1) {
+      ElNotification({
+        title: "错误",
+        message: error.response.data.reason,
+        type: "error",
+        duration: 3000,
+      })
+    }
+  } finally {
+    // 关闭 loading
+    closeFullScreen()
+  }
 }
 
 const togglePasswordVisibility = () => {
@@ -365,7 +395,7 @@ input {
   padding: 10px;
   border-radius: 5px;
   outline: none;
-  color: #444444;
+  color: var(--input-color);
   border: 1px solid #0da2ff;
   width: 90%;
   font-size: 14px;

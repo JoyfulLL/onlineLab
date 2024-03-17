@@ -334,8 +334,8 @@ const filteredData = ref(
       <el-table-column fixed="right" label="操作" min-width="100">
         <template #default="scope">
           <el-button size="default" @click="editTeacher(scope.row)"
-            >编辑个人信息
-          </el-button>
+            >编辑</el-button
+          >
           <el-button
             type="danger"
             size="default"
