@@ -1,6 +1,7 @@
-<script lang="ts" setup></script>
+<script setup></script>
+
 <template>
-  待开发
+  <el-empty description="待开发" />
 </template>
 
-<style scoped lang="less"></style>
+<style scoped></style>

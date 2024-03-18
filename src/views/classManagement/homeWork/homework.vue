@@ -8,7 +8,7 @@
 <script setup></script>
 
 <template>
-  开发中
+  <el-empty description="开发中" />
 </template>
 
 <style lang="lcss" scoped></style>

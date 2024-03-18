@@ -124,7 +124,7 @@ const canSubmit = computed(() => {
                 </div>
                 <div class="right">
                   <!-- 扫码登录暂未开发  -->
-                  <el-link type="info" href="#" style="font-size: 11px" disabled
+                  <el-link type="info" href="/test" style="font-size: 11px"
                     >扫码登录<img src="../../assets/loginOrReg/qrCode.png"
                   /></el-link>
                 </div>
