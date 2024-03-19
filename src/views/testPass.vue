@@ -51,15 +51,6 @@ const activeName = ref("first")
           <el-tag type="warning">ardently: adv. 热情地</el-tag>
           <el-tag>espouse: verb 支持</el-tag>
         </el-card>
-        <div class="centered">
-          <el-link
-            target="_blank"
-            href="https://zhuanlan.zhihu.com/p/484015242"
-            style="font-size: medium;"
-          >
-            模板来源
-          </el-link>
-        </div>
       </el-tab-pane>
       <el-tab-pane label="对比类" name="second">
         <p>
@@ -176,10 +167,5 @@ p {
   margin-bottom: 5px;
   margin-right: 5px;
   font-size: 18px;
-}
-
-.centered {
-  text-align: center;
-  font-size: medium;
 }
 </style>
