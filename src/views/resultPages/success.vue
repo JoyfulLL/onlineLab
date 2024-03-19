@@ -22,11 +22,9 @@ const isDark = useDark({
 </script>
 
 <template>
-  <a-result status="success" title="表单提交成功">
-    <template #extra>
-      <a-button key="console" type="primary" @click="toLogin">去登录</a-button>
-    </template>
-  </a-result>
+  <el-empty description="成功" :image-size="200">
+    <el-button @click="toLogin">去登录</el-button>
+  </el-empty>
 </template>
 
-<style lang="lcss" scoped></style>
+<style lang="less" scoped></style>

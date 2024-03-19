@@ -23,35 +23,17 @@ const isDark = useDark({
 </script>
 
 <template>
-  <a-result
-    status="403"
-    title="403"
-    sub-title="抱歉，您暂时无权限访问，或登陆后重试"
-  >
-    <template #extra>
-      <div class="button-container">
-        <a-button type="primary" class="custom-button" @click="backTo"
-          >返回上一级</a-button
-        >
-        <a-button
-          style="color: rgb(58, 127, 6);"
-          class="custom-button"
-          @click="toLogin"
-          >登录</a-button
-        >
-      </div>
-      <div class="footer">
-        <el-link
-          href="http://beian.miit.gov.cn/"
-          target="_blank"
-          type="default"
-          class="footerLink"
-        >
-          粤ICP备2024184954号-1
-        </el-link>
-      </div>
-    </template>
-  </a-result>
+  <el-empty description="暂无权限访问，或登陆后重试" :image-size="200">
+    <el-button type="primary" class="custom-button" @click="backTo"
+      >返回上一级</el-button
+    >
+    <el-button
+      style="color: rgb(58, 127, 6);"
+      class="custom-button"
+      @click="toLogin"
+      >登录</el-button
+    >
+  </el-empty>
 </template>
 
 <style lang="less" scoped>

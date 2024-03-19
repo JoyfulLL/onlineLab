@@ -7,10 +7,7 @@ import AutoImport from "unplugin-auto-import/vite"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
 import Components from "unplugin-vue-components/vite"
-import {
-  AntDesignVueResolver,
-  ElementPlusResolver,
-} from "unplugin-vue-components/resolvers"
+import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import viteCompression from "vite-plugin-compression"
 import Inspect from "vite-plugin-inspect"
 
@@ -54,9 +51,6 @@ export default defineConfig({
         // Auto register Element Plus components
         ElementPlusResolver(),
         // Auto register AntDesign components
-        AntDesignVueResolver({
-          importStyle: false, // css in js
-        }),
       ],
 
       dts: path.resolve(pathSrc, "components.d.ts"),

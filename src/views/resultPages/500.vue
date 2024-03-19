@@ -17,11 +17,9 @@ const isDark = useDark({
 </script>
 
 <template>
-  <a-result status="500" title="500" sub-title="Sorry, the server is wrong.">
-    <template #extra>
-      <a-button type="primary">Back Home</a-button>
-    </template>
-  </a-result>
+  <el-empty description="服务器错误" :image-size="200">
+    <el-button type="primary">返回个人主页</el-button>
+  </el-empty>
 </template>
 
-<style lang="lcss" scoped></style>
+<style lang="less" scoped></style>

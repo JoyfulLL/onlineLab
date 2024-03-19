@@ -24,16 +24,14 @@ const isDark = useDark({
 </script>
 
 <template>
-  <a-result status="404" title="404" sub-title="此页面貌似不存在喔~">
-    <template #extra>
-      <div class="button-container">
-        <a-button class="custom-button" @click="backTo">返回上一级</a-button>
-        <a-button type="primary" class="custom-button" @click="goBackToUserInfo"
-          >返回个人中心</a-button
-        >
-      </div>
-    </template>
-  </a-result>
+  <el-empty description="页面不存在" :image-size="200">
+    <el-button class="custom-button" @click="backTo" type="info"
+      >返回上一级</el-button
+    >
+    <el-button class="custom-button" @click="goBackToUserInfo" type="primary"
+      >返回个人中心</el-button
+    >
+  </el-empty>
 </template>
 
 <style lang="less" scoped>
