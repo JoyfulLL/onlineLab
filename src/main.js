@@ -4,6 +4,9 @@ import axios from "axios"
 import * as echarts from "echarts"
 import "element-plus/theme-chalk/dark/css-vars.css"
 import "@/assets/dark/css-vars.less"
+//引入Elmessage和Elloading的css样式文件
+import 'element-plus/theme-chalk/el-loading.css';
+import 'element-plus/theme-chalk/el-message.css';
 import { createPinia } from "pinia"
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate"
 import { createApp } from "vue"

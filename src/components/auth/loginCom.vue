@@ -9,7 +9,6 @@ import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
 import router from "@/router/index.js"
 import { checkToken } from "@/api/index.js"
-
 import { ElLoading } from "element-plus"
 const loginForm = ref({
   username: "",

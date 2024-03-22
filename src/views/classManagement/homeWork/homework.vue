@@ -8,7 +8,8 @@
 <script setup></script>
 
 <template>
-  开发中
+  <el-empty description="待开发" :image-size="200">
+  </el-empty>
 </template>
 
 <style lang="lcss" scoped></style>

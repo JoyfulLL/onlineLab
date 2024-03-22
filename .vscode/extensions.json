@@ -2,7 +2,6 @@
     "recommendations": [
         "wejectchan.vue3-snippets-for-vscode",
         "hollowtree.vue-snippets",
-        "yggdrasill-7c9.axios-snippets",
         "mcright.auto-save",
     ]
 }
