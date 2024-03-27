@@ -67,14 +67,13 @@ const onSubmitWithName = async () => {
       // document.cookie = `token=${token}; path=/;`
       checkToken()
       router.push({ path: "/" })
-    } else {
       ElNotification({
         title: "温馨提示",
         message: "此网站处于测试阶段，并非最终效果；所有数据仅用于测试",
         type: "warning",
         duration: 3500,
       })
-    }
+    } 
   } catch (error) {
     console.error(error.response.data.reason)
     if (error.response.data.status === 1) {

@@ -6,14 +6,14 @@
 * @date 2024/02/05 14:06:44
 !-->
 
-<script setup lang="ts">
+<script setup>
 import classesList from "@/components/charts/classesListTable.vue"
 import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
 import { Edit } from "@element-plus/icons-vue"
 //import { checkToken } from "@/api/index.js"
-import UserInfo from "@/views/Home/home.ts"
+
 import {
   stuEditUserInfo,
   teacherEditUserInfo,
@@ -24,7 +24,7 @@ const useAuth = useAuthStore()
 const userScope = useAuth.getScope()
 const classesStore = basicClassesStore()
 
-const userInfo = ref<UserInfo>({
+const userInfo = ref({
   id: "",
   name: "",
   email: "",
@@ -44,13 +44,16 @@ onMounted(() => {
     useClassList.storeTeacherList()
   }
 })
-const loading = ref(true)
 
+let loading = ref(true)
+const refreshDOM = ref(true)
 const initialUserInfo = ref([])
 const getUserInfoData = () => {
-  userInfo.value = useAuth.userInfoArray
-  initialUserInfo.value = { ...userInfo.value }
   loading.value = false
+  userInfo.value = useAuth.userInfoArray
+  // console.log('userInfo',userInfo.value)
+  initialUserInfo.value = { ...userInfo.value }
+  refreshDOM.value=!refreshDOM.value
 }
 
 const fetchAllClassInfo = () => {
@@ -65,7 +68,7 @@ const teacherJoinNewClass = () => {
 }
 
 // 搜索班级的关键字
-const searchKeyword = ref<string>("")
+const searchKeyword = ref("")
 const useAllClassInfoList = basicClassesStore()
 const handleClose = done => {
   ElMessageBox.confirm("确定关闭？")
