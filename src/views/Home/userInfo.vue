@@ -232,10 +232,7 @@ const saveUserInfo =  () =>  {
               :icon="Edit"
               @click="toggleEditMode"
             >
-              <template v-if="loading">
-                <i class="el-icon-loading"></i> 正在提交...
-              </template>
-              <template v-else>
+              <template>
                 {{ editMode ? "保存" : "编辑" }}
               </template>
             </el-button>
