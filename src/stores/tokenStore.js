@@ -5,7 +5,7 @@
  * @date 2024/1/12
  */
 import { defineStore } from "pinia"
-
+import { checkToken } from "@/api/index.js"
 const ROLES = {
   admin: '1386988588595',
   teacher: '2525863625116',
@@ -38,6 +38,7 @@ export const useAuthStore = defineStore("auth", {
     },
     setCheckTokenData(userInfo) {
       // 校验成功后，可以获取到用户的基础信息
+      // api/index.js
       this.userInfoArray = userInfo
       // console.log(this.userInfoArray)
     },

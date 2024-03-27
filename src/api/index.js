@@ -39,6 +39,7 @@ export function checkToken() {
   service
     .get("/isvalid", { Authorization: `Bearer ${token}` })
     .then(res => {
+      // Store the user data
       if (res.data.status === 0) {
         useAuth.setCheckTokenData(res.data.data)
       }

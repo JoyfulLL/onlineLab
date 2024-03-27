@@ -1,7 +1,6 @@
 import Pagination from "@/components/Pagination.vue"
 import * as ElementPlusIconsVue from "@element-plus/icons-vue"
 import axios from "axios"
-import * as echarts from "echarts"
 import "element-plus/theme-chalk/dark/css-vars.css"
 import "@/assets/dark/css-vars.less"
 //引入Elmessage和Elloading的css样式文件
@@ -59,7 +58,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.config.globalProperties.$echarts = echarts
+
 app
   .use(pinia)
   .use(VueAxios, axios)

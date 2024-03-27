@@ -8,7 +8,6 @@
 import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
 import router from "@/router/index.js"
-import { checkToken } from "@/api/index.js"
 import { ElLoading } from "element-plus"
 const loginForm = ref({
   username: "",
@@ -65,13 +64,12 @@ const onSubmitWithName = async () => {
       // 将token存储到cookies
       // const token = res.data.data.token
       // document.cookie = `token=${token}; path=/;`
-      checkToken()
       router.push({ path: "/" })
       ElNotification({
         title: "温馨提示",
         message: "此网站处于测试阶段，并非最终效果；所有数据仅用于测试",
         type: "warning",
-        duration: 3500,
+        duration: 1500,
       })
     } 
   } catch (error) {
@@ -192,7 +190,7 @@ const canSubmit = computed(() => {
         <!-- 右边的底部栏，用于第三方API -->
         <div class="bottom-section">
           <div class="other-login">
-            <p type="default" style="font-size: 15px;">其它登录方式</p>
+            <!-- <p type="default" style="font-size: 12px;">其它登录方式</p> -->
             <div class="icon-container">
               <a href="#"><img src="../../assets/loginOrReg/qq.png"/></a>
               <a href="#"><img src="../../assets/loginOrReg/wechat.png"/></a>

@@ -12,8 +12,7 @@ import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
 import { Edit } from "@element-plus/icons-vue"
-//import { checkToken } from "@/api/index.js"
-
+import { checkToken } from "@/api/index.js"
 import {
   stuEditUserInfo,
   teacherEditUserInfo,
@@ -37,23 +36,28 @@ const userInfo = ref({
 const useClassList = teacherJoinedClassStore()
 
 onMounted(() => {
-  // checkToken()
+  checkToken()
   getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {
     useClassList.storeTeacherList()
   }
 })
+const loading = ref(true)
+/**
+ * open loading and colse it after 1S
+ */
+function openScreen(){
+  loading.value = true
+  setTimeout(() => {
+    loading.value = false
+  }, 1000)
+}
 
-let loading = ref(true)
-const refreshDOM = ref(true)
 const initialUserInfo = ref([])
 const getUserInfoData = () => {
+  userInfo.value = useAuth.getCheckTokenData()
   loading.value = false
-  userInfo.value = useAuth.userInfoArray
-  // console.log('userInfo',userInfo.value)
-  initialUserInfo.value = { ...userInfo.value }
-  refreshDOM.value=!refreshDOM.value
 }
 
 const fetchAllClassInfo = () => {
@@ -142,7 +146,7 @@ const toggleEditMode = () => {
   }
 }
 
-const saveUserInfo = () => {
+const saveUserInfo =  () =>  {
   ElMessageBox.confirm("确定保存修改的信息？", "Warning", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -152,15 +156,15 @@ const saveUserInfo = () => {
       const { email, userSchoollD, schoolCode, sex } = userInfo.value
 
       // Determine the appropriate API function based on the user's scope
-
-      if (userScope === "teacher") {
+      // Administrator can't use this function, just for teacher and student
+       if (userScope === "teacher") {
         teacherEditUserInfo(email, schoolCode, sex)
-          .then(reload())
+          .then(openScreen(),checkToken())
           .catch(error => {
             console.error(error)
           })
       } else {
-        stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(reload())
+         stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(openScreen(),checkToken())
       }
 
       ElMessage({
