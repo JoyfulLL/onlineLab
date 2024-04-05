@@ -36,7 +36,7 @@ const userInfo = ref({
 const useClassList = teacherJoinedClassStore()
 
 onMounted(() => {
-  checkToken()
+  //checkToken()
   getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {

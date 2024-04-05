@@ -34,28 +34,28 @@ const commonMenuTree = ref([
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
   {
-    index: "3-1",
+    index: "4-1",
     icon: "Notebook",
     title: "作业",
     name: "homework",
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "3-2",
+    index: "4-2",
     icon: "Tools",
     title: "实验任务",
     name: "experimentTaskManagement",
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "3-3",
+    index: "4-3",
     icon: "UploadFilled",
     title: "资料共享",
     name: "fileShare",
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "3-4",
+    index: "4-4",
     icon: "EditPen",
     title: "算法练习题",
     name: "algorithmExercises",
@@ -86,28 +86,28 @@ const teacherMenuTree = ref([
     scope: ["admin", "teacher"],
   },
   {
-    index: "3-1",
+    index: "4-1",
     icon: "Notebook",
     title: "作业",
     name: "homework",
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "3-2",
+    index: "4-2",
     icon: "Tools",
     title: "实验任务",
     name: "experimentTaskManagement",
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "3-3",
+    index: "4-3",
     icon: "UploadFilled",
     title: "资料共享",
     name: "fileShare",
     scope: ["admin", "teacher", "student"],
   },
   {
-    index: "3-4",
+    index: "4-4",
     icon: "EditPen",
     title: "算法练习题",
     name: "algorithmExercises",
@@ -244,7 +244,7 @@ activePath.value = router.currentRoute._value.meta.index
       <!--
       学校的名称以及logo仅能用于项目完成后，不能用于demo中，否则会违反备案！！！
       -->
-      <!--
+
       <div v-if="!useToCollapse.isCollapse">
         <img
           style="max-width: 180px; max-height: 55px"
@@ -259,9 +259,10 @@ activePath.value = router.currentRoute._value.meta.index
           alt="Collapsed Logo"
         />
       </div>
-      -->
 
-      <div v-if="!useToCollapse.isCollapse">
+
+      <!-- 
+        <div v-if="!useToCollapse.isCollapse">
         <img
           style="max-width: 180px; height: 55px"
           src="@/assets/demoLogo/vuejs.png"
@@ -274,7 +275,7 @@ activePath.value = router.currentRoute._value.meta.index
           src="@/assets/demoLogo/favicon.ico"
           alt="Collapsed Logo"
         />
-      </div>
+      </div> -->
     </div>
     <el-menu
       class="el-menu-vertical-demo"
@@ -327,9 +328,9 @@ activePath.value = router.currentRoute._value.meta.index
   height: 16px;
 }
 
-.icons.is-active {
-  color: #409eff;
-}
+// .icons.is-active {
+//   color: #409eff;
+// }
 
 .centered {
   text-align: center;
@@ -378,7 +379,7 @@ activePath.value = router.currentRoute._value.meta.index
   }
 
   .icons {
-    color: #409eff;
+    // color: #409eff;
   }
 }
 

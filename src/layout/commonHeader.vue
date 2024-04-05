@@ -12,11 +12,11 @@
       </div>
       <!-- 顶部LOGO -->
       <!-- 测试阶段，使用vuelogo代替学校logo -->
-      <!-- 学校logo地址：src="@/assets/logo.png" -->
+      <!-- 学校logo地址：src="@/assets/logo.png" src="@/assets/demoLogo/favicon.ico"-->
       <img
         v-if="props.isHomePgae"
         style="max-width: 180px; max-height: 60px"
-        src="@/assets/demoLogo/favicon.ico"
+        src="@/assets/logo.png"
       />
       <el-breadcrumb
         v-if="!props.isHomePgae"
@@ -39,9 +39,9 @@
         <el-switch
           v-model="isDark"
           :style="{ marginRight: '10px' }"
+          class="darkTheme"
           :active-action-icon="Moon"
           :inactive-action-icon="Sunny"
-          active-color="#6b6d71"
           @click="toggleTheme"
         />
       </div>
@@ -286,5 +286,12 @@ header {
   height: 27px;
   margin-left: 10px;
   // margin-right: 5px;
+  
 }
+
+// for el-switch-on
+.darkTheme{
+  --el-switch-on-color:#6b6d71;
+}
+
 </style>

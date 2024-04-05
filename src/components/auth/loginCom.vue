@@ -9,6 +9,7 @@ import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
 import router from "@/router/index.js"
 import { ElLoading } from "element-plus"
+import { checkToken } from "@/api/index.js"
 const loginForm = ref({
   username: "",
   email: "",
@@ -71,6 +72,7 @@ const onSubmitWithName = async () => {
         type: "warning",
         duration: 1500,
       })
+      checkToken()
     } 
   } catch (error) {
     console.error(error.response.data.reason)
