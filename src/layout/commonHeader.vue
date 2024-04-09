@@ -8,7 +8,8 @@
         style="width: 30px; height: 30px"
         @click="handleCollapse"
       >
-        <component :is="useToCollapse.isCollapse ? 'Expand' : 'Fold'" />
+        <!-- <component :is="useToCollapse.isCollapse ? 'Expand' : 'Fold'" /> -->
+        <HeaderSvg :icon-name="useToCollapse.isCollapse ? 'Expand' : 'Fold'" />
       </div>
       <!-- 顶部LOGO -->
       <!-- 测试阶段，使用vuelogo代替学校logo -->
@@ -75,12 +76,7 @@
       </a>
       <el-dropdown>
         <div>
-          <unicon
-            name="user-circle"
-            fill="royalblue"
-            width="33"
-            height="33"
-          ></unicon>
+          <HeaderSvg icon-name="usercenter" width="27" height="27" />
         </div>
         <template #dropdown>
           <el-dropdown-menu>
@@ -118,7 +114,7 @@ import {
 import { useRouter } from "vue-router"
 import { useToggle } from "@vueuse/shared"
 import { useDark } from "@vueuse/core"
-
+import HeaderSvg from "@/components/SvgOrIcon/CustomHeaderSvg.vue"
 const props = defineProps({
     isHomePgae: {
       type: Boolean,
@@ -229,6 +225,7 @@ header {
 .r-content {
   display: flex; // 使用Flexbox布局
   align-items: center; // 垂直居中对齐
+
   .el-badge {
     margin-right: 10px; // 设置el-badge的右边距
   }
@@ -243,6 +240,7 @@ header {
 
   div {
     outline: none; // 用于去除黑边框
+
     .large-icon {
       font-size: 50px;
     }
@@ -286,12 +284,10 @@ header {
   height: 27px;
   margin-left: 10px;
   // margin-right: 5px;
-  
 }
 
 // for el-switch-on
-.darkTheme{
-  --el-switch-on-color:#6b6d71;
+.darkTheme {
+  --el-switch-on-color: #6b6d71;
 }
-
 </style>

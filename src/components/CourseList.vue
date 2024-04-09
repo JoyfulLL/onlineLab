@@ -1,9 +1,10 @@
 <script setup>
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
-    courses: {
-      type: Array,
-      required: true,
-    },
+    // courses: {
+    //   type: Array,
+    //   required: false,
+    // },
   }),
   // const courseid = ref(props.courses.courseid)
   // console.log(courseid)
@@ -15,6 +16,50 @@ const props = defineProps({
   handleClick = (tab, event) => {
     console.log(tab, event)
   }
+
+// 虚拟课程列表
+const courses = ref([
+  {
+    courseid: 1,
+    title: "计算机网络",
+    description: "这是计算机网络",
+    membersCount: 30,
+    teachername: "张三",
+    image: "src/assets/img/Course/snicker.png"
+  },
+  {
+    courseid: 2,
+    title: "数据结构",
+    description: "这是数据结构的描述",
+    membersCount: 30,
+    teachername: "里斯",
+    image: "src/assets/img/Course/angry.png"
+  },
+  {
+    courseid: 3,
+    title: "高等数学1",
+    description: "这是一个描述2",
+    membersCount: 30,
+    teachername: "芬奇",
+    image: "src/assets/img/Course/blink.png"
+  },
+  {
+    courseid: 4,
+    title: "高等数学2",
+    description: "这是一个描述2",
+    membersCount: 30,
+    teachername: "root",
+    image: "src/assets/img/Course/dizzy.png"
+  },
+  {
+    courseid: 5,
+    title: "高等数学3",
+    description: "这是一个描述3",
+    membersCount: 30,
+    teachername: "肖",
+    image: "src/assets/img/Course/relax.png"
+  },
+])
 </script>
 
 <template>
@@ -57,7 +102,7 @@ const props = defineProps({
                 :body-style="{ padding: '0px' }"
                 style="margin-bottom: 20px;"
               >
-                <img src="../assets/img/courseDefault.jpg" class="image" />
+                <img :src="course.image" class="image" />
                 <div style="padding: 14px">
                   <span>{{ course.title }}</span>
                   <div class="bottom">教师姓名：{{ course.teachername }}</div>

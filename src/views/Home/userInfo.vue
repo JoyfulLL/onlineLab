@@ -17,12 +17,13 @@ import {
   stuEditUserInfo,
   teacherEditUserInfo,
 } from "@/api/userManagement/editUserInfo.js"
+import UserCenterSvg from "@/components/SvgOrIcon/CustomUserCenterSvg.vue"
+import AsideMenuSvg from "@/components/SvgOrIcon/CustomAsideMenuSvg.vue"
 
 const reload = inject("reload")
 const useAuth = useAuthStore()
 const userScope = useAuth.getScope()
 const classesStore = basicClassesStore()
-
 const userInfo = ref({
   id: "",
   name: "",
@@ -34,9 +35,8 @@ const userInfo = ref({
   studentClass: "",
 })
 const useClassList = teacherJoinedClassStore()
-
 onMounted(() => {
-  //checkToken()
+  checkToken()
   getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {
@@ -44,19 +44,11 @@ onMounted(() => {
   }
 })
 const loading = ref(true)
-/**
- * open loading and colse it after 1S
- */
-function openScreen(){
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 1000)
-}
 
 const initialUserInfo = ref([])
 const getUserInfoData = () => {
-  userInfo.value = useAuth.getCheckTokenData()
+  userInfo.value = useAuth.userInfoArray
+  initialUserInfo.value = { ...userInfo.value }
   loading.value = false
 }
 
@@ -83,44 +75,7 @@ const handleClose = done => {
       // catch error
     })
 }
-// 虚拟课程列表
-const courses = ref([
-  {
-    courseid: 1,
-    title: "计算机网络",
-    description: "这是计算机网络",
-    membersCount: 30,
-    teachername: "张三",
-  },
-  {
-    courseid: 2,
-    title: "数据结构",
-    description: "这是数据结构的描述",
-    membersCount: 30,
-    teachername: "里斯",
-  },
-  {
-    courseid: 3,
-    title: "高等数学1",
-    description: "这是一个描述2",
-    membersCount: 30,
-    teachername: "芬奇",
-  },
-  {
-    courseid: 4,
-    title: "高等数学2",
-    description: "这是一个描述2",
-    membersCount: 30,
-    teachername: "root",
-  },
-  {
-    courseid: 5,
-    title: "高等数学3",
-    description: "这是一个描述3",
-    membersCount: 30,
-    teachername: "肖",
-  },
-])
+
 
 // edit user info {data function compute}
 const editMode = ref(false)
@@ -146,7 +101,7 @@ const toggleEditMode = () => {
   }
 }
 
-const saveUserInfo =  () =>  {
+const saveUserInfo = () => {
   ElMessageBox.confirm("确定保存修改的信息？", "Warning", {
     confirmButtonText: "确定",
     cancelButtonText: "取消",
@@ -156,15 +111,15 @@ const saveUserInfo =  () =>  {
       const { email, userSchoollD, schoolCode, sex } = userInfo.value
 
       // Determine the appropriate API function based on the user's scope
-      // Administrator can't use this function, just for teacher and student
-       if (userScope === "teacher") {
+
+      if (userScope === "teacher") {
         teacherEditUserInfo(email, schoolCode, sex)
-          .then(openScreen(),checkToken())
+          .then(reload())
           .catch(error => {
             console.error(error)
           })
       } else {
-         stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(openScreen(),checkToken())
+        stuEditUserInfo(email, userSchoollD, schoolCode, sex).then(reload())
       }
 
       ElMessage({
@@ -232,7 +187,10 @@ const saveUserInfo =  () =>  {
               :icon="Edit"
               @click="toggleEditMode"
             >
-              <template>
+              <template v-if="loading">
+                <i class="el-icon-loading"></i> 正在提交...
+              </template>
+              <template v-else>
                 {{ editMode ? "保存" : "编辑" }}
               </template>
             </el-button>
@@ -242,7 +200,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="adjust-circle" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="id" />
                 用户ID
               </div>
             </template>
@@ -251,7 +209,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="user" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="userName" />
                 用户名
               </div>
             </template>
@@ -260,7 +218,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="user-square" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="name" />
                 姓名
               </div>
             </template>
@@ -269,7 +227,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="info-circle" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="studentNum" />
                 学号
               </div>
             </template>
@@ -286,7 +244,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="medal" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="userClass" />
                 班级
               </div>
             </template>
@@ -295,7 +253,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="book-open" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="school" />
                 学校
               </div>
             </template>
@@ -312,7 +270,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="envelope" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="email" />
                 邮箱
               </div>
             </template>
@@ -329,7 +287,7 @@ const saveUserInfo =  () =>  {
           <el-descriptions-item>
             <template #label>
               <div class="cell-item">
-                <unicon name="mars" fill="royalblue"></unicon>
+                <UserCenterSvg icon-name="sex" />
                 性别
               </div>
             </template>
@@ -379,15 +337,15 @@ const saveUserInfo =  () =>  {
         </template>
         <div class="icon-container">
           <router-link class="icon-wrapper" to="/userManagement">
-            <unicon name="user" fill="royalblue"></unicon>
+            <AsideMenuSvg icon-name="userManagement" />
             <span class="icon-label">用户管理</span>
           </router-link>
           <router-link class="icon-wrapper" to="/classRoomManagement">
-            <unicon name="book-reader" fill="royalblue"></unicon>
+            <AsideMenuSvg icon-name="classManagement" />
             <span class="icon-label">班级管理</span>
           </router-link>
           <div class="icon-wrapper">
-            <unicon name="swatchbook" fill="royalblue"></unicon>
+            <AsideMenuSvg icon-name="CourseManagement"/>
             <span class="icon-label">课程管理</span>
           </div>
           <!-- 更多的功能 -->
@@ -396,7 +354,7 @@ const saveUserInfo =  () =>  {
     </div>
     <div>
       <!-- 底部的课程列表 -->
-      <CourseList :courses="courses" />
+      <CourseList />
     </div>
   </div>
   <div class="footerCon">

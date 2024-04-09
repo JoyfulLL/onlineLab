@@ -4,7 +4,7 @@ import { useMenuStore } from "@/stores/menu"
 import { useAuthStore } from "@/stores/tokenStore"
 import { onMounted, ref } from "vue"
 import { useRouter } from "vue-router"
-
+import AsideMenuSvg from "@/components/SvgOrIcon/CustomAsideMenuSvg.vue"
 const useScope = useAuthStore()
 // 读取当前用户的scope角色并存储
 const userScope = useScope.getScope() // 获取到的scope
@@ -28,7 +28,7 @@ const courses = ref([
 const commonMenuTree = ref([
   {
     index: "1",
-    icon: "PieChart",
+    icon: "data",
     title: "总览",
     name: "Home",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
@@ -42,14 +42,14 @@ const commonMenuTree = ref([
   },
   {
     index: "4-2",
-    icon: "Tools",
+    icon: "settings",
     title: "实验任务",
     name: "experimentTaskManagement",
     scope: ["admin", "teacher", "student"],
   },
   {
     index: "4-3",
-    icon: "UploadFilled",
+    icon: "file",
     title: "资料共享",
     name: "fileShare",
     scope: ["admin", "teacher", "student"],
@@ -63,7 +63,7 @@ const commonMenuTree = ref([
   },
   {
     index: "99",
-    icon: "PieChart",
+    icon: "Contributors",
     title: "贡献者",
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
@@ -73,14 +73,14 @@ const commonMenuTree = ref([
 const teacherMenuTree = ref([
   {
     index: "1",
-    icon: "PieChart",
+    icon: "data",
     title: "总览",
     name: "Home",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
   {
     index: "2-3",
-    icon: "UserFilled",
+    icon: "student",
     title: "学生管理",
     name: "studentManagement",
     scope: ["admin", "teacher"],
@@ -94,14 +94,14 @@ const teacherMenuTree = ref([
   },
   {
     index: "4-2",
-    icon: "Tools",
+    icon: "settings",
     title: "实验任务",
     name: "experimentTaskManagement",
     scope: ["admin", "teacher", "student"],
   },
   {
     index: "4-3",
-    icon: "UploadFilled",
+    icon: "file",
     title: "资料共享",
     name: "fileShare",
     scope: ["admin", "teacher", "student"],
@@ -115,7 +115,7 @@ const teacherMenuTree = ref([
   },
   {
     index: "99",
-    icon: "PieChart",
+    icon: "Contributors",
     title: "贡献者",
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
@@ -126,14 +126,14 @@ const teacherMenuTree = ref([
 const adminMenuTree = ref([
   {
     index: "1",
-    icon: "PieChart",
+    icon: "data",
     title: "总览",
     name: "Home",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
   },
   {
     index: "2",
-    icon: "user",
+    icon: "userManagement",
     title: "用户管理",
     subMenu: [
       {
@@ -152,7 +152,7 @@ const adminMenuTree = ref([
       },
       {
         subIndex: "2-3",
-        subIcon: "UserFilled",
+        subIcon: "student",
         title: "学生管理",
         name: "studentManagement",
         subScope: ["admin", "teacher"],
@@ -162,7 +162,7 @@ const adminMenuTree = ref([
   },
   {
     index: "3",
-    icon: "Connection",
+    icon: "classManagement",
     title: "班级管理",
     name: "classRoomManagement",
     scope: ["admin"],
@@ -181,14 +181,14 @@ const adminMenuTree = ref([
       },
       {
         subIndex: "4-2",
-        subIcon: "Tools",
+        subIcon: "settings",
         title: "实验任务",
         name: "experimentTaskManagement",
         subScope: ["admin", "teacher", "student"],
       },
       {
         subIndex: "4-3",
-        subIcon: "UploadFilled",
+        subIcon: "file",
         title: "资料共享",
         name: "fileShare",
         subScope: ["admin", "teacher", "student"],
@@ -205,7 +205,7 @@ const adminMenuTree = ref([
   },
   {
     index: "99",
-    icon: "PieChart",
+    icon: "Contributors",
     title: "贡献者",
     name: "Contributors",
     scope: ["admin", "teacher", "student"], // 适用于所有权限
@@ -292,7 +292,8 @@ activePath.value = router.currentRoute._value.meta.index
           :index="item.index"
           @click="clickMenu(item)"
         >
-          <component :is="item.icon" class="icons"></component>
+          <!-- <component :is="item.icon" class="icons"></component> -->
+          <AsideMenuSvg class="icons" :icon-name="item.icon" />
           <template #title>{{ item.title }}</template>
         </el-menu-item>
         <!--        如果为假，即存在二级菜单-->
@@ -300,7 +301,8 @@ activePath.value = router.currentRoute._value.meta.index
         <el-sub-menu v-else :index="item.index">
           <template #title>
             <!--            二级菜单的 图标与标题-->
-            <component :is="item.icon" class="icons"></component>
+            <!-- <component :is="item.icon" class="icons"></component> -->
+            <AsideMenuSvg class="icons" :icon-name="item.icon" />
             <span>{{ item.title }}</span>
           </template>
 
@@ -311,8 +313,9 @@ activePath.value = router.currentRoute._value.meta.index
               :index="subItem.subIndex"
               @click="clickMenu(subItem)"
             >
-              <!-- 二级菜单列表 -->
-              <component :is="subItem.subIcon" class="icons"></component>
+              <!-- 二级菜单列表的 图标与标题 -->
+              <!-- <component :is="subItem.subIcon" class="icons"></component> -->
+              <AsideMenuSvg class="icons" :icon-name="subItem.subIcon" />
               <template #title>{{ subItem.title }}</template>
             </el-menu-item>
           </template>
@@ -324,8 +327,8 @@ activePath.value = router.currentRoute._value.meta.index
 
 <style scoped lang="less">
 .icons {
-  width: 16px;
-  height: 16px;
+  width: 23px;
+  height: 23px;
 }
 
 // .icons.is-active {
@@ -369,18 +372,11 @@ activePath.value = router.currentRoute._value.meta.index
   margin-top: 22px;
 }
 
-.el-sub-menu.is-active {
-  background-color: #d9ecff !important;
-  /* 背景使用淡蓝色 */
-  border-radius: 8px;
 
-  span {
-    color: #409eff;
-  }
-
-  .icons {
-    // color: #409eff;
-  }
+html.light .el-sub-menu.is-active {
+    background-color: #d9ecff !important;
+    /* 背景使用淡蓝色 */
+    border-radius: 8px;
 }
 
 .el-menu-item.is-active {

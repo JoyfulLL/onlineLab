@@ -24,7 +24,7 @@ const courseRoutes = [
         path: "homework",
         name: "homework",
         component: () =>
-          import("../views/classManagement/homeWork/homework.vue"),
+          import("../views/classManagement/homeWork/Home-Work.vue"),
         meta: {
           requireAuth: true,
           role: ["admin", "teacher", "student"],

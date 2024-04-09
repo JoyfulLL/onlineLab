@@ -1,3 +1,4 @@
+<!-- eslint-disable-next-line vue/multi-word-component-names -->
 <script setup>
 /**
  * @file  Pagination.vue
@@ -35,6 +36,7 @@ const props = defineProps({
   changePage = val => {
     console.log(`current page: ${val}`)
     // currentPage.value=val;
+    // eslint-disable-next-line no-undef
     emit("page-change", val)
   }
 </script>

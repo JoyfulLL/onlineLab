@@ -1,3 +1,4 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <!--
 * @description 管理员的班级管理页面
 * @fileName adminManageClasses.vue

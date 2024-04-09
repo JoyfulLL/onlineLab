@@ -10,9 +10,9 @@ const frontendContributors = ref([
       id: 1,
       name: "JoyfulLL",
       realName: "梁俊枫",
-      linesOfCode: 6000,
-      commits: 92,
-      description: "交互逻辑设计，界面UI设计，部分响应式设计，与后端交互，测试",
+      linesOfCode: 6800,
+      commits: 9,
+      description: "项目构建，交互逻辑设计，界面设计，与后端交互，网站测试",
     },
     {
       id: 2,

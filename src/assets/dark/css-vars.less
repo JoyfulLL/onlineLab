@@ -28,11 +28,11 @@ html.dark {
 html.light {
     /* 亮色模式下的背景颜色 */
     --primary-bg: #f6f6f6;
-    --login-bg-form:#ffffff;
+    --login-bg-form: #ffffff;
     // 登录的时候加载的背景颜色
-    --loading-bg:rgba(255, 255, 255, 0.7);
+    --loading-bg: rgba(255, 255, 255, 0.7);
     // 输入框中字体颜色
-    --input-color:#000000;
+    --input-color: #000000;
 }
 
 
@@ -40,27 +40,41 @@ html.light {
 
 /* 设置字体颜色为白色 */
 html.dark .el-menu-item.is-active {
-    color: #ffffff;
-    background-color: #3e8ef7 !important;
-
-    /* 白色 */
-    span {
-        color: #ffffff;
+    //color: #409eff;
+    background-color: #FFFFFF !important;
+    position: relative;
+  
+    /* 设置相对定位 */
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      /* 将竖线位置设置在右边 */
+      width: 3px;
+      /* 设置竖线宽度 */
+      height: 100%;
+      /* 设置竖线高度 */
+      background-color: #409eff;
+      /* 设置竖线颜色为蓝色 */
+      border-radius: 2px;
+      /* 设置竖线的圆角 */
     }
-}
-
-html.dark .el-menu-item.is-active::after {
-    display: none;
-    /* 不显示竖线 */
-}
-
-html.dark .el-sub-menu.is-active {
+  
     background-color: transparent !important;
+    color: #409eff;
+    /* 字体颜色蓝色 */
+    border-radius: 8px;
+    /* 添加圆角 */
+    overflow: hidden;
 }
 
-html.dark .el-sub-menu__title.icons.is-active {
-    background-color: #3e8ef7 !important;
+html.dark .el-sub-menu.is-active > .el-sub-menu__title {
+    background-color: #409eff !important;
+    color: #FFFFFF;
+    border-radius: 8px;
 }
+
 
 html.dark .el-menu-item:hover {
     background-color: #555555;
@@ -87,8 +101,11 @@ html.dark .el-breadcrumb__item:last-child .el-breadcrumb__inner {
 
 // 用于antd暗黑模式下的样式
 html.dark .ant-result .ant-result-title {
-    color: white; /* 设置暗黑模式下的字体颜色 */
+    color: white;
+    /* 设置暗黑模式下的字体颜色 */
 }
+
 html.dark .ant-result .ant-result-subtitle {
-    color: white; /* 设置暗黑模式下的字体颜色 */
+    color: white;
+    /* 设置暗黑模式下的字体颜色 */
 }

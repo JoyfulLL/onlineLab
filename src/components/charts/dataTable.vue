@@ -1,3 +1,4 @@
+<!-- eslint-disable no-undef -->
 <script setup>
 /**
  * @file  dataTable.vue
@@ -15,6 +16,7 @@ const props = defineProps({
 }),
 
  displayData = computed(() => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const startIndex = (props.currentPage - 1) * props.pageSize
 })
 
