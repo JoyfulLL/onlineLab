@@ -1,4 +1,9 @@
 <script setup>
+import snicker from "@/assets/img/Course/snicker.png"
+import angry from "@/assets/img/Course/angry.png"
+import blink from "@/assets/img/Course/blink.png"
+import dizzy from "@/assets/img/Course/dizzy.png"
+import relax from "@/assets/img/Course/relax.png"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
     // courses: {
@@ -25,7 +30,7 @@ const courses = ref([
     description: "这是计算机网络",
     membersCount: 30,
     teachername: "张三",
-    image: "src/assets/img/Course/snicker.png"
+    image: snicker,
   },
   {
     courseid: 2,
@@ -33,7 +38,7 @@ const courses = ref([
     description: "这是数据结构的描述",
     membersCount: 30,
     teachername: "里斯",
-    image: "src/assets/img/Course/angry.png"
+    image: angry,
   },
   {
     courseid: 3,
@@ -41,7 +46,7 @@ const courses = ref([
     description: "这是一个描述2",
     membersCount: 30,
     teachername: "芬奇",
-    image: "src/assets/img/Course/blink.png"
+    image: blink,
   },
   {
     courseid: 4,
@@ -49,7 +54,7 @@ const courses = ref([
     description: "这是一个描述2",
     membersCount: 30,
     teachername: "root",
-    image: "src/assets/img/Course/dizzy.png"
+    image: dizzy,
   },
   {
     courseid: 5,
@@ -57,7 +62,7 @@ const courses = ref([
     description: "这是一个描述3",
     membersCount: 30,
     teachername: "肖",
-    image: "src/assets/img/Course/relax.png"
+    image: relax,
   },
 ])
 </script>
@@ -102,7 +107,7 @@ const courses = ref([
                 :body-style="{ padding: '0px' }"
                 style="margin-bottom: 20px;"
               >
-                <img :src="course.image" class="image" />
+                <img :src="course.image" class="image"/>
                 <div style="padding: 14px">
                   <span>{{ course.title }}</span>
                   <div class="bottom">教师姓名：{{ course.teachername }}</div>

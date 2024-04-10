@@ -1,5 +1,5 @@
 import homeRouter from "@/router/home"
-import { toRefreshToken } from "@/api"
+import { checkToken, toRefreshToken } from "@/api"
 import userInfoRouter from "@/router/userInfo"
 import userManagementRouters from "@/router/userManagement"
 import { useAuthStore } from "@/stores/tokenStore.js"
@@ -58,7 +58,7 @@ const router = createRouter({
       name: "userInfo",
       redirect: "/userInfo",
       component: () => import("../layout/homePageLayout.vue"),
-      meta: { requireAuth: true, title: "个人中心" },
+      meta: { requireAuth: true, title: "个人中心" ,requireDataRefresh:true},
       children: [...userInfoRouter],
     },
     {
@@ -114,7 +114,10 @@ router.beforeEach((to, from, next) => {
     // token为空，则没有登录，跳转到登录
     if (!token) {
       next({ name: "Login" })
-    } else {
+    } else if(to.meta.requireDataRefresh){
+      checkToken()
+      next()
+    }else{
       next()
     }
   } else {

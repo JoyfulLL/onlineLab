@@ -7,11 +7,13 @@
 !-->
 
 <script setup>
+import { onBeforeMount } from "vue"
 import classesList from "@/components/charts/classesListTable.vue"
 import { basicClassesStore } from "@/stores"
 import { teacherJoinedClassStore } from "@/stores/classData.js"
 import { useAuthStore } from "@/stores/tokenStore.js"
 import { Edit } from "@element-plus/icons-vue"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { checkToken } from "@/api/index.js"
 import {
   stuEditUserInfo,
@@ -36,13 +38,18 @@ const userInfo = ref({
 })
 const useClassList = teacherJoinedClassStore()
 onMounted(() => {
-  checkToken()
-  getUserInfoData()
+  // checkToken()
+  // getUserInfoData()
   fetchAllClassInfo()
   if (userScope === "teacher") {
     useClassList.storeTeacherList()
   }
 })
+
+onBeforeMount(() => {
+  getUserInfoData()
+})
+
 const loading = ref(true)
 
 const initialUserInfo = ref([])
@@ -55,6 +62,16 @@ const getUserInfoData = () => {
 const fetchAllClassInfo = () => {
   classesStore.storeClassesList(useAuth.data.scope)
 }
+
+function refreshDom() {
+  getUserInfoData()
+  loading.value = true
+  // 1秒后将 loading 设置为 false
+  setTimeout(() => {
+    loading.value = false
+  }, 1000)
+}
+
 /**
  * 教师用于加入班级
  */
@@ -75,7 +92,6 @@ const handleClose = done => {
       // catch error
     })
 }
-
 
 // edit user info {data function compute}
 const editMode = ref(false)
@@ -153,9 +169,7 @@ const saveUserInfo = () => {
         clearable
       >
         <template #prefix>
-          <el-icon class="el-input__icon">
-            <unicon name="search" fill="royalblue"></unicon>
-          </el-icon>
+          <UserCenterSvg icon-name="search" />
         </template>
       </el-input>
     </el-form-item>
@@ -345,7 +359,7 @@ const saveUserInfo = () => {
             <span class="icon-label">班级管理</span>
           </router-link>
           <div class="icon-wrapper">
-            <AsideMenuSvg icon-name="CourseManagement"/>
+            <AsideMenuSvg icon-name="CourseManagement" />
             <span class="icon-label">课程管理</span>
           </div>
           <!-- 更多的功能 -->
@@ -356,6 +370,13 @@ const saveUserInfo = () => {
       <!-- 底部的课程列表 -->
       <CourseList />
     </div>
+  </div>
+  <div class="affix-container">
+    <el-affix position="bottom" :offset="50">
+      <el-button id="count" class="right-bottom-button" @click="refreshDom()">
+        <UserCenterSvg icon-name="refresh" />
+      </el-button>
+    </el-affix>
   </div>
   <div class="footerCon">
     <el-link
@@ -497,5 +518,14 @@ const saveUserInfo = () => {
   .icon-wrapper {
     flex-basis: calc(50% - 20px);
   }
+}
+
+.affix-container {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.right-bottom-button {
+  margin-right: 50px;
 }
 </style>

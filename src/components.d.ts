@@ -14,6 +14,7 @@ declare module 'vue' {
     CustomHeaderSvg: typeof import('./components/SvgOrIcon/CustomHeaderSvg.vue')['default']
     CustomUserCenterSvg: typeof import('./components/SvgOrIcon/CustomUserCenterSvg.vue')['default']
     DataTable: typeof import('./components/charts/dataTable.vue')['default']
+    ElAffix: typeof import('element-plus/es')['ElAffix']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']

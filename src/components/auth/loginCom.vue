@@ -9,6 +9,7 @@ import { login } from "@/api"
 import { useAuthStore } from "@/stores/tokenStore"
 import router from "@/router/index.js"
 import { ElLoading } from "element-plus"
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { checkToken } from "@/api/index.js"
 const loginForm = ref({
   username: "",
@@ -72,7 +73,7 @@ const onSubmitWithName = async () => {
         type: "warning",
         duration: 1500,
       })
-      checkToken()
+      //checkToken()
     } 
   } catch (error) {
     console.error(error.response.data.reason)
