@@ -74,7 +74,7 @@ const onSubmitWithName = async () => {
         duration: 1500,
       })
       //checkToken()
-    } 
+    }
   } catch (error) {
     console.error(error.response.data.reason)
     if (error.response.data.status === 1) {
@@ -159,10 +159,10 @@ const canSubmit = computed(() => {
                   <div class="password-toggle">
                     <el-icon @click="togglePasswordVisibility">
                       <template v-if="isPasswordVisible">
-                        <View />
+                        <img src="../../assets/icon/view.svg" style="width: 18px; height: 18px;"/>
                       </template>
                       <template v-else>
-                        <Hide />
+                        <img src="../../assets/icon/hide.svg" style="width: 18px; height: 18px;"/>
                       </template>
                     </el-icon>
                   </div>
