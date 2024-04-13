@@ -11,7 +11,7 @@ const frontendContributors = ref([
       name: "JoyfulLL",
       realName: "梁俊枫",
       linesOfCode: 6800,
-      commits: 9,
+      commits: 100,
       description: "项目构建，交互逻辑设计，界面设计，与后端交互，网站测试",
     },
     {
@@ -135,7 +135,7 @@ const frontendContributors = ref([
     </div>
   </div>
   <div class="footerCon">
-    更新日期：2024年3月22日
+    更新日期：2024年4月13日
   </div>
   <div style="margin-top: 10px;">
     数据来源：GitHub
