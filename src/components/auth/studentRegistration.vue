@@ -8,7 +8,7 @@
 import { regStu } from "@/api/userManagement/registerUser.js"
 import { rules } from "@/utils/formRules.js"
 import { editStuInfo } from "@/api/userManagement/editUserInfo"
-import { basicClassesStore } from "@/stores"
+import { basicClassesStore } from "@/stores/index"
 
 const props = defineProps({
   action: {
@@ -137,7 +137,7 @@ const resetForm = form => {
     <el-form-item label="学生班级" prop="class">
       <el-select
         v-model="userForm.class"
-        style="width: 100%"
+        style="width: 200px;"
         placeholder="请选择班级"
         :disabled="props.isDisabled"
       >
@@ -146,13 +146,13 @@ const resetForm = form => {
           :key="item.classid"
           :label="item.classname"
           :value="item.classname"
-        ></el-option>
+        />
       </el-select>
     </el-form-item>
     <el-form-item label="性别" prop="sex">
       <el-radio-group v-model="userForm.sex" :disabled="props.isDisabled">
-        <el-radio label="男">男</el-radio>
-        <el-radio label="女">女</el-radio>
+        <el-radio value="男">男</el-radio>
+        <el-radio value="女">女</el-radio>
       </el-radio-group>
     </el-form-item>
   </el-form>

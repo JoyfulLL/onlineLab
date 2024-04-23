@@ -11,6 +11,7 @@ import router from "@/router/index.js"
 import { ElLoading } from "element-plus"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { checkToken } from "@/api/index.js"
+import CommonSvg from "../SvgOrIcon/CommonSvg.vue"
 const loginForm = ref({
   username: "",
   email: "",
@@ -159,10 +160,10 @@ const canSubmit = computed(() => {
                   <div class="password-toggle">
                     <el-icon @click="togglePasswordVisibility">
                       <template v-if="isPasswordVisible">
-                        <img src="../../assets/icon/view.svg" style="width: 18px; height: 18px;"/>
+                        <CommonSvg icon-name="view"/>
                       </template>
                       <template v-else>
-                        <img src="../../assets/icon/hide.svg" style="width: 18px; height: 18px;"/>
+                        <CommonSvg icon-name="hide"/>
                       </template>
                     </el-icon>
                   </div>

@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AddStudentsFromClass: typeof import('./components/addStudentsFromClass.vue')['default']
     ClassesListTable: typeof import('./components/charts/classesListTable.vue')['default']
+    CommonSvg: typeof import('./components/SvgOrIcon/CommonSvg.vue')['default']
     CourseList: typeof import('./components/CourseList.vue')['default']
     CustomAsideMenuSvg: typeof import('./components/SvgOrIcon/CustomAsideMenuSvg.vue')['default']
     CustomHeaderSvg: typeof import('./components/SvgOrIcon/CustomHeaderSvg.vue')['default']

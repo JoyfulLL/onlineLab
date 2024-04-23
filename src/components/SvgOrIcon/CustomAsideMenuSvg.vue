@@ -188,6 +188,7 @@
 </template>
 
 <script setup>
+import { fillColor } from "./style.js"
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const props = defineProps({
   iconName: {
@@ -203,47 +204,13 @@ const props = defineProps({
     default: "0 0 1024 1024",
   },
 })
-const theme = ref(getTheme()) // 初始化时获取当前主题
 
-// 监听 HTML 元素的类变化来更新主题
-watchThemeChange(theme)
-
-// 根据主题设置不同的填充颜色
-const fillColor = ref(getFillColor(theme.value))
-
-// 监听主题变化，更新填充颜色
-watch(theme, newTheme => {
-  fillColor.value = getFillColor(newTheme)
-})
-
-// 获取当前主题
-function getTheme() {
-  const htmlClassList = document.documentElement.classList
-  return htmlClassList.contains("dark") ? "dark" : "light"
-}
-
-// 监听主题变化
-function watchThemeChange(theme) {
-  const instance = getCurrentInstance()
-  if (!instance) return
-  const observer = new MutationObserver(() => {
-    theme.value = getTheme()
-  })
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  })
-}
-
-// 根据主题返回对应的填充颜色
-function getFillColor(theme) {
-  return theme === "light" ? "#3C405D" : "#d9ecff"
-}
 </script>
 
 <style scoped>
 .iconClass {
   width: 32px;
   height: 32px;
+  margin-right: 5px;
 }
 </style>

@@ -6,6 +6,7 @@ import router from "@/router/index.js"
 import { useToggle } from "@vueuse/shared"
 import { useDark } from "@vueuse/core"
 import universitiesList from "@/assets/static/schoolLists.json"
+import CommonSvg from "@/components/SvgOrIcon/CommonSvg.vue"
 onMounted(() => {
   restaurants.value = universitiesList.map(item => {
     return {
@@ -37,7 +38,7 @@ const userForm = reactive({
   realName: "",
   userSchoollD: "",
   schoolCode: "",
-  class: "",
+  class: "21网络工程B",
   sex: "",
 })
 
@@ -138,9 +139,9 @@ const handleSubmit = () => {
   <div id="building">
     <div class="card-container">
       <el-card class="form-card" shadow="hover">
-        <a class="back-link" href="/login"
-          ><el-icon color="#409EFC" size="20"><Back /></el-icon
-        ></a>
+        <a class="back-link" href="/login">
+          <CommonSvg icon-name="back"/>
+        </a>
         <h2 class="form-title">学生注册</h2>
         <el-form
           ref="form"
@@ -216,8 +217,8 @@ const handleSubmit = () => {
           <el-form-item label="性别" prop="sex">
             <div class="centered-radio">
               <el-radio-group v-model="userForm.sex">
-                <el-radio label="男">男</el-radio>
-                <el-radio label="女">女</el-radio>
+                <el-radio value="男">男</el-radio>
+                <el-radio value="女">女</el-radio>
               </el-radio-group>
             </div>
           </el-form-item>
@@ -260,7 +261,6 @@ const handleSubmit = () => {
 .form-card {
   width: 400px;
   border: none;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 

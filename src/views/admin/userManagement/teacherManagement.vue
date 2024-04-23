@@ -307,9 +307,7 @@ const filteredData = ref(
           clearable
         >
           <template #prefix>
-            <el-icon class="el-input__icon">
-              <unicon name="search" fill="royalblue"></unicon>
-            </el-icon>
+            <CustomUserCenterSvg icon-name="search" class="el-input__icon"/>
           </template>
         </el-input>
       </el-form-item>
