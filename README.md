@@ -10,10 +10,16 @@
 
 该平台具有以下特点和功能：
 
-- **技术栈**：
-  - **前端**：使用 Vue.js 构建交互界面，提供优秀的用户体验。
-  - **后端**：采用 Go 语言编写，调用 Kubernetes (K8S) 的 API
-  - **部署**：Nginx
+## 前端技术列表
+| 技术     | 说明                         | 官网                                   |
+| -------- | ---------------------------- | -------------------------------------- |
+| Vue3     | 前端框架                     | [Vue.js](https://vuejs.org/)         |
+| Vue-router | 路由框架                     | [Vue Router](https://router.vuejs.org/) |
+| Pinia    | 状态管理库   | [Pinia](https://pinia.vuejs.org/)     |
+| Element Plus | 前端UI框架                   | [Element](https://element.eleme.io)   |
+| Axios    | 前端HTTP框架                 | [Axios](https://github.com/axios/axios) |
+| nprogress | 进度条控件                   | [nprogress](https://github.com/rstacruz/nprogress) |
+
 - **平台功能**：
   - **用户管理**：
     - 管理员和教师都具有用户管理权限，包括创建、编辑和删除用户账号（教师不具备删除用户的权限）。
