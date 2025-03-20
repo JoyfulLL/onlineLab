@@ -77,6 +77,7 @@ const onSubmitWithName = async () => {
       //checkToken()
     }
   } catch (error) {
+    if (error.response && error.response.data) {
     console.error(error.response.data.reason)
     if (error.response.data.status === 1) {
       ElNotification({
@@ -86,9 +87,9 @@ const onSubmitWithName = async () => {
         duration: 3000,
       })
     }
-  } finally {
-    // 关闭 loading
-    closeFullScreen()
+  }else{
+     console.error("Unexpected error:", error)
+  } 
   }
 }
 
