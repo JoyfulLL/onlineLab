@@ -19,6 +19,10 @@
     "lib": [],
     "types": ["node", "jsdom"]
   },
+  "exclude": [
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ],
   "include": [
     "src/**/*.d.ts",
     "./*.d.ts",
