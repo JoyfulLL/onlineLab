@@ -4,9 +4,9 @@ pipeline {
         DOCKER_HOST = 'docker' // Docker主机
         JENKINS_HOST = 'jenkins' // jenkins
         VUEAPP_HOST = 'web'    // webapp服务主机
-        GIT_REPO = 'https://github.com/JoyfulLL/onlineLab.git'
+        GIT_REPO = 'https://gitee.com/abbig/onlineLab-gitee.git'
         DOCKER_REGISTRY = '192.168.50.86:8099/vue'
-        DOCKER_IMAGE_TAG = 'v1.0.1'
+        DOCKER_IMAGE_TAG = 'v1.0.7'
         ANSIBLE_PLAYBOOK_DIR = '/opt/ansible/playbook' // Ansible剧本存储路径
     }
     stages {
@@ -43,30 +43,6 @@ pipeline {
             }
         }
 
-        // 阶段2：环境安装
-        // env.yml剧本将自动检测是否安装，安装之后会跳过，避免重复安装
-        // stage('Environment Provisioning') {
-        //     steps {
-        //         script {
-        //             // 执行环境安装剧本
-        //             sh """
-        //                 ansible-playbook -i ${env.DOCKER_HOST}, ${ANSIBLE_PLAYBOOK_DIR}/env.yml \
-        //                     -e "env_source_host=${env.JENKINS_HOST}" \
-        //                     -e "go_package=go1.23.4.linux-amd64.tar.gz" \
-        //                     -e "node_package=node-v22.12.0-linux-x64.tar.xz"
-        //             """
-
-        //             // 验证安装结果
-        //             sh """
-        //                 ansible ${env.DOCKER_HOST} -m shell -a '
-        //                     go version &&
-        //                     node -v &&
-        //                     npm -v
-        //                 '
-        //             """
-        //         }
-        //     }
-        // }
         // 阶段2
         stage('Environment Provisioning') {
             steps {
@@ -146,6 +122,14 @@ pipeline {
         stage('Continuous Delivery') {
             steps {
                 script {
+                    // 更新dockercompose文件使用的镜像版本号
+                    sh """
+                        sed -i "s/\\(image: .*:\\)v[0-9]\\+\\.[0-9]\\+\\(\\.[0-9]\\+\\)\\?/\\1${DOCKER_IMAGE_TAG}/" /opt/docker_build/docker-compose.yml
+                    """
+                    // 调试
+                    // sh """
+                    //     cat /opt/docker_build/docker-compose.yml
+                    // """
                     // 执行CD剧本
                     sh """
                         ansible-playbook ${ANSIBLE_PLAYBOOK_DIR}/CD.yml --extra-vars "docker_image_tag=${DOCKER_IMAGE_TAG}" || exit 1
@@ -160,7 +144,7 @@ pipeline {
         }
 
         // 阶段6：程序部署
-        stage('Check HTTP Status') {
+        stage('Deployed web') {
             steps {
                 script {
                     // 执行Web部署剧本
